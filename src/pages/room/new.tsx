@@ -1,13 +1,15 @@
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import React, { FormEvent, useState } from "react";
+import Button from "../../../components/Button";
 import { trpc } from "../../utils/trpc";
 
 const CreateRoom = () => {
   const [name, setName] = useState("");
   const [path, setPath] = useState("");
   const [image, setImage] = useState("");
-  const session = useSession()
-  
+  const session = useSession();
+
   const handleNameChange = (name: string) => {
     setName(name);
     setPath(`/${name}`);
@@ -16,14 +18,13 @@ const CreateRoom = () => {
   const mutation = trpc.useMutation("room.createRoom");
 
   const handleSend = () => {
-    const creator = session.data?.user?.id
-    if(creator){
-
+    const creator = session.data?.user?.id;
+    if (creator) {
       const room = {
         name,
         path,
         image,
-        creator
+        creator,
       };
       const result = mutation.mutate(room);
     }
@@ -58,15 +59,12 @@ const CreateRoom = () => {
           value={image}
           id={image}
         />
-        <button
-          type="button"
-          onClick={handleSend}
-          className="bg-blue-500
-        text-white rounded-md shadow-none 
-        active:bg-slate-600 py-2 px-4 mx-auto"
-        >
-          Send
-        </button>
+        <div className="flex gap-2 mx-auto">
+          <Button onClick={handleSend}>Send</Button>
+          <Button href="/">Home</Button>
+          <Button href="/room">Rooms</Button>
+        </div>
+
         {mutation.status === "success" && (
           <p className="bg-green-500 text-white p-3 rounded-lg">
             You have successfully created a room

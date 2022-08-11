@@ -1,5 +1,4 @@
 import {z} from "zod";
-import { ZRoom } from "./Room";
 
 export const ZRoomUpdater = z.object({
   roomId: z.string(),

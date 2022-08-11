@@ -1,7 +1,6 @@
 import { Session } from "inspector";
 import type { NextPage } from "next";
 import { useSession, signIn, signOut } from "next-auth/react";
-import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
 import { trpc } from "../utils/trpc";
 import Link from "next/link";
@@ -40,6 +39,10 @@ const Home: NextPage = () => {
             <Link href={"/room/new"} >
               <a className="bg-blue-500 py-2 px-3 rounded-md no-underline text-white">Create a Room</a>
             </Link>
+               <Link href={"/room"} >
+              <a className="bg-blue-500 py-2 px-3 rounded-md no-underline text-white">Rooms</a>
+            </Link>
+            
             <button onClick={handleSignout} className={buttonClasses}>
               signout
             </button>
