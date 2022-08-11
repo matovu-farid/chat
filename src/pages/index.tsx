@@ -4,6 +4,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
 import { trpc } from "../utils/trpc";
+import Link from "next/link";
 
 interface User {
   id: string;
@@ -12,7 +13,6 @@ interface User {
   image?: string | null | undefined;
 }
 const Home: NextPage = () => {
-  const hello = trpc.useQuery(["example.hello", { text: "from tRPC" }]);
   const { data, status } = useSession();
   const user = useMemo(() => {
     return data?.user;
@@ -36,9 +36,17 @@ const Home: NextPage = () => {
           <p>
             You are signed in as {signedInUser?.name} with {signedInUser?.email}
           </p>
-          <button onClick={handleSignout} className={buttonClasses}>
-            signout
-          </button>
+          <div className="flex px-2">
+            <Link href={"/room/new"} className={buttonClasses}>
+              <a className="no-underline text-white">
+
+              Create a Room
+              </a>
+            </Link>
+            <button onClick={handleSignout} className={buttonClasses}>
+              signout
+            </button>
+          </div>
         </>
       ) : (
         <button className={buttonClasses} onClick={handleSignin}>

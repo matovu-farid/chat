@@ -35,7 +35,7 @@ const Message = ({ room }: { room: string }) => {
     <div className="mx-auto">
       <div>
         <input
-          className="w-full  py-2 px-4"
+          className="w-full  py-2 px-3"
           type="text"
           value={messege}
           onChange={(e) => setMessege(e.target.value)}

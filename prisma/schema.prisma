@@ -71,7 +71,6 @@ model Message {
 
 model Room {
   id       String    @id @default(uuid())
-  serverId String    @unique
   path     String    @unique
   name     String
   image    String?
