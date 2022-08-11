@@ -54,6 +54,29 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    rooms         Room[]
+    sentMessages  Message[] @relation("send")
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  text      String
+  sender    User     @relation("send", fields: [senderId], references: [id])
+  senderId  String
+  room      Room     @relation(fields: [roomId], references: [id])
+  roomId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Room {
+  id       String    @id @default(uuid())
+  serverId String    @unique
+  path     String    @unique
+  name     String
+  image    String?
+  messages Message[]
+  members  User[]
 }
 
 model VerificationToken {
