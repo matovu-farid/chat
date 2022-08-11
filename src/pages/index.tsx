@@ -36,12 +36,9 @@ const Home: NextPage = () => {
           <p>
             You are signed in as {signedInUser?.name} with {signedInUser?.email}
           </p>
-          <div className="flex px-2">
-            <Link href={"/room/new"} className={buttonClasses}>
-              <a className="no-underline text-white">
-
-              Create a Room
-              </a>
+          <div className="flex gap-2">
+            <Link href={"/room/new"} >
+              <a className="bg-blue-500 py-2 px-3 rounded-md no-underline text-white">Create a Room</a>
             </Link>
             <button onClick={handleSignout} className={buttonClasses}>
               signout

@@ -5,10 +5,12 @@ import { addToRoom, createroom, getRooms, getUsersInRoom } from "../../prisma_fu
 import { ZUserRoomSession } from "../../Interfaces/UserRoomSession";
 
 export const roomRouter = createRouter()
-  .query("createRoom", {
+  .mutation("createRoom", {
     input: ZRoom,
+    output:z.string(),
     async resolve({ input:room,ctx:{prisma} }) {
-      return await createroom(room,prisma)
+      await createroom(room,prisma)
+      return "success"
     },
   })
   .query("getRooms", {
@@ -23,9 +25,11 @@ export const roomRouter = createRouter()
       return await getUsersInRoom(roomId,prisma);
     },
   }) 
-  .query("addToRoom", {
+  .mutation("addToRoom", {
     input: ZUserRoomSession,
+    output: z.string(),
     async resolve({ input:userRoomSession,ctx:{prisma} }) {
-      return await addToRoom(userRoomSession,prisma);
+       await addToRoom(userRoomSession,prisma);
+      return "success"
     },
   });

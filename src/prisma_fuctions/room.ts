@@ -7,7 +7,11 @@ export async function createroom(room: Room,prisma:Prisma ) {
 			name: room.name,
 			path: room.path,
 			image: room.image,
-			serverId: room.serverId,
+			members: {
+				connect: {
+					id: room.creator
+				}
+			}
 		},
 	});
 
