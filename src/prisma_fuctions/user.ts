@@ -1,5 +1,5 @@
-import User from "../../Interfaces/User";
-import { prisma } from "./client";
+import User from "../Interfaces/User";
+import { prisma } from "../server/db/client";
 export default async function createUser(user: User) {
   const { name, username } = user;
   console.log(user);

@@ -1,5 +1,5 @@
-import Message from "../../Interfaces/Message";
-import { prisma } from "./client";
+import Message from "../Interfaces/Message";
+import {prisma} from '../server/db/client'
 export async function createMessage(message: Message) {
 	const createMessage = prisma.message.create({
 		data: {

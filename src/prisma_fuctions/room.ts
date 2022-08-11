@@ -1,5 +1,5 @@
-import Room from "../../Interfaces/Room";
-import { prisma } from "./client";
+import Room from "../Interfaces/Room";
+import { prisma } from "../server/db/client";
 export async function createroom(room: Room) {
 	const createdRoom = prisma.room.create({
 		data: {
