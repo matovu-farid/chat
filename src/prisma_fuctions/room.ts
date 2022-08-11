@@ -1,4 +1,5 @@
 import Room from "../Interfaces/Room";
+import RoomUpdater from "../Interfaces/Roomupdator";
 import UserRoom from "../Interfaces/UserRoomSession";
 import { Prisma, prisma } from "../server/db/client";
 export async function createroom(room: Room,prisma:Prisma ) {
@@ -11,8 +12,39 @@ export async function createroom(room: Room,prisma:Prisma ) {
 				connect: {
 					id: room.creator
 				}
+			},
+			admins: {
+				connect: {
+					id: room.creator
+				}
 			}
 		},
+	});
+
+	return await createdRoom;
+}
+export async function isAdmin(userRoom: UserRoom,prisma:Prisma){
+	 const room = prisma.room.findFirst({
+		where: {
+			AND: [{
+				id: userRoom.roomId,
+				admins: {some: { id: userRoom.userId}}
+			}]
+		}
+	})
+	return room !== null
+}
+export async function updateRoom(roomUpdater: RoomUpdater,prisma:Prisma ) {
+
+	const isadmin = await isAdmin({
+		roomId: roomUpdater.roomId,
+		 userId: roomUpdater.adminId},prisma)
+	if(!isadmin) throw "You must me an admin to update a room";
+	const createdRoom = prisma.room.update({
+		where: {
+			id: roomUpdater.roomId
+		},
+		data:roomUpdater.data
 	});
 
 	return await createdRoom;
