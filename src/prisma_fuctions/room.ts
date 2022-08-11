@@ -1,6 +1,7 @@
 import Room from "../Interfaces/Room";
-import { prisma } from "../server/db/client";
-export async function createroom(room: Room) {
+import UserRoom from "../Interfaces/UserRoomSession";
+import { Prisma, prisma } from "../server/db/client";
+export async function createroom(room: Room,prisma:Prisma ) {
 	const createdRoom = prisma.room.create({
 		data: {
 			name: room.name,
@@ -12,7 +13,7 @@ export async function createroom(room: Room) {
 
 	return await createdRoom;
 }
-export async function getRooms(userId: string) {
+export async function getRooms(userId: string,prisma:Prisma ) {
 	return prisma.room.findMany({
 		where: {
 			members: {
@@ -23,7 +24,7 @@ export async function getRooms(userId: string) {
 		},
 	});
 }
-export async function getUsersInRoom(roomId: string) {
+export async function getUsersInRoom(roomId: string,prisma:Prisma ) {
 	const users = prisma.user.findMany({
 		where: {
 			rooms: {
@@ -35,10 +36,7 @@ export async function getUsersInRoom(roomId: string) {
 	});
 	return users;
 }
-export async function addToRoom(userRoomSession: {
-	userId: string;
-	roomId: string;
-}) {
+export async function addToRoom(userRoomSession: UserRoom, prisma:Prisma ) {
 	prisma.room.update({
 		where: {
 			id: userRoomSession.roomId,

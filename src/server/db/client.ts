@@ -15,3 +15,5 @@ export const prisma =
 if (env.NODE_ENV !== "production") {
   global.prisma = prisma;
 }
+export type Prisma = typeof prisma;
+
