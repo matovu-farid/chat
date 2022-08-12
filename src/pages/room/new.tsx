@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { FormEvent, useState } from "react";
-import Button from "../../../components/Button";
+import Button from "../../components/Button";
 import { trpc } from "../../utils/trpc";
 
 const CreateRoom = () => {

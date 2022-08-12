@@ -48,11 +48,7 @@ const Home: NextPage = () => {
             </button>
           </div>
         </>
-      ) : (
-        <button className={buttonClasses} onClick={handleSignin}>
-          SignIn
-        </button>
-      )}
+      ) : null}
     </>
   );
 };

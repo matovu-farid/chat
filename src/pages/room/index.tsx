@@ -1,6 +1,6 @@
 import { useSession } from 'next-auth/react'
 import React, { PropsWithoutRef, useEffect, useState } from 'react'
-import Page from '../../../components/page'
+import Page from '../../components/page'
 import Room from '../../Interfaces/Room'
 import { trpc } from '../../utils/trpc'
 interface Props {
@@ -22,7 +22,7 @@ const Rooms = () => {
   const userId = session.data?.user?.id
  
   return (
-    <Page>
+    <>
       {
         (userId)?
       <RoomsInternal userId={userId}/>
@@ -30,7 +30,7 @@ const Rooms = () => {
       <p>You are not signed in</p>
       }
       
-    </Page>
+    </>
   )
 }
 
