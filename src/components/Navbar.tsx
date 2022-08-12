@@ -1,4 +1,5 @@
 import { useSession, signIn, signOut } from "next-auth/react";
+
 import Link from "next/link";
 import React from "react";
 
@@ -9,25 +10,25 @@ const Navbar = () => {
   const handleSignout = () => {
     signOut();
   };
-  const listClasses = "my-auto p-0 list-none"
+  const showSettings: React.MouseEventHandler<HTMLAnchorElement> = (event) => {
+    event.preventDefault();
+  };
+  const listClasses = "my-auto p-0 list-none";
   const buttonClasses =
     "my-auto bg-blue-600 text-white hover:bg-slate-600 transition-colors py-2 px-3 rounded-lg";
   const { status, data } = useSession();
   return (
-    <div className="bg-gray-900 text-white  h-24 w-full py-3 px-4 flex justify-between align-middle">
-      <div>
-        <p className=" text-2xl my-auto p-0">Chat App</p>
-      </div>
+    <div className="bg-gray-900 text-white  h-24 w-full py-3 px-4 flex justify-end align-middle">
       <div className="flex gap-8 align-middle">
         <nav>
           <ul className="flex h-full gap-2 align-middle m-0 p-0 list-none">
             <li className={listClasses}>
-              <Link href="/" >
+              <Link href="/">
                 <a className="h-full hover:text-pink-300">Home</a>
               </Link>
             </li>
             <li className={listClasses}>
-              <Link href="/room" >
+              <Link href="/room">
                 <a className="h-full hover:text-pink-300">Rooms</a>
               </Link>
             </li>

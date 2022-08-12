@@ -4,8 +4,10 @@ import type { AppRouter } from "../server/router";
 import type { AppType } from "next/dist/shared/lib/utils";
 import superjson from "superjson";
 import { SessionProvider } from "next-auth/react";
-import Navbar from "../components/NavBar";
+import Menu from "../components/Menu";
+
 import '../styles/globals.css'
+import Navbar from "../components/Navbar";
 
 const MyApp: AppType = ({
   Component,
@@ -16,6 +18,7 @@ const MyApp: AppType = ({
       
       
           <Navbar></Navbar>
+          <Menu></Menu>
           <Component {...pageProps} />
       
       
