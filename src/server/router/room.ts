@@ -1,8 +1,9 @@
 import { createRouter } from "./context";
 import { z } from "zod";
 import { ZRoom } from "../../Interfaces/Room";
-import { addToRoom, createroom, getRooms, getUsersInRoom } from "../../prisma_fuctions/room";
+import { addToRoom, createroom, getRoom, getRooms, getUsersInRoom } from "../../prisma_fuctions/room";
 import { ZUserRoomSession } from "../../Interfaces/UserRoomSession";
+import { resolve } from "path";
 
 export const roomRouter = createRouter()
   .mutation("createRoom", {
@@ -18,6 +19,12 @@ export const roomRouter = createRouter()
     async resolve({ input:userId,ctx:{prisma} }) {
       return await getRooms(userId,prisma);
     },
+  })
+  .query("getRoom",{
+    input: z.string(),
+    async resolve({input:roomId,ctx: {prisma}}){
+      return await getRoom(roomId, prisma)
+    }
   })
   .query("getUsersInRoom", {
     input: z.string(),

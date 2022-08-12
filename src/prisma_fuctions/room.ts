@@ -55,6 +55,7 @@ export async function updateRoom(roomUpdater: RoomUpdater, prisma: Prisma) {
 
   return await createdRoom;
 }
+
 export async function getRooms(userId: string, prisma: Prisma) {
   return prisma.room.findMany({
     where: {
@@ -63,6 +64,13 @@ export async function getRooms(userId: string, prisma: Prisma) {
           id: userId,
         },
       },
+    },
+  });
+}
+export async function getRoom(roomId: string, prisma: Prisma) {
+  return prisma.room.findUnique({
+    where: {
+      id: roomId
     },
   });
 }

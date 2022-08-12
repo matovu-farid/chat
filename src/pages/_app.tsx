@@ -5,6 +5,7 @@ import type { AppType } from "next/dist/shared/lib/utils";
 import superjson from "superjson";
 import { SessionProvider } from "next-auth/react";
 import Menu from "../components/Menu";
+import SocketProvider from "../contexts/socket";
 
 import '../styles/globals.css'
 import Navbar from "../components/Navbar";
@@ -15,11 +16,12 @@ const MyApp: AppType = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      
-      
+      <SocketProvider>
           <Navbar></Navbar>
           <Menu></Menu>
           <Component {...pageProps} />
+      </SocketProvider>
+      
       
       
     </SessionProvider>

@@ -27,6 +27,7 @@ const Home: NextPage = () => {
   const handleSignout = () => {
     signOut();
   };
+  
 
   return (
     <>
