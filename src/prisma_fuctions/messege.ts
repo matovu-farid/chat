@@ -26,10 +26,10 @@ export async function deleteMessege(messageId: string, prisma:Prisma) {
 	});
 	return await createMessege;
 }
-export async function getMesseges(room: string,prisma:Prisma) {
+export async function getMesseges(roomId: string,prisma:Prisma) {
 	return await prisma.message.findMany({
 		where: {
-			roomId: room,
+			roomId: roomId,
 		},
 	});
 }

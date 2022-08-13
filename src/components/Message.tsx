@@ -46,9 +46,8 @@ const MessegeInternal = ({
   const socket = useSocket();
   const dynamicRoute = useRouter().asPath;
   useEffect(() => {
-    setMesseges([]); // When the dynamic route change reset the state
+    setMesseges(messegeHistory || []); // When the dynamic route change reset the state
   }, [dynamicRoute]);
-
 
   useEffect(() => {
     const addSocketListners = async () => {
@@ -57,14 +56,10 @@ const MessegeInternal = ({
       });
 
       socket.on("messege", (messegeString) => {
-        const fetchedMessege= JSON.parse(messegeString);
-        console.log(fetchedMessege)
-      
-          setMesseges((messeges) => [
-            ...messeges,
-            fetchedMessege,
-          ]);
-        
+        const fetchedMessege = JSON.parse(messegeString);
+        console.log(fetchedMessege);
+
+        setMesseges((messeges) => [...messeges, fetchedMessege]);
       });
     };
     addSocketListners();
@@ -74,12 +69,12 @@ const MessegeInternal = ({
   }, [roomId, senderId]);
 
   const handleSend = () => {
-    const createdMessege:Messege = {
-     text:messege,
-     roomId,
-     senderId
-    }
-    if (room) socket.emit("sendMessege", room,createdMessege);
+    const createdMessege: Messege = {
+      text: messege,
+      roomId,
+      senderId,
+    };
+    if (room) socket.emit("sendMessege", room, createdMessege);
     else throw "No room found";
   };
 
