@@ -21,9 +21,6 @@ const MyApp: AppType = ({
           <Menu></Menu>
           <Component {...pageProps} />
       </SocketProvider>
-      
-      
-      
     </SessionProvider>
   );
 };

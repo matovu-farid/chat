@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-import { io, Socket } from "socket.io-client";
 import { useSession } from "next-auth/react";
 import Loading from "./Loading";
 import Messege from "../Interfaces/Messege";
@@ -49,7 +48,7 @@ const MessegeInternal = ({
   useEffect(() => {
     setMesseges([]); // When the dynamic route change reset the state
   }, [dynamicRoute]);
-  
+
 
   useEffect(() => {
     const addSocketListners = async () => {
@@ -58,14 +57,14 @@ const MessegeInternal = ({
       });
 
       socket.on("messege", (messegeString) => {
-        const { messege, room } = JSON.parse(messegeString);
-        console.log(room);
-        if (room.id === roomId) {
+        const fetchedMessege= JSON.parse(messegeString);
+        console.log(fetchedMessege)
+      
           setMesseges((messeges) => [
             ...messeges,
-            { text: messege, roomId, senderId },
+            fetchedMessege,
           ]);
-        }
+        
       });
     };
     addSocketListners();
@@ -75,7 +74,12 @@ const MessegeInternal = ({
   }, [roomId, senderId]);
 
   const handleSend = () => {
-    if (room) socket.emit("sendMessege", room, messege);
+    const createdMessege:Messege = {
+     text:messege,
+     roomId,
+     senderId
+    }
+    if (room) socket.emit("sendMessege", room,createdMessege);
     else throw "No room found";
   };
 
