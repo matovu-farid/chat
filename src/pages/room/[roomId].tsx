@@ -18,7 +18,6 @@ interface Props {
 }
 const RoomPageInternal=({roomId}:Props)=>{
   return <div className='h-full'>
-    <p>You are now on room with id : {roomId}</p>
     <MessegeComponent roomId={roomId}></MessegeComponent>
     
   </div>

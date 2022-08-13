@@ -10,7 +10,7 @@ const MessegeList = ({messeges, className}:Props) => {
 
   return (
     <div className={className + ""}>
-      <ul className="flex flex-col gap-2">
+      <ul className="flex flex-col gap-2 h-full max-h-[83vh] overflow-y-scroll">
         {messeges.map((messege) => {
           return (
 

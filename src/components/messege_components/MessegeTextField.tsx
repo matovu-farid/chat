@@ -23,7 +23,7 @@ const MessegeTextField = ({ roomId, senderId, className }: Props) => {
   };
 
   return (
-    <div className={className + ""}>
+    <div className={className + " py-3"}>
       <div className="flex ">
         <input
           type="text"

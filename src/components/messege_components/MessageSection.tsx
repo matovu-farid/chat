@@ -13,75 +13,46 @@ import useUser from "../../hooks/useUser";
 interface Props {
   roomId: string;
 }
-interface InternalProps extends Props {
-  senderId: string;
-  messegeHistory: MessegeWithUser[];
-}
-const MessegeComponent = ({ roomId }: Props) => {
-  const user = useUser()
-  const [messegeHistory,setMessegeHistory] = useState< MessegeWithUser[]>([])
 
-  const { data: messegeHistoryFetched,status } = trpc.useQuery([
+const MessegeComponent = ({ roomId }: Props) => {
+  const user = useUser();
+
+  const [messeges, setMesseges] = useState<MessegeWithUser[]>([]);
+
+  const { data: messegeHistory, isFetched,status } = trpc.useQuery([
     "message.getMesseges",
     roomId,
   ]);
-  useEffect(()=>{
-    if(status==="success" &&  messegeHistoryFetched){
-      setMessegeHistory(messegeHistoryFetched)
-    }
-  },[status,roomId])
-
-  return status ==="success" ? (
-    <MessegeInternal
-      messegeHistory={messegeHistory}
-      roomId={roomId}
-      senderId={user.id}
-    ></MessegeInternal>
-  ) : (
-    <Loading></Loading>
-  );
-};
-const MessegeInternal = ({
-  roomId,
-  senderId,
-  messegeHistory,
-}: InternalProps) => {
-  const [messeges, setMesseges] = useState<MessegeWithUser[]>([]);
-  
-  
   const socket = useSocket();
-  const dynamicRoute = useRouter().asPath;
-  useEffect(()=>{
-    setMesseges(messegeHistory)
-  },[messegeHistory.length])
-  useEffect(() => {
-    setMesseges(messegeHistory || []); // When the dynamic route change reset the state
-  }, [dynamicRoute]);
+  const pathname = useRouter().asPath
 
   useEffect(() => {
-    const addSocketListners = async () => {
-      socket.on("messege", (messegeString) => {
-        const fetchedMessege = JSON.parse(messegeString);
-        console.log(fetchedMessege);
+    if (isFetched && messegeHistory) {
+      setMesseges(messegeHistory);
+    }
+  }, [status, pathname]);
 
-        setMesseges((messeges) => [...messeges, fetchedMessege]);
-      });
-    };
-    addSocketListners();
+  useEffect(() => {
+    socket.on("messege", (messegeString) => {
+      const fetchedMessege = JSON.parse(messegeString);
+      setMesseges((messeges) => [...messeges, fetchedMessege]);
+    });
     return () => {
       socket.removeAllListeners();
     };
-  }, [roomId, senderId]);
-
- 
+  }, [roomId, user.id]);
 
   return (
     <section className="w-full h-full flex flex-col justify-end">
-     <MessegeList className="h-full" messeges={messeges}></MessegeList>
-     <MessegeTextField className=" flex-none w-full" senderId={senderId} roomId={roomId}></MessegeTextField>
-
+      <MessegeList className="h-full" messeges={messeges}></MessegeList>
+      <MessegeTextField
+        className=" flex-none w-full"
+        senderId={user.id}
+        roomId={roomId}
+      ></MessegeTextField>
     </section>
   );
 };
+
 
 export default MessegeComponent;
