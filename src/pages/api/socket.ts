@@ -1,16 +1,11 @@
 import { Server } from "socket.io";
-import { getRooms } from "../../prisma_fuctions/room";
+import { getRooms, saveMessege } from "../../prisma_fuctions/room";
 import { Prisma, prisma } from "../../server/db/client";
 import Room from "../../Interfaces/Room";
 import { z } from "zod";
 import Messege from "../../Interfaces/Messege";
 
-async function saveMessege(messege: Messege) {
-  const createdMessege = prisma.message.create({
-    data: messege,
-  });
-  return await createdMessege;
-}
+
 export default function SocketHandler(_: any, res: any) {
   if (res.socket.server.io) {
     console.log("socket is running");
@@ -38,6 +33,10 @@ export default function SocketHandler(_: any, res: any) {
         socket.emit("serverMessege", "rooms failed connection");
       }
     });
+		socket.on("leaveRooom",(room)=>{
+			socket.leave(room.name)
+
+		})
 
     socket.on("sendMessege", (room, messege) => {
       console.log("room : ", room.name);

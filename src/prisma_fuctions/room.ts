@@ -1,3 +1,4 @@
+import Messege from "../Interfaces/Messege";
 import Room from "../Interfaces/Room";
 import RoomUpdater from "../Interfaces/Roomupdator";
 import UserRoom from "../Interfaces/UserRoomSession";
@@ -17,8 +18,7 @@ export async function createroom(room: Room, prisma: Prisma) {
         connect: {
           id: room.creator,
         },
-      }
-
+      },
     },
   });
 
@@ -70,7 +70,7 @@ export async function getRooms(userId: string, prisma: Prisma) {
 export async function getRoom(roomId: string, prisma: Prisma) {
   return prisma.room.findUnique({
     where: {
-      id: roomId
+      id: roomId,
     },
   });
 }
@@ -100,3 +100,83 @@ export async function addToRoom(userRoomSession: UserRoom, prisma: Prisma) {
     },
   });
 }
+export async function saveMessege(messege: Messege) {
+  const createdMessege = prisma.message.create({
+    data: messege,
+  });
+  return await createdMessege;
+}
+export function countRoomMembers(roomId: string, prisma: Prisma) {
+  return prisma.user.count({
+    where: {
+      rooms: {
+        some: {
+          id: roomId,
+        },
+      },
+    },
+  });
+}
+export function countRoomAdmins(roomId: string, prisma: Prisma) {
+  return prisma.user.count({
+    where: {
+      ownedRooms: {
+        some: {
+          id: roomId,
+        },
+      },
+    },
+  });
+}
+function disconnectUserFromRoom(isadmin: boolean, userRoomSession: UserRoom) {
+  prisma.room.update({
+    where: {
+      id: userRoomSession.roomId,
+    },
+    data: {
+      members: {
+        disconnect: {
+          id: userRoomSession.userId,
+        },
+      },
+    },
+  });
+  if (isadmin) {
+    prisma.room.update({
+      where: {
+        id: userRoomSession.roomId,
+      },
+      data: {
+        admins: {
+          disconnect: {
+            id: userRoomSession.userId,
+          },
+        },
+      },
+    });
+  }
+}
+
+export async function leaveRoom(userRoomSession: UserRoom, prisma: Prisma) {
+  const hasOtherMembers =
+    (await countRoomMembers(userRoomSession.roomId, prisma)) > 1;
+  const isadmin = await isAdmin(userRoomSession, prisma);
+  const hasOtherOtherAdmins =
+    (await countRoomMembers(userRoomSession.roomId, prisma)) > 1;
+  const hasOtherMembersAndNotAdmin = hasOtherMembers && !isadmin;
+  const adminButHasOthers = hasOtherMembers && isadmin && hasOtherOtherAdmins;
+  if (hasOtherMembersAndNotAdmin || adminButHasOthers) {
+    disconnectUserFromRoom(isadmin, userRoomSession);
+  } else return await deleteRoom(userRoomSession,prisma);
+}
+export async function deleteRoom(userRoomSession: UserRoom, prisma: Prisma) {
+  const isadmin = await isAdmin(userRoomSession, prisma);
+  if (isadmin) {
+    prisma.room.delete({
+      where: {
+        id: userRoomSession.roomId,
+      },
+    });
+  }
+}
+
