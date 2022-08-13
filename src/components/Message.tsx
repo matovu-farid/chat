@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { UUID } from "uuid-generator-ts";
 
 import { io, Socket } from "socket.io-client";
 import { useSession } from "next-auth/react";
@@ -8,8 +7,7 @@ import Messege from "../Interfaces/Messege";
 import { trpc } from "../utils/trpc";
 import Button from "./Button";
 import useSocket from "../hooks/useSocket";
-
-
+import { useRouter } from "next/router";
 
 interface Props {
   roomId: string;
@@ -20,12 +18,13 @@ interface InternalProps extends Props {
 }
 const MessegeComponent = ({ roomId }: Props) => {
   const { data } = useSession();
-  const user = useMemo(()=>data?.user,[])
-  
+  const user = data?.user;
+
   const { data: messegeHistory } = trpc.useQuery([
     "message.getMesseges",
     roomId,
   ]);
+
   return user ? (
     <MessegeInternal
       messegeHistory={messegeHistory}
@@ -41,38 +40,43 @@ const MessegeInternal = ({
   senderId,
   messegeHistory,
 }: InternalProps) => {
-  const [serverMessege, setServerMessege] = useState("");
+  const [serverMesseges, setServerMessege] = useState<string[]>([]);
   const [messeges, setMesseges] = useState<Messege[]>(messegeHistory || []);
   const [messege, setMessege] = useState("");
-  const {data: room} = trpc.useQuery(["room.getRoom",roomId]);
-  const socket = useSocket()
-
+  const { data: room } = trpc.useQuery(["room.getRoom", roomId]);
+  const socket = useSocket();
+  const dynamicRoute = useRouter().asPath;
+  useEffect(() => {
+    setMesseges([]); // When the dynamic route change reset the state
+  }, [dynamicRoute]);
+  
 
   useEffect(() => {
-    const addSocketListners=async()=>{
-      socket.on("connect",()=>{
-        const str = "---------------------------------------------------" 
-        console.log(str)
-        console.log("connect")
-        console.log(str)
-      })
+    const addSocketListners = async () => {
       socket.on("serverMessege", (msg) => {
-        setServerMessege(msg);
+        setServerMessege((state) => [...state, msg]);
       });
-      
-      socket.on("messege", (messege: string) => {
-        setMesseges((messeges) => {
-          return [...messeges, { text: messege, roomId, senderId }];
-        });
+
+      socket.on("messege", (messegeString) => {
+        const { messege, room } = JSON.parse(messegeString);
+        console.log(room);
+        if (room.id === roomId) {
+          setMesseges((messeges) => [
+            ...messeges,
+            { text: messege, roomId, senderId },
+          ]);
+        }
       });
-    }
-    addSocketListners()
+    };
+    addSocketListners();
+    return () => {
+      socket.removeAllListeners();
+    };
   }, [roomId, senderId]);
 
-  useEffect(() => {}, []);
   const handleSend = () => {
-    if(room)
-    socket.emit("sendMessege", room.path, messege);
+    if (room) socket.emit("sendMessege", room, messege);
+    else throw "No room found";
   };
 
   return (
@@ -87,9 +91,8 @@ const MessegeInternal = ({
         <Button onClick={handleSend}>Send</Button>
       </div>
 
-      <div>{serverMessege}</div>
       <ul>
-        {messeges.map(({ text, id }) => (
+        {messeges.map(({ text }, id) => (
           <li key={id}>{text}</li>
         ))}
       </ul>

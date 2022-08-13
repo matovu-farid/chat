@@ -25,18 +25,30 @@ export default function SocketHandler(_: any, res: any) {
 			`Welcome ${socket.id}, you are now connected to the Server`
 		);
 		socket.on("joinRooms",(fetchedRooms)=>{
-			const rooms:Room[] = fetchedRooms
-			rooms.forEach(room=>{
-				socket.join(room.path)
-			})
-			socket.emit("serverMessege",socket.rooms)
+			try{
+
+				const rooms:Room[] = fetchedRooms
+				rooms.forEach(room=>{
+					socket.join(room.name)
+					
+					socket.emit("serverMessege","rooms connected")
+				})
+				console.log(socket.rooms)
+			}catch(e){
+				console.log(e)
+				socket.emit("serverMessege","rooms failed connection")
+			}
 		})
 
 		
-		socket.on("sendMessege", (roomPath,messege)=>{
-			io.of(roomPath).emit("messege",messege)
-			console.log(messege,roomPath)
-			return saveMessege(messege)
+		socket.on("sendMessege", (room,messege)=>{
+			console.log("room : ",room.name)
+			console.log("messege : ",messege)
+			
+			
+			io.in(room.name).emit("messege",JSON.stringify({messege,room}))
+	
+			//  saveMessege(messege)
 		})
 	});
 	res.end("This is the sockets api");

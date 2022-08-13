@@ -18,10 +18,17 @@ interface Props {
 }
 const RoomPageInternal=({roomId}:Props)=>{
   return <div>
+    <p>You are now on room with id : {roomId}</p>
     <MessegeComponent roomId={roomId}></MessegeComponent>
     
   </div>
 
 }
+interface Params {
+  params: {
+    roomId: string
+  }
+}
+
 
 export default RoomPage

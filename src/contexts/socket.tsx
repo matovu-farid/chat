@@ -25,6 +25,10 @@ const SocketProvider = ({children}: PropsWithChildren) => {
     }
     useEffect(()=>{
       createSocket()
+      return ()=>{
+        socket?.removeAllListeners()
+        socket?.disconnect()
+      }
     },[])
 
   return (
