@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import React from 'react'
 import Loading from '../../components/Loading'
-import MessegeComponent from '../../components/Message'
+import MessegeComponent from '../../components/messege_components/MessageSection'
 import { trpc } from '../../utils/trpc'
 
 const RoomPage = () => {

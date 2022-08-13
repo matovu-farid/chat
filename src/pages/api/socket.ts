@@ -42,8 +42,10 @@ export default function SocketHandler(_: any, res: any) {
       console.log("room : ", room.name);
       console.log("messege : ", messege);
 
-      io.in(room.name).emit("messege", JSON.stringify(messege));
-      saveMessege(messege);
+      saveMessege(messege).then((msg)=>{
+        io.in(room.name).emit("messege", JSON.stringify(msg));
+
+      });
     });
   });
   res.end("This is the sockets api");

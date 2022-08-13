@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 
 import { useSession } from "next-auth/react";
-import Loading from "./Loading";
-import Messege from "../Interfaces/Messege";
-import { trpc } from "../utils/trpc";
-import Button from "./Button";
-import useSocket from "../hooks/useSocket";
+import Loading from "../Loading";
+import Messege from "../../Interfaces/Messege";
+import { trpc } from "../../utils/trpc";
+import useSocket from "../../hooks/useSocket";
 import { useRouter } from "next/router";
+import MessegeTextField from "./MessegeTextField";
+import MessegeList from "./MessegeList";
 
 interface Props {
   roomId: string;
@@ -39,10 +40,8 @@ const MessegeInternal = ({
   senderId,
   messegeHistory,
 }: InternalProps) => {
-  const [serverMesseges, setServerMessege] = useState<string[]>([]);
   const [messeges, setMesseges] = useState<Messege[]>(messegeHistory || []);
-  const [messege, setMessege] = useState("");
-  const { data: room } = trpc.useQuery(["room.getRoom", roomId]);
+  
   const socket = useSocket();
   const dynamicRoute = useRouter().asPath;
   useEffect(() => {
@@ -51,10 +50,6 @@ const MessegeInternal = ({
 
   useEffect(() => {
     const addSocketListners = async () => {
-      socket.on("serverMessege", (msg) => {
-        setServerMessege((state) => [...state, msg]);
-      });
-
       socket.on("messege", (messegeString) => {
         const fetchedMessege = JSON.parse(messegeString);
         console.log(fetchedMessege);
@@ -68,34 +63,14 @@ const MessegeInternal = ({
     };
   }, [roomId, senderId]);
 
-  const handleSend = () => {
-    const createdMessege: Messege = {
-      text: messege,
-      roomId,
-      senderId,
-    };
-    if (room) socket.emit("sendMessege", room, createdMessege);
-    else throw "No room found";
-  };
+ 
 
   return (
-    <div className="w-full min-h-screen flex flex-col align-middle justify-center">
-      <div className="flex flex-col gap-2 mx-auto w-2/12">
-        <input
-          className="w-full  py-2 px-3 border-none bg-purple-400 rounded-lg"
-          type="text"
-          value={messege}
-          onChange={(e) => setMessege(e.target.value)}
-        />
-        <Button onClick={handleSend}>Send</Button>
-      </div>
+    <section className="w-full min-h-screen flex flex-col align-middle justify-center">
+     <MessegeTextField senderId={senderId} roomId={roomId}></MessegeTextField>
 
-      <ul>
-        {messeges.map(({ text }, id) => (
-          <li key={id}>{text}</li>
-        ))}
-      </ul>
-    </div>
+     <MessegeList messeges={messeges}></MessegeList>
+    </section>
   );
 };
 

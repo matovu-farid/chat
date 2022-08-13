@@ -1,4 +1,5 @@
-import Messege from "../Interfaces/Messege";
+import { PrismaPromise } from "@prisma/client";
+import Messege, { MessegeWithUser } from "../Interfaces/Messege";
 import Room from "../Interfaces/Room";
 import RoomUpdater from "../Interfaces/Roomupdator";
 import UserRoom from "../Interfaces/UserRoomSession";
@@ -100,11 +101,15 @@ export async function addToRoom(userRoomSession: UserRoom, prisma: Prisma) {
     },
   });
 }
-export async function saveMessege(messege: Messege) {
-  const createdMessege = prisma.message.create({
+export async function saveMessege(messege: Messege){
+  return prisma.message.create({
     data: messege,
+
+    include: {
+      sender: true
+    }
   });
-  return await createdMessege;
+  
 }
 export function countRoomMembers(roomId: string, prisma: Prisma) {
   return prisma.user.count({
