@@ -1,17 +1,22 @@
 import React, { useState } from "react";
-import Messege from "../../Interfaces/Messege";
+import Messege, { MessegeWithUser } from "../../Interfaces/Messege";
+import TextMessege from "./TextMessege";
 interface Props {
-  messeges: Messege[];
+  messeges: MessegeWithUser[]
+  className?: string
 }
-const MessegeList = ({messeges}:Props) => {
+const MessegeList = ({messeges, className}:Props) => {
 
 
   return (
-    <div>
-      <ul>
-        {messeges.map(({ text }, id) => (
-          <li key={id}>{text}</li>
-        ))}
+    <div className={className + ""}>
+      <ul className="flex flex-col gap-2">
+        {messeges.map((messege) => {
+          return (
+
+            <TextMessege key={messege.id} messege={messege}></TextMessege>
+          );
+        })}
       </ul>
     </div>
   );

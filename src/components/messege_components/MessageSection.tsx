@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import { useSession } from "next-auth/react";
 import Loading from "../Loading";
-import Messege from "../../Interfaces/Messege";
+import Messege, { MessegeWithUser } from "../../Interfaces/Messege";
 import { trpc } from "../../utils/trpc";
 import useSocket from "../../hooks/useSocket";
 import { useRouter } from "next/router";
@@ -14,7 +14,7 @@ interface Props {
 }
 interface InternalProps extends Props {
   senderId: string;
-  messegeHistory?: Messege[];
+  messegeHistory?: MessegeWithUser[];
 }
 const MessegeComponent = ({ roomId }: Props) => {
   const { data } = useSession();
@@ -40,7 +40,7 @@ const MessegeInternal = ({
   senderId,
   messegeHistory,
 }: InternalProps) => {
-  const [messeges, setMesseges] = useState<Messege[]>(messegeHistory || []);
+  const [messeges, setMesseges] = useState<MessegeWithUser[]>(messegeHistory || []);
   
   const socket = useSocket();
   const dynamicRoute = useRouter().asPath;
@@ -66,10 +66,10 @@ const MessegeInternal = ({
  
 
   return (
-    <section className="w-full min-h-screen flex flex-col align-middle justify-center">
-     <MessegeTextField senderId={senderId} roomId={roomId}></MessegeTextField>
+    <section className="w-full h-full flex flex-col justify-end">
+     <MessegeList className="h-full" messeges={messeges}></MessegeList>
+     <MessegeTextField className=" flex-none w-full" senderId={senderId} roomId={roomId}></MessegeTextField>
 
-     <MessegeList messeges={messeges}></MessegeList>
     </section>
   );
 };

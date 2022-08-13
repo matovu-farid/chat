@@ -1,40 +1,28 @@
-import { Session } from "inspector";
 import type { NextPage } from "next";
-import { useSession, signIn, signOut } from "next-auth/react";
-import { useEffect, useMemo, useState } from "react";
-import { trpc } from "../utils/trpc";
-import Link from "next/link";
+import { signOut } from "next-auth/react";
 
-interface User {
-  id: string;
-  name?: string | null | undefined;
-  email?: string | null | undefined;
-  image?: string | null | undefined;
-}
+import Link from "next/link";
+import useUser from "../hooks/useUser";
+
+
 const Home: NextPage = () => {
-  const { data, status } = useSession();
-  const user = useMemo(() => {
-    return data?.user;
-  }, [data]);
-  const [signedInUser, setSignedInUser] = useState<User | null>(null);
+ 
   const buttonClasses = "bg-blue-500 text-white py-2 px-4 rounded-md";
-  useEffect(() => {
-    if (user) setSignedInUser(user);
-  }, [user]);
-  const handleSignin = () => {
-    signIn();
-  };
+ 
+  
   const handleSignout = () => {
     signOut();
   };
   
+  const user = useUser()
+  
 
   return (
     <>
-      {status === "authenticated" ? (
+      { (
         <>
           <p>
-            You are signed in as {signedInUser?.name} with {signedInUser?.email}
+            You are signed in as {user.name} with {user.email}
           </p>
           <div className="flex gap-2">
             <Link href={"/room/new"} >
@@ -49,7 +37,7 @@ const Home: NextPage = () => {
             </button>
           </div>
         </>
-      ) : null}
+      ) }
     </>
   );
 };

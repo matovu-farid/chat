@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  height: 100vh;
+}
+#__next{
+  height: 80%;
+}
+
 /* Position and sizing of burger button */
 .bm-burger-button {
   position: fixed;

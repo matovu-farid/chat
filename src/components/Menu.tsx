@@ -6,11 +6,11 @@ import { useQuery } from "react-query";
 import { trpc } from "../utils/trpc";
 import { io, Socket } from "socket.io-client";
 import useSocket from "../hooks/useSocket";
+import useUser from "../hooks/useUser";
 
 
 const Menu = () => {
-  const session = useSession();
-  const user = session.data?.user;
+  const user = useUser();
 
   return <>{user ? <MenuInternal userId={user.id}></MenuInternal> : null}</>;
 };

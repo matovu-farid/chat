@@ -31,6 +31,9 @@ export async function getMesseges(roomId: string,prisma:Prisma) {
 		where: {
 			roomId: roomId,
 		},
+		include: {
+			sender: true
+		}
 	});
 }
 

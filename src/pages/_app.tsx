@@ -9,6 +9,7 @@ import SocketProvider from "../contexts/socket";
 
 import '../styles/globals.css'
 import Navbar from "../components/Navbar";
+import UserProvider from "../contexts/user";
 
 const MyApp: AppType = ({
   Component,
@@ -17,9 +18,12 @@ const MyApp: AppType = ({
   return (
     <SessionProvider session={session}>
       <SocketProvider>
+        <UserProvider>
           <Navbar></Navbar>
           <Menu></Menu>
           <Component {...pageProps} />
+        </UserProvider>
+        
       </SocketProvider>
     </SessionProvider>
   );

@@ -1,5 +1,5 @@
-import {z} from "zod";
-import { ZUser } from "./User";
+import { Message, User } from "@prisma/client";
+import {z, ZodMap} from "zod";
 
 export const ZMessege = z.object({
   id: z.optional(z.string()),
@@ -7,13 +7,11 @@ export const ZMessege = z.object({
  roomId: z.string(),
  senderId: z.string(),
 })
-export const ZMessegeWithUser=z.object({
-  id: z.optional(z.string()),
-  createdAt: z.string(),
-  text: z.string(),
-  sender: ZUser
-})
+
+
 
 type Messege = z.infer<typeof ZMessege>;
-export type MessegeWithUser = z.infer<typeof ZMessegeWithUser>
+export type MessegeWithUser = Message & {
+  sender: User
+}
 export default Messege;
