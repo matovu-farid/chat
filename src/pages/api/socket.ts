@@ -1,9 +1,6 @@
 import { Server } from "socket.io";
-import { getRooms, saveMessege } from "../../prisma_fuctions/room";
-import { Prisma, prisma } from "../../server/db/client";
+import {  saveMessege } from "../../prisma_fuctions/room";
 import Room from "../../Interfaces/Room";
-import { z } from "zod";
-import Messege from "../../Interfaces/Messege";
 
 
 export default function SocketHandler(_: any, res: any) {
@@ -13,7 +10,6 @@ export default function SocketHandler(_: any, res: any) {
     return;
   }
   const io = new Server(res.socket.server);
-  io.on("connect", (_) => {});
   io.on("connect", (socket) => {
     socket.emit(
       "serverMessege",

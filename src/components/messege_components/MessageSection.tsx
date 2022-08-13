@@ -8,24 +8,30 @@ import useSocket from "../../hooks/useSocket";
 import { useRouter } from "next/router";
 import MessegeTextField from "./MessegeTextField";
 import MessegeList from "./MessegeList";
+import useUser from "../../hooks/useUser";
 
 interface Props {
   roomId: string;
 }
 interface InternalProps extends Props {
   senderId: string;
-  messegeHistory?: MessegeWithUser[];
+  messegeHistory: MessegeWithUser[];
 }
 const MessegeComponent = ({ roomId }: Props) => {
-  const { data } = useSession();
-  const user = data?.user;
+  const user = useUser()
+  const [messegeHistory,setMessegeHistory] = useState< MessegeWithUser[]>([])
 
-  const { data: messegeHistory } = trpc.useQuery([
+  const { data: messegeHistoryFetched,status } = trpc.useQuery([
     "message.getMesseges",
     roomId,
   ]);
+  useEffect(()=>{
+    if(status==="success" &&  messegeHistoryFetched){
+      setMessegeHistory(messegeHistoryFetched)
+    }
+  },[status,roomId])
 
-  return user ? (
+  return status ==="success" ? (
     <MessegeInternal
       messegeHistory={messegeHistory}
       roomId={roomId}
@@ -40,10 +46,14 @@ const MessegeInternal = ({
   senderId,
   messegeHistory,
 }: InternalProps) => {
-  const [messeges, setMesseges] = useState<MessegeWithUser[]>(messegeHistory || []);
+  const [messeges, setMesseges] = useState<MessegeWithUser[]>([]);
+  
   
   const socket = useSocket();
   const dynamicRoute = useRouter().asPath;
+  useEffect(()=>{
+    setMesseges(messegeHistory)
+  },[messegeHistory.length])
   useEffect(() => {
     setMesseges(messegeHistory || []); // When the dynamic route change reset the state
   }, [dynamicRoute]);

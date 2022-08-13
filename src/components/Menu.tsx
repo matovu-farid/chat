@@ -1,10 +1,7 @@
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React, { useEffect, useMemo } from "react";
 import { slide as MenuComponent } from "react-burger-menu";
-import { useQuery } from "react-query";
 import { trpc } from "../utils/trpc";
-import { io, Socket } from "socket.io-client";
 import useSocket from "../hooks/useSocket";
 import useUser from "../hooks/useUser";
 
