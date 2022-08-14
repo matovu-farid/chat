@@ -11,6 +11,7 @@ import MessegeList from "./MessegeList";
 import useUser from "../../hooks/useUser";
 import { createPortal } from "react-dom";
 import Modal from "../Modal";
+import { AiFillPlusCircle } from "react-icons/ai";
 
 interface Props {
   roomId: string;
@@ -43,11 +44,14 @@ const MessegeComponent = ({ roomId }: Props) => {
       socket.removeAllListeners();
     };
   }, [roomId, user.id]);
-
+  const handleOnClick = () => {};
 
   return (
     <section className="w-full h-full flex flex-col justify-end">
-      <Modal></Modal>
+      <Modal>
+          <AiFillPlusCircle onClick={handleOnClick} className="text-4xl z-50 text-gray-900 hover:cursor-pointer hover:text-purple-600 active:text-purple-600 transition-colors  fixed left-6 top-1/4"></AiFillPlusCircle>
+
+      </Modal>
       <MessegeList className="h-full" messeges={messeges}></MessegeList>
       <MessegeTextField
         className=" flex-none w-full"

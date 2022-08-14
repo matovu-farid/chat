@@ -13,7 +13,7 @@ const Button = ({ href, onClick, children,className='' }: Props) => {
       {href && (
         <Link href={href}>
           <a
-            className={className + "bg-blue-500 text-white rounded-md shadow-none no-underline active:bg-slate-600 py-2 px-4"}
+            className={className + " bg-blue-500 text-white rounded-md shadow-none no-underline active:bg-slate-600 py-2 px-4"}
           >
             {children}
           </a>
@@ -22,7 +22,7 @@ const Button = ({ href, onClick, children,className='' }: Props) => {
       {onClick && (
         <button
           onClick={() => onClick()}
-          className={className + "bg-blue-500 text-white rounded-md shadow-noneactive:bg-slate-600 py-2 px-4"}
+          className={className + " bg-blue-500 text-white rounded-md shadow-noneactive:bg-slate-600 py-2 px-4"}
         >
           {children}
         </button>
