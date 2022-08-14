@@ -9,6 +9,8 @@ import { useRouter } from "next/router";
 import MessegeTextField from "./MessegeTextField";
 import MessegeList from "./MessegeList";
 import useUser from "../../hooks/useUser";
+import { createPortal } from "react-dom";
+import Modal from "../Modal";
 
 interface Props {
   roomId: string;
@@ -42,8 +44,10 @@ const MessegeComponent = ({ roomId }: Props) => {
     };
   }, [roomId, user.id]);
 
+
   return (
     <section className="w-full h-full flex flex-col justify-end">
+      <Modal></Modal>
       <MessegeList className="h-full" messeges={messeges}></MessegeList>
       <MessegeTextField
         className=" flex-none w-full"
