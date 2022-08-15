@@ -21,13 +21,14 @@ const TextMessege = ({messege}: Props) => {
   };
   const { time, date } = getTime(createdAt);
   const isNotMyMessege = user.id != messege.sender.id
+  const messegeColor = (isNotMyMessege)?"bg-white": "bg-gray-600 text-white"
   return (
     
 
       <div className={(isNotMyMessege)?"": "justify-end" +" flex w-full"}>
     
 
-    <div className="rounded-2xl max-w-sm w-4/5 text-gray-900 shadow-lg">
+    <div className={messegeColor +" rounded-2xl max-w-sm w-4/5 shadow-lg  " }>
       <p className="py-2 px-3 text-sm">{text}</p>
       <div className="p-1 px-3 text-xs flex justify-between">
         <p>{senderName}</p>

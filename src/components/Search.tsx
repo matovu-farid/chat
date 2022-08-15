@@ -52,6 +52,7 @@ const Search = () => {
         <input
           type="text"
           value={search}
+          placeholder="search user..."
           onChange={(e) => setSearch(e.target.value)}
           className=" border-none p-2 text-gray-900 rounded-lg outline-none"
         />
