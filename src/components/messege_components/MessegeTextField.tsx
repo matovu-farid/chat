@@ -24,10 +24,10 @@ const MessegeTextField = ({ roomId, senderId, className }: Props) => {
 
   return (
     <div className={className + " py-3"}>
-      <div className="flex justify-center">
+      <div className="flex justify-center gap-2">
         <input
           type="text"
-          className=" w-full max-w-md py-2 px-3 border-none bg-purple-400 rounded-lg"
+          className=" w-full max-w-md py-2 px-3 border-none bg-gray-700 outline-none border-none text-white rounded-lg"
           value={messege}
           onChange={(e) => setMessege(e.target.value)}
         />

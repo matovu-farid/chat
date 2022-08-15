@@ -5,12 +5,8 @@ import Modal from "./Modal";
 
 const Search = () => {
   const [search, setSearch] = useState("");
-  const { data: users } = trpc.useQuery(["user.searchUser", search]);
+  const { data: users,isLoading } = trpc.useQuery(["user.searchUser", search]);
   const utils = trpc.useContext();
-
-  const handleSearch = () => {
-    utils.invalidateQueries(["user.searchUser"]);
-  };
 
   return (
     <div className=" flex gap-2 fixed top-10 right-[250px]">
@@ -27,7 +23,7 @@ const Search = () => {
               <ul className="bg-white text-gray-900 rounded-lg p-2">
                 {users?.map((user) => (
                   <li
-                    className="py-1 px-2 hover:text-purple-700 active:text-purple-700 "
+                    className="transition-colors py-1 px-2 cursor-pointer hover:bg-gray-900 hover:text-white active:text-white"
                     key={user.id}
                   >
                     {user.name}
@@ -38,17 +34,16 @@ const Search = () => {
 
             {search && users && users.length === 0 && (
               <p className="bg-white text-gray-900 rounded-lg p-2">
-                No users found
+                {
+
+                (isLoading)?"Loading...":"No users found"
+                }
               </p>
             )}
           </div>
      
       </div>
-      <div>
-        <Button className="flex-grow-0" onClick={handleSearch}>
-          Search
-        </Button>
-      </div>
+     
     </div>
   );
 };
