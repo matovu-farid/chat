@@ -17,19 +17,13 @@ interface Props {
 const MenuInternal = ({ userId }: Props) => {
   const { data: rooms, isFetched} = trpc.useQuery(["room.getRooms", userId]);
   const socket = useSocket()
- 
-  
-    const connectToRooms=async ()=>{
-     
-      socket.emit("joinRooms",rooms)
-    }
+
    
     useEffect(()=>{
-      if(isFetched){
-        console.log(rooms)
-        connectToRooms()
-      }
-    },[isFetched])
+    
+        socket.emit("joinRooms",userId)
+      
+    },)
   
   
   return (

@@ -88,7 +88,8 @@ export async function getUsersInRoom(roomId: string, prisma: Prisma) {
   return users;
 }
 export async function addToRoom(userRoomSession: UserRoom, prisma: Prisma) {
-  prisma.room.update({
+  console.log(userRoomSession)
+   await prisma.room.update({
     where: {
       id: userRoomSession.roomId,
     },

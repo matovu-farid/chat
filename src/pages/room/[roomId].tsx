@@ -1,26 +1,28 @@
-import { useRouter } from 'next/router'
-import React from 'react'
-import MessegeComponent from '../../components/messege_components/MessageSection'
+import { GetStaticProps } from "next";
+import { useRouter } from "next/router";
+import React from "react";
+import Loading from "../../components/Loading";
+import MessegeSection from "../../components/messege_components/MessageSection";
 
 const RoomPage = () => {
-  const router = useRouter()
-  const {roomId} = router.query
-  return (
-    (typeof roomId === "string")?
+  const router = useRouter();
+  const { roomId } = router.query;
+
+  return typeof roomId === "string" ? (
     <RoomPageInternal roomId={roomId}></RoomPageInternal>
-    : null
-  )
-}
+  ) : (
+    <Loading></Loading>
+  );
+};
 interface Props {
-  roomId: string
+  roomId: string;
 }
-const RoomPageInternal=({roomId}:Props)=>{
-  return <div className='h-full'>
-    <MessegeComponent roomId={roomId}></MessegeComponent>
-    
-  </div>
+const RoomPageInternal = ({ roomId }: Props) => {
+  return (
+    <div className="h-full">
+      <MessegeSection roomId={roomId}></MessegeSection>
+    </div>
+  );
+};
 
-}
-
-
-export default RoomPage
+export default RoomPage;

@@ -22,7 +22,10 @@ const TextMessege = ({messege}: Props) => {
   const { time, date } = getTime(createdAt);
   const isNotMyMessege = user.id != messege.sender.id
   return (
-    <div className="flex w-full justify-end">
+    
+
+      <div className={(isNotMyMessege)?"": "justify-end" +" flex w-full"}>
+    
 
     <div className="rounded-2xl max-w-sm w-4/5 text-gray-900 shadow-lg">
       <p className="py-2 px-3 text-sm">{text}</p>

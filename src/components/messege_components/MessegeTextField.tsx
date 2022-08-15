@@ -20,6 +20,7 @@ const MessegeTextField = ({ roomId, senderId, className }: Props) => {
     };
     if (room) socket.emit("sendMessege", room, createdMessege);
     else throw "No room found";
+    setMessege("")
   };
 
   return (
@@ -27,6 +28,7 @@ const MessegeTextField = ({ roomId, senderId, className }: Props) => {
       <div className="flex justify-center gap-2">
         <input
           type="text"
+          placeholder="messege...."
           className=" w-full max-w-md py-2 px-3 border-none bg-gray-700 outline-none border-none text-white rounded-lg"
           value={messege}
           onChange={(e) => setMessege(e.target.value)}

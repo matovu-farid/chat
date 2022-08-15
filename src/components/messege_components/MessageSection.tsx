@@ -17,17 +17,20 @@ interface Props {
   roomId: string;
 }
 
-const MessegeComponent = ({ roomId }: Props) => {
+const MessegeSection = ({ roomId }: Props) => {
   const user = useUser();
 
-  const [messeges, setMesseges] = useState<MessegeWithUser[]>([]);
+   const [messeges, setMesseges] = useState<MessegeWithUser[]>([]);
 
-  const { data: messegeHistory, isFetched,status } = trpc.useQuery([
-    "message.getMesseges",
-    roomId,
-  ]);
+  const {
+    data: messegeHistory,
+    isFetched,
+    status,
+    isLoading
+  } = trpc.useQuery(["message.getMesseges", roomId]);
   const socket = useSocket();
-  const pathname = useRouter().asPath
+  const pathname = useRouter().asPath;
+  
 
   useEffect(() => {
     if (isFetched && messegeHistory) {
@@ -45,12 +48,15 @@ const MessegeComponent = ({ roomId }: Props) => {
     };
   }, [roomId, user.id]);
   const handleOnClick = () => {};
+  if(isLoading) return <Loading></Loading>
 
   return (
     <section className="w-full h-full flex flex-col justify-end">
       <Modal>
-          <AiFillPlusCircle onClick={handleOnClick} className="text-4xl z-50 text-gray-900 hover:cursor-pointer hover:text-purple-600 active:text-purple-600 transition-colors  fixed left-6 top-1/4"></AiFillPlusCircle>
-
+        <AiFillPlusCircle
+          onClick={handleOnClick}
+          className="text-4xl z-50 text-gray-900 hover:cursor-pointer hover:text-purple-600 active:text-purple-600 transition-colors  fixed left-6 top-1/4"
+        ></AiFillPlusCircle>
       </Modal>
       <MessegeList className="h-full" messeges={messeges}></MessegeList>
       <MessegeTextField
@@ -62,5 +68,4 @@ const MessegeComponent = ({ roomId }: Props) => {
   );
 };
 
-
-export default MessegeComponent;
+export default MessegeSection;
