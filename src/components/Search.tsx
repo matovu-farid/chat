@@ -6,6 +6,11 @@ import Modal from "./Modal";
 import User from "../Interfaces/User";
 import { useRouter } from "next/router";
 import Paper from "./Paper";
+import ConfirmBox from "./ConfirmBox";
+interface UserData {
+  user: User|null,
+  isShown: boolean
+}
 
 const Search = () => {
   const [search, setSearch] = useState("");
@@ -13,25 +18,36 @@ const Search = () => {
   const router = useRouter()
   const {roomId} = router.query
   const addToRoomMutation=trpc.useMutation(["room.addToRoom"])
-  const [showPopup,setShowPopup] = useState(false)
-  const onConfirm=(user:User)=>{
-    if( typeof roomId === 'string' )
+  const [userData,setUserData]= useState<UserData>({
+    user:null,
+    isShown:false
+  })
+  
+  const handleConfirm=()=>{
+    const {user} = userData
+    if( typeof roomId === 'string' && user)
     addToRoomMutation.mutate({userId:user.id,roomId})
+    resetUserData()
+   
+  }
+  const resetUserData=()=>{
+    setUserData({
+      user:null,
+      isShown:false
+    })
   }
 
   const handleUserClicked=(user:User)=>{
    
-    setShowPopup(true)
+    setUserData({
+      isShown:true,
+      user
+    })
   }
 
   return (
     <div className=" flex gap-2 fixed top-10 right-[250px]">
-      {
-
-        (showPopup)&&(<Paper>
-          
-        </Paper>)
-      }
+      <ConfirmBox onCancel={resetUserData} className="top-[30%] left-[40%]" title="Add User" content={`Are you sure you want to add this user to the room?`} isShown={userData.isShown} onConfirm={handleConfirm}></ConfirmBox>
       <div>
         <input
           type="text"
@@ -43,7 +59,7 @@ const Search = () => {
 
         <div>
           {users && users.length > 0 && (
-            <ul className="bg-white text-gray-900 rounded-lg p-2 shadow-md">
+            <ul className="bg-white text-gray-900 flex flex-col rounded-lg p-2 shadow-md">
               {users?.map((user) => (
                 
                 <button
@@ -51,7 +67,7 @@ const Search = () => {
                   className="transition-colors my-0 px-2 rounded-lg cursor-pointer hover:bg-gray-900 hover:text-white active:text-white"
                   key={user.id}
                 >
-                  <div className="flex py-1" >
+                  <div className="flex py-1 justify-start" >
                     <div className="w-[90%]">{user.name}</div>
                     <div className="w-[10%] hover:bg-green-600 rounded-sm flex flex-col justify-center items-center">
                       <AiFillPlusCircle className=""></AiFillPlusCircle>

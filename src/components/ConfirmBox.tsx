@@ -6,26 +6,26 @@ interface Props {
   content?: string;
   title?: string;
   className?: string;
-  isShown: boolean;
+  isShown?: boolean;
 }
 
 const ConfirmBox = ({
   onConfirm,
-  onCancel,
+  onCancel=()=>{},
   content,
   title,
   className,
-  isShown,
+  isShown=false,
 }: Props) => {
   const buttonClasses =
-    "rounded-xl bg-white text-blue-600 border-2 hover:invert transition-colors py-1 px-2";
+    "rounded-xl bg-white text-blue-600 border-2 border-blue-600 hover:bg-blue-600 hover:text-white transition-colors py-1 px-2";
   return (
-    isShown && (
-      <div className={className + "  "}>
+    isShown?(
+      <div className={className + "  fixed z-10"}>
         <Paper className="p-3">
           {title && <h3 className="py-2 px-3">{title}</h3>}
           {content && <h4 className="py-2 px-3">{content}</h4>}
-          <div className="py-1 flex gap-2 justify-end">
+          <div className="py-1 flex gap-2 justify-end ">
             {onCancel && (
               <button
                 onClick={() => onCancel()}
@@ -42,7 +42,7 @@ const ConfirmBox = ({
           </div>
         </Paper>
       </div>
-    )
+    ):null
   );
 };
 
