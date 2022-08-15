@@ -1,7 +1,8 @@
 import { createRouter } from "./context";
 import { z } from "zod";
 import { ZMessege } from "../../Interfaces/Messege";
-import { createMessege, deleteMessege, getMesseges } from "../../prisma_fuctions/messege";
+import { createMessege, deleteMessege, getMesseges, getPaginatedMesseges } from "../../prisma_fuctions/messege";
+import { ZRoompage } from "../../Interfaces/RoomPage";
 
 export const messageRouter = createRouter()
   .query("createMessege", {
@@ -14,6 +15,12 @@ export const messageRouter = createRouter()
     input: z.string(),
     async resolve({ input:roomId,ctx:{prisma} }) {
       return await getMesseges(roomId,prisma);
+    },
+  })
+  .query("getPaginatedMesseges", {
+    input: ZRoompage,
+    async resolve({ input:{roomId,page},ctx:{prisma} }) {
+      return await getPaginatedMesseges({roomId,page},prisma);
     },
   })
   .query("deleteMessege", {

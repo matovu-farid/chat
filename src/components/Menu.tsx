@@ -31,7 +31,7 @@ const MenuInternal = ({ userId }: Props) => {
       {rooms ? (
         rooms.map((room) => (
           <li key={room.id} className="menu-item">
-            <Link href={`/room/${room.id}`}>
+            <Link prefetch as={`/room/${room.id}`} href='/room/[roomId]'>
               <a className="w-full py-2" >{room.name}</a>
             </Link>
           </li>

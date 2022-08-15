@@ -28,6 +28,7 @@ const MessegeList = ({  className,roomId }: Props) => {
 
   const ref = useRef<HTMLDivElement>(null)
   const scrollToBottom=()=>{
+    
     ref.current?.scrollIntoView({behavior:"smooth"})
   }
   useEffect(() => {
