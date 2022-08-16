@@ -1,5 +1,5 @@
 import User from "../Interfaces/User";
-import { Prisma, prisma } from "../server/db/client";
+import { Prisma } from "../server/db/client";
 
 export async function searchUsers(term: string, prisma: Prisma){
   // const users =await prisma.$queryRaw`SELECT * FROM User WHERE SIMILARITY(name, '${term}') > 0.1;`

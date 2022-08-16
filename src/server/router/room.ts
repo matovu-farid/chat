@@ -3,7 +3,6 @@ import { z } from "zod";
 import { ZRoom } from "../../Interfaces/Room";
 import { addToRoom, createroom, getRoom, getRooms, getUsersInRoom } from "../../prisma_fuctions/room";
 import { ZUserRoomSession } from "../../Interfaces/UserRoomSession";
-import { resolve } from "path";
 
 export const roomRouter = createRouter()
   .mutation("createRoom", {

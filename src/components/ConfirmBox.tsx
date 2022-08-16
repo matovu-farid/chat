@@ -1,8 +1,8 @@
 import React from "react";
 import Paper from "./Paper";
 interface Props {
-  onConfirm: Function;
-  onCancel?: Function;
+  onConfirm: ()=>void;
+  onCancel?: ()=>void;
   content?: string;
   title?: string;
   className?: string;
@@ -11,7 +11,7 @@ interface Props {
 
 const ConfirmBox = ({
   onConfirm,
-  onCancel=()=>{},
+  onCancel,
   content,
   title,
   className,

@@ -3,7 +3,7 @@ import { io, Socket } from "socket.io-client";
 
 
 
-let socketCtx = createContext(io())
+const socketCtx = createContext(io())
 
 import React from 'react'
 declare global {

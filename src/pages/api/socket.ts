@@ -1,6 +1,5 @@
 import { Server } from "socket.io";
 import { saveMessege } from "../../prisma_fuctions/room";
-import Room from "../../Interfaces/Room";
 import {prisma} from '../../server/db/client'
 
 export default function SocketHandler(_: any, res: any) {

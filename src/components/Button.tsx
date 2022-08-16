@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 interface Props {
   href?: string;
-  onClick?: Function;
+  onClick?: ()=>void;
   children: React.ReactNode;
   className?: string;
 }
