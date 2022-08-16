@@ -1,7 +1,7 @@
 import { z } from "zod";
 export const ZRoompage = z.object({
   roomId: z.string(),
-  page: z.number()
+  cursor: z.optional(z.string()),
 });
 type Roompage = z.infer<typeof ZRoompage>
 export default Roompage

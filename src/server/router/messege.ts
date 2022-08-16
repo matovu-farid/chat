@@ -19,8 +19,8 @@ export const messageRouter = createRouter()
   })
   .query("getPaginatedMesseges", {
     input: ZRoompage,
-    async resolve({ input:{roomId,page},ctx:{prisma} }) {
-      return await getPaginatedMesseges({roomId,page},prisma);
+    async resolve({ input:{roomId,cursor},ctx:{prisma} }) {
+      return await getPaginatedMesseges({roomId,cursor},prisma);
     },
   })
   .query("deleteMessege", {

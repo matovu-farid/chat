@@ -36,20 +36,30 @@ export async function getMesseges(roomId: string, prisma: Prisma) {
     },
   });
 }
-export function getPaginatedMesseges(roomPage: Roompage, prisma: Prisma) {
-  const { roomId, page } = roomPage;
-	const messegesShown = 12
-  return  prisma.message.findMany({
+export async function getPaginatedMesseges(roomPage: Roompage, prisma: Prisma) {
+  const { roomId, cursor } = roomPage;
+  const limit = 8;
+  const messegeHistory = await prisma.message.findMany({
     where: {
       roomId: roomId,
     },
     include: {
       sender: true,
     },
-    take: messegesShown,
+    take: limit + 1,
     orderBy: {
       createdAt: "desc",
     },
-    skip: page * messegesShown,
+    cursor: cursor
+      ? {
+          id: cursor,
+        }
+      : undefined,
   });
+  let nextCursor: string | undefined;
+  if (messegeHistory.length > limit) {
+    nextCursor = messegeHistory.pop()?.id;
+  }
+  const reversedMesseges = messegeHistory.reverse()
+  return { messegeHistory, nextCursor };
 }

@@ -13,6 +13,7 @@ const MessegeTextField = ({ roomId, senderId, className }: Props) => {
   const socket = useSocket();
   const [messege, setMessege] = useState("");
   const handleSend = () => {
+    if(messege=== '') return
     const createdMessege: Messege = {
       text: messege,
       roomId,
@@ -22,6 +23,7 @@ const MessegeTextField = ({ roomId, senderId, className }: Props) => {
     else throw "No room found";
     setMessege("")
   };
+
 
   return (
     <div className={className + " py-3"}>
