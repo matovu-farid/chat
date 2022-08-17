@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
+import useRooms from "../../hooks/useRooms";
 import useSocket from "../../hooks/useSocket";
 import Messege from "../../Interfaces/Messege";
-import { trpc } from "../../utils/trpc";
 import Button from "../Button";
 interface Props {
   roomId: string;
@@ -9,7 +9,7 @@ interface Props {
   className?: string;
 }
 const MessegeTextField = ({ roomId, senderId, className }: Props) => {
-  const { data: room } = trpc.useQuery(["room.getRoom", roomId]);
+  const { data: room } = useRooms();
   const socket = useSocket();
   const [messege, setMessege] = useState("");
   const handleSend = () => {

@@ -1,8 +1,7 @@
-import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import useSocket from "../../hooks/useSocket";
 import useUser from "../../hooks/useUser";
-import Messege, { MessegeWithUser } from "../../Interfaces/Messege";
+import { MessegeWithUser } from "../../Interfaces/Messege";
 import { trpc } from "../../utils/trpc";
 import Loading from "../Loading";
 import TextMessege from "./TextMessege";
@@ -14,14 +13,22 @@ interface Props {
 }
 const MessegeList = ({ className, roomId }: Props) => {
   const [messeges, setMesseges] = useState<MessegeWithUser[]>([]);
-  const { ref: scrollRef, inView, entry } = useInView();
+  const { ref: scrollRef, inView } = useInView();
   const ref = useRef<HTMLDivElement>(null);
   const user = useUser();
   const socket = useSocket();
   const [loaded, setLoaded] = useState(false);
-  const { data, isFetched, status, isLoading, fetchNextPage } =
+  const {  isLoading, fetchNextPage } =
     trpc.useInfiniteQuery(["message.getPaginatedMesseges", { roomId }], {
       getNextPageParam: (lastpage) => lastpage.nextCursor,
+      onSuccess(data) {
+
+        let totalHistory: MessegeWithUser[] = [];
+        data?.pages.forEach(({ messegeHistory }) => {
+          totalHistory = [...messegeHistory, ...totalHistory];
+        });
+        setMesseges(totalHistory);
+      },
     });
 
   const scrollToBottom = () => {
@@ -39,15 +46,7 @@ const MessegeList = ({ className, roomId }: Props) => {
       fetchNextPage();
     }
   }, [inView]);
-  useEffect(() => {
-    if (isFetched) {
-      let totalHistory: MessegeWithUser[] = [];
-      data?.pages.forEach(({ messegeHistory }) => {
-        totalHistory = [...messegeHistory, ...totalHistory];
-      });
-      setMesseges(totalHistory);
-    }
-  }, [status, roomId, data?.pages.length]);
+
 
   useEffect(() => {
     socket.on("messege", (messegeString) => {

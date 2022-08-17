@@ -17,10 +17,14 @@ const CreateRoom = () => {
 
   const mutation = trpc.useMutation("room.createRoom");
   const {mutate: createRoom} = useCreateRoom()
+  const resetInputs=()=>{
+    setName(""); setPath(""),setImage("")
+  }
 
   const handleSend = () => {
+    if(name===""|| path==="") return
     const userId = session.data?.user?.id;
-    if (userId) {
+    if (userId ) {
       const room = {
         name,
         path,
@@ -29,6 +33,7 @@ const CreateRoom = () => {
       };
        createRoom(room);
     }
+    resetInputs()
   };
   const inputStyles = "py-2 px-3 rounded-md border-gray-900 border";
   const labelStyles = "text-gray-900";
@@ -43,14 +48,6 @@ const CreateRoom = () => {
           type="text"
           value={name}
           id={name}
-        />
-        <input
-          className={inputStyles}
-          placeholder="path"
-          onChange={(e) => setPath(e.target.value)}
-          type="text"
-          value={path}
-          id={path}
         />
         <input
           className={inputStyles}
