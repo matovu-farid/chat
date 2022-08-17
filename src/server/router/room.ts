@@ -1,5 +1,5 @@
 import { createRouter } from "./context";
-import { z } from "zod";
+import { z, ZodType } from "zod";
 import { ZRoom } from "../../Interfaces/Room";
 import { addToRoom, createroom, getRoom, getRooms, getUsersInRoom } from "../../prisma_fuctions/room";
 import { ZUserRoomSession } from "../../Interfaces/UserRoomSession";

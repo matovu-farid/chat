@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
-import Link from "next/link";
-import React, { FormEvent, useState } from "react";
+import React, {  useState } from "react";
 import Button from "../../components/Button";
+import useCreateRoom from "../../prisma_fuctions/useCreateRoom";
 import { trpc } from "../../utils/trpc";
 
 const CreateRoom = () => {
@@ -16,17 +16,18 @@ const CreateRoom = () => {
   };
 
   const mutation = trpc.useMutation("room.createRoom");
+  const {mutate: createRoom} = useCreateRoom()
 
   const handleSend = () => {
-    const creator = session.data?.user?.id;
-    if (creator) {
+    const userId = session.data?.user?.id;
+    if (userId) {
       const room = {
         name,
         path,
         image,
-        creator,
+        userId,
       };
-      const result = mutation.mutate(room);
+       createRoom(room);
     }
   };
   const inputStyles = "py-2 px-3 rounded-md border-gray-900 border";

@@ -1,9 +1,9 @@
 import Link from "next/link";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { slide as MenuComponent } from "react-burger-menu";
-import { trpc } from "../utils/trpc";
 import useSocket from "../hooks/useSocket";
 import useUser from "../hooks/useUser";
+import useRooms from "../hooks/useRooms";
 
 
 const Menu = () => {
@@ -15,7 +15,7 @@ interface Props {
   userId: string;
 }
 const MenuInternal = ({ userId }: Props) => {
-  const { data: rooms, isFetched} = trpc.useQuery(["room.getRooms", userId]);
+  const { data: rooms} = useRooms()
   const socket = useSocket()
 
    

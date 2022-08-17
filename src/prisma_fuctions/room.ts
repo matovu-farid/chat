@@ -1,5 +1,6 @@
-import { PrismaPromise, Room } from "@prisma/client";
+import { PrismaPromise, } from "@prisma/client";
 import Messege, { MessegeWithUser } from "../Interfaces/Messege";
+import Room from "../Interfaces/Room";
 import RoomUpdater from "../Interfaces/Roomupdator";
 import UserRoom from "../Interfaces/UserRoomSession";
 import { Prisma, prisma } from "../server/db/client";
