@@ -23,7 +23,7 @@ const MenuInternal = ({ userId }: Props) => {
     
         socket.emit("joinRooms",userId)
       
-    },)
+    },[])
   
   
   return (

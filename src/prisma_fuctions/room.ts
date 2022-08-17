@@ -1,6 +1,5 @@
-import { PrismaPromise } from "@prisma/client";
+import { PrismaPromise, Room } from "@prisma/client";
 import Messege, { MessegeWithUser } from "../Interfaces/Messege";
-import Room from "../Interfaces/Room";
 import RoomUpdater from "../Interfaces/Roomupdator";
 import UserRoom from "../Interfaces/UserRoomSession";
 import { Prisma, prisma } from "../server/db/client";
@@ -10,14 +9,15 @@ export async function createroom(room: Room, prisma: Prisma) {
       name: room.name,
       path: room.path,
       image: room.image,
+      userId: room.userId,
       members: {
         connect: {
-          id: room.creator,
+          id: room.userId,
         },
       },
       admins: {
         connect: {
-          id: room.creator,
+          id: room.userId,
         },
       },
     },

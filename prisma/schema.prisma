@@ -57,6 +57,7 @@ model User {
     rooms         Room[]    @relation("member")
     ownedRooms    Room[]    @relation("admin")
     sentMessages  Message[] @relation("send")
+    Room          Room[]
 }
 
 model Message {
@@ -78,6 +79,8 @@ model Room {
     messages Message[]
     members  User[]    @relation("member")
     admins   User[]    @relation("admin")
+    creator  User      @relation(fields: [userId], references: [id])
+    userId   String
 }
 
 model VerificationToken {
