@@ -19,7 +19,7 @@ export const serverSchema = z.object({
   AUTH0_CLIENT_SECRET: z.string(),
   AUTH0_DOMAIN: z.string(),
   AUTH0_CLIENT_ISSUER: z.string().url(),
-  SECRET: z.string(),
+  secret: z.string(),
   EMAIL_FROM: z.string(),
 
 });
