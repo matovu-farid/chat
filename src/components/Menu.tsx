@@ -5,7 +5,6 @@ import useSocket from "../hooks/useSocket";
 import useUser from "../hooks/useUser";
 import useRooms from "../hooks/useRooms";
 
-
 const Menu = () => {
   const user = useUser();
 
@@ -15,24 +14,25 @@ interface Props {
   userId: string;
 }
 const MenuInternal = ({ userId }: Props) => {
-  const { data: rooms} = useRooms()
-  const socket = useSocket()
+  const { data: rooms } = useRooms();
+  const socket = useSocket();
 
-   
-    useEffect(()=>{
-    
-        socket.emit("joinRooms",userId)
-      
-    },[])
-  
-  
+  useEffect(() => {
+    socket.emit("joinRooms", userId);
+  }, []);
+
   return (
     <MenuComponent>
+      <li className="menu-item">
+        <Link href="/user">
+          <a className="w-full py-2">Profile Page</a>
+        </Link>
+      </li>
       {rooms ? (
         rooms.map((room) => (
           <li key={room.id} className="menu-item">
-            <Link prefetch as={`/room/${room.id}`} href='/room/[roomId]'>
-              <a className="w-full py-2" >{room.name}</a>
+            <Link as={`/room/${room.id}`} href="/room/[roomId]">
+              <a className="w-full py-2">{room.name}</a>
             </Link>
           </li>
         ))

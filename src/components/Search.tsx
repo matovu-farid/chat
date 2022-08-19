@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { trpc } from "../utils/trpc";
 import { AiFillPlusCircle } from "react-icons/ai";
-import Button from "./Button";
-import Modal from "./Modal";
+
 import User from "../Interfaces/User";
 import { useRouter } from "next/router";
-import Paper from "./Paper";
 import ConfirmBox from "./ConfirmBox";
 interface UserData {
   user: User|null,
@@ -14,7 +12,7 @@ interface UserData {
 
 const Search = () => {
   const [search, setSearch] = useState("");
-  const { data: users, isLoading } = trpc.useQuery(["user.searchUser", search]);
+  const { data: users } = trpc.useQuery(["user.searchUser", search]);
   const router = useRouter()
   const {roomId} = router.query
   const addToRoomMutation=trpc.useMutation(["room.addToRoom"])
@@ -81,7 +79,7 @@ const Search = () => {
 
           {search && users && users.length === 0 && (
             <p className="bg-white text-gray-900 rounded-lg p-2">
-              {isLoading ? "Loading..." : "No users found"}
+             No users found
             </p>
           )}
         </div>

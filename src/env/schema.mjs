@@ -21,6 +21,10 @@ export const serverSchema = z.object({
   AUTH0_CLIENT_ISSUER: z.string().url(),
   secret: z.string(),
   EMAIL_FROM: z.string(),
+  STORAGE_BUCKET_NAME:z.string(),
+  STORAGE_PROJECT_ID:z.string(),
+  STORAGE_CLIENT_EMAIL:z.string(),
+  STORAGE_PRIVATE_KEY:z.string()
 
 });
 

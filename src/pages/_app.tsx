@@ -10,6 +10,9 @@ import SocketProvider from "../contexts/socket";
 import '../styles/globals.css'
 import Navbar from "../components/Navbar";
 import UserProvider from "../contexts/user";
+import "primereact/resources/themes/lara-light-indigo/theme.css";  //theme
+import "primereact/resources/primereact.min.css";                  //core css
+import "primeicons/primeicons.css";                                //icons
 
 const MyApp: AppType = ({
   Component,
@@ -24,6 +27,7 @@ const MyApp: AppType = ({
           <Component {...pageProps} />
         </UserProvider>
       </SocketProvider>
+
     </SessionProvider>
   );
 };
