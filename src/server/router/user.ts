@@ -32,4 +32,4 @@ export const userRouter = createRouter()
     async resolve({ input: userId, ctx: { prisma } }) {
       return await saveUser(userId, prisma);
     },
-  });
+  })

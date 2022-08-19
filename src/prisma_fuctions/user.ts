@@ -1,3 +1,4 @@
+import { ImageUpdater } from "../Interfaces/Image";
 import User, { UserUpdater } from "../Interfaces/User";
 import { Prisma } from "../server/db/client";
 
@@ -27,11 +28,35 @@ export function getUser(userId: string, prisma: Prisma) {
   });
 }
 export function saveUser(user: UserUpdater, prisma: Prisma) {
-
-  return prisma.user.create({
+  return prisma.user.update({
+    where: {
+      id: user.id,
+    },
     data: {
       name: user.name,
       email: user.email,
     },
+  });
+}
+export function saveImage({image, userId}:ImageUpdater, prisma: Prisma) {
+  console.log('image',image,'userId',userId)
+  return prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      image: image,
+    },
+  });
+}
+export function getImage(userId:string, prisma: Prisma) {
+  return prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      image:true
+    }
+   
   });
 }
