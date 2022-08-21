@@ -32,6 +32,12 @@ const MessegeTextField = ({ roomId, senderId, className }: Props) => {
     else throw "No room found";
     setMessege("")
   };
+  const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = event => {
+
+    if (event.key === 'Enter') {
+     handleSend()
+    }
+  };
 
 
   return (
@@ -39,6 +45,7 @@ const MessegeTextField = ({ roomId, senderId, className }: Props) => {
       <div className="flex justify-center gap-2">
         <TextField
           placeholder="messege...."
+          onKeyDown={handleKeyDown}
           value={messege}
           setValue={setMessege}
         />
