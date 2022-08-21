@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
+import useUser from "../../hooks/useUser";
 import Messege from "../../Interfaces/Messege";
 import socket from "../../utils/socket_init";
 import { trpc } from "../../utils/trpc";
@@ -14,6 +15,7 @@ const MessegeTextField = ({ roomId, senderId, className }: Props) => {
 
   const { data: room } = trpc.useQuery(["room.getRoom",roomId]);
   const [messege, setMessege] = useState("");
+  const user = useUser()
   const sendMessege= async(messege:Messege)=>{
     await fetch('/api/socket')
     
@@ -21,10 +23,11 @@ const MessegeTextField = ({ roomId, senderId, className }: Props) => {
   }
   const handleSend = () => {
     if(messege=== '') return
-    const createdMessege: Messege = {
+    const createdMessege = {
       text: messege,
       roomId,
       senderId,
+      sender: user
     };
 
   

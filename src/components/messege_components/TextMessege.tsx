@@ -30,7 +30,7 @@ const TextMessege = ({ messege }: Props) => {
           </div>
         ) : (
           <div className="p-1 px-3 text-xs flex justify-between">
-            <p>{user.name}</p>
+            <p>{messege.sender.name}</p>
             <p>now</p>
           </div>
         )}

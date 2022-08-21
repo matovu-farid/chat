@@ -57,6 +57,7 @@ export default function SocketHandler(_: any, res: any) {
       console.log('message',messege)
       
       io.in(room.path).emit("chat", JSON.stringify(messege));
+      delete messege.sender
 
       saveMessege(messege);
     });
