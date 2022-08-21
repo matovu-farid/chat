@@ -1,7 +1,6 @@
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { slide as MenuComponent } from "react-burger-menu";
-import useSocket from "../hooks/useSocket";
 import useUser from "../hooks/useUser";
 import useRooms from "../hooks/useRooms";
 
@@ -15,11 +14,8 @@ interface Props {
 }
 const MenuInternal = ({ userId }: Props) => {
   const { data: rooms } = useRooms();
-  const socket = useSocket();
 
-  useEffect(() => {
-    socket.emit("joinRooms", userId);
-  }, []);
+
 
   return (
     <MenuComponent>
