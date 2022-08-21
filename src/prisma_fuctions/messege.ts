@@ -1,4 +1,4 @@
-import Messege from "../Interfaces/Messege";
+import Messege, { PrivateMessege } from "../Interfaces/Messege";
 import Roompage from "../Interfaces/RoomPage";
 import { Prisma } from "../server/db/client";
 export async function createMessege(message: Messege, prisma: Prisma) {
@@ -18,6 +18,32 @@ export async function createMessege(message: Messege, prisma: Prisma) {
   });
   return await createMessege;
 }
+export async function createPrivateMessege(message: PrivateMessege, prisma: Prisma) {
+  const createMessege = prisma.privateMessege.create({
+    data: {
+      sender: {
+        connect: { id: message.senderId },
+      },
+      receiver: {
+        connect: {
+          id: message.receiverId,
+        },
+      },
+      text: message.text,
+    },
+    include: { sender: true },
+  });
+  return await createMessege;
+}
+export async function deletePrivateMessege(messageId: string, prisma: Prisma) {
+  const createMessege = prisma.privateMessege.delete({
+    where: {
+      id: messageId,
+    },
+  });
+  return await createMessege;
+}
+
 export async function deleteMessege(messageId: string, prisma: Prisma) {
   const createMessege = prisma.message.delete({
     where: {

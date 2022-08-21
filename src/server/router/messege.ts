@@ -1,7 +1,7 @@
 import { createRouter } from "./context";
 import { z } from "zod";
-import { ZMessege } from "../../Interfaces/Messege";
-import { createMessege, deleteMessege, getMesseges, getPaginatedMesseges } from "../../prisma_fuctions/messege";
+import { ZMessege, ZPrivateMessage } from "../../Interfaces/Messege";
+import { createMessege, createPrivateMessege, deleteMessege, deletePrivateMessege, getMesseges, getPaginatedMesseges } from "../../prisma_fuctions/messege";
 import { ZRoompage } from "../../Interfaces/RoomPage";
 
 export const messageRouter = createRouter()
@@ -28,4 +28,17 @@ export const messageRouter = createRouter()
     async resolve({ input:messegeId,ctx:{prisma} }) {
       return await deleteMessege(messegeId,prisma);
     },
-  });
+  })
+  .query("createPrivateMessege",{
+    input: ZPrivateMessage,
+    async resolve({ input:message,ctx:{prisma} }){
+      return createPrivateMessege(message,prisma)
+    }
+  })
+  .query("deletePrivateMessege", {
+    input: z.string(),
+    async resolve({ input:messegeId,ctx:{prisma} }) {
+      return await deletePrivateMessege(messegeId,prisma);
+    },
+  })
+  ;

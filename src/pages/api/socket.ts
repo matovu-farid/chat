@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import { saveMessege } from "../../prisma_fuctions/room";
 // import { saveMessege } from "../../prisma_fuctions/room";
 import { prisma } from "../../server/db/client";
+import { instrument } from "@socket.io/admin-ui";
 
 export default function SocketHandler(_: any, res: any) {
   if (res.socket.server.io) {
@@ -10,16 +11,13 @@ export default function SocketHandler(_: any, res: any) {
     return;
   }
   const io = new Server(res.socket.server);
+  
   res.socket.server.io = io;
+  instrument(io, {
+    auth: false,
+    mode: "development",
+  });
   io.on("connection", (socket) => {
-    // console.log('-----------------------------------')
-    // console.log(io.sockets.adapter.rooms)
-    // console.log('-------------------------------------')
-    
-   
-    // console.log("-----------------------------------");
-    // console.log(io.sockets.adapter.rooms.get('/games'))
-    // console.log("-----------------------------------");
     
     socket.emit(
       "serverMessege",
@@ -41,20 +39,20 @@ export default function SocketHandler(_: any, res: any) {
             socket.join(room.path);
             
           });
-          // console.log("-----------------------------------");
-          // console.log(socket.rooms)
-          // console.log("-----------------------------------");
 
         });
     });
+    socket.on("joinRoom",(roomPath)=>{
+      socket.join(roomPath)
+    })
 
     socket.on("leaveRooom", (room) => {
+      if(typeof room === 'string')
+      socket.leave(room)
       socket.leave(room.path);
     });
 
     socket.on("sendMessege", (room, messege) => {
-      console.log('room',room)
-      console.log('message',messege)
       
       io.in(room.path).emit("chat", JSON.stringify(messege));
       delete messege.sender
@@ -62,6 +60,7 @@ export default function SocketHandler(_: any, res: any) {
       saveMessege(messege);
     });
   });
+
   res.end("This is the sockets api");
 
 }

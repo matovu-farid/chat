@@ -56,7 +56,6 @@ const MessegeList = ({ className, roomId }: Props) => {
     });
 
     socket.on("chat", (messegeString) => {
-      console.log("chat", messegeString);
        const fetchedMessege = JSON.parse(messegeString);
       setMesseges((messeges) => [...messeges, fetchedMessege]);
      scrollToBottom()
