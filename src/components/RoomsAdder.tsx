@@ -6,6 +6,7 @@ import User from "../Interfaces/User";
 import { useRouter } from "next/router";
 import ConfirmBox from "./ConfirmBox";
 import Modal from "./Modal";
+import {toast} from 'react-toastify'
 
 
 const RoomAdder = () => {
@@ -13,11 +14,20 @@ const RoomAdder = () => {
   const { data: users } = trpc.useQuery(["user.searchUser", search]);
   const router = useRouter();
   const { roomId } = router.query;
-  const {mutate:addToRoom} = trpc.useMutation(["room.addToRoom"]);
+  const {mutate:addToRoom} = trpc.useMutation(["room.addToRoom"],{
+    onError: ()=>{ 
+      toast.dismiss()
+      toast.error('Failed to add the user to the room')},
+    onSuccess:()=>{ 
+      toast.dismiss()
+      toast.success('Successfully added the user to the room')},
+    onMutate:()=>toast.loading('Adding the user to the room')
+    
+  });
 
   const handleUserClicked = (user: User) => {
     if (typeof roomId === "string" && user)
-    addToRoom({ userId: user.id, roomId });
+     addToRoom({ userId: user.id, roomId });
   };
   const [showPopup, setShowPopup] = useState(false);
 

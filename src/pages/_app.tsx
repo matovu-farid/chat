@@ -11,7 +11,9 @@ import Navbar from "../components/Navbar";
 import UserProvider from "../contexts/user";
 import "primereact/resources/themes/lara-light-indigo/theme.css";  //theme
 import "primereact/resources/primereact.min.css";                  //core css
-import "primeicons/primeicons.css";                                //icons
+import "primeicons/primeicons.css";    
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';                            //icons
 
 const MyApp: AppType = ({
   Component,
@@ -21,6 +23,7 @@ const MyApp: AppType = ({
     <SessionProvider session={session}>
    
         <UserProvider>
+          <ToastContainer/>
           <Navbar></Navbar>
           <Menu></Menu>
           <Component {...pageProps} />
