@@ -22,6 +22,7 @@ export const UserCtx: Context<User> = createContext(dummyUser);
       signIn()
     }
   },[status])
+
   
   return (
     (user)?

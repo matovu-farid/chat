@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import useRooms from "../../hooks/useRooms";
-import useSocket from "../../hooks/useSocket";
+import { Socket } from "socket.io-client";
 import Messege from "../../Interfaces/Messege";
+import socket from "../../utils/socket_init";
+import { trpc } from "../../utils/trpc";
 import Button from "../Button";
 import TextField from "../TextField";
 interface Props {
@@ -10,9 +11,14 @@ interface Props {
   className?: string;
 }
 const MessegeTextField = ({ roomId, senderId, className }: Props) => {
-  const { data: room } = useRooms();
-  const socket = useSocket();
+
+  const { data: room } = trpc.useQuery(["room.getRoom",roomId]);
   const [messege, setMessege] = useState("");
+  const sendMessege= async(messege:Messege)=>{
+    await fetch('/api/socket')
+    
+    socket.emit("sendMessege", room, messege)
+  }
   const handleSend = () => {
     if(messege=== '') return
     const createdMessege: Messege = {
@@ -20,7 +26,9 @@ const MessegeTextField = ({ roomId, senderId, className }: Props) => {
       roomId,
       senderId,
     };
-    if (room) socket.emit("sendMessege", room, createdMessege);
+
+  
+    if (room) sendMessege(createdMessege)
     else throw "No room found";
     setMessege("")
   };

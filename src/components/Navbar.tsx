@@ -1,17 +1,29 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
+import { io, Socket } from "socket.io-client";
+import useUser from "../hooks/useUser";
+import socket from "../utils/socket_init";
 import Modal from "./Modal";
 import Search from "./Search";
-
 const Navbar = () => {
+
   const handleSignin = () => {
     signIn();
   };
   const handleSignout = () => {
     signOut();
   };
+  const joinRooms = async ()=>{
+    await fetch('/api/socket')
+  
+    socket.emit("joinRooms", user.id);
+  }
+  const user = useUser();
+  useEffect(() => {
+    joinRooms()
+  }, []);
 
   const listClasses = "my-auto p-0 list-none";
   const buttonClasses =
@@ -19,13 +31,11 @@ const Navbar = () => {
   const { status, data } = useSession();
   return (
     <div className="bg-gray-900 gap-2 text-white  h-24 w-full py-3 px-4 flex justify-end align-middle">
-     <div className="self-center">
-      <Modal>
-
-      <Search></Search>
-      </Modal>
-
-     </div>
+      <div className="self-center">
+        <Modal>
+          <Search></Search>
+        </Modal>
+      </div>
       <div className="flex gap-8 align-middle">
         <nav>
           <ul className="flex h-full gap-2 align-middle m-0 p-0 list-none">
