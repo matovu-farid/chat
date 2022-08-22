@@ -102,16 +102,7 @@ export async function addToRoom(userRoomSession: UserRoom, prisma: Prisma) {
     },
   });
 }
-export async function saveMessege(messege: Messege){
-  return prisma.message.create({
-    data: messege,
 
-    include: {
-      sender: true
-    }
-  });
-  
-}
 export function countRoomMembers(roomId: string, prisma: Prisma) {
   return prisma.user.count({
     where: {

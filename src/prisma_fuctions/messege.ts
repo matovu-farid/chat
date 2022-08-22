@@ -1,56 +1,43 @@
 import Messege, { Conversation, PaginatedConversation, PrivateMessege } from "../Interfaces/Messege";
 import Roompage from "../Interfaces/RoomPage";
-import { Prisma } from "../server/db/client";
-export async function createMessege(message: Messege, prisma: Prisma) {
-  const createMessege = prisma.message.create({
-    data: {
-      room: {
-        connect: { id: message.roomId },
-      },
-      sender: {
-        connect: {
-          id: message.senderId,
-        },
-      },
-      text: message.text,
-    },
-    include: { sender: true, room: true },
-  });
-  return await createMessege;
-}
-export async function createPrivateMessege(message: PrivateMessege, prisma: Prisma) {
-  const createMessege = prisma.privateMessege.create({
-    data: {
-      sender: {
-        connect: { id: message.senderId },
-      },
-      receiver: {
-        connect: {
-          id: message.receiverId,
-        },
-      },
-      text: message.text,
-    },
-    include: { sender: true },
-  });
-  return await createMessege;
-}
+import { Prisma,prisma } from "../server/db/client";
+
 export async function deletePrivateMessege(messageId: string, prisma: Prisma) {
-  const createMessege = prisma.privateMessege.delete({
+  const deleteMessege = prisma.privateMessege.delete({
     where: {
       id: messageId,
     },
   });
-  return await createMessege;
+  return await deleteMessege;
 }
 
 export async function deleteMessege(messageId: string, prisma: Prisma) {
-  const createMessege = prisma.message.delete({
+  const deleteMesseged = prisma.message.delete({
     where: {
       id: messageId,
     },
   });
-  return await createMessege;
+  return await deleteMesseged;
+}
+export async function saveMessege(messege: Messege){
+  return prisma.message.create({
+    data: messege,
+
+    include: {
+      sender: true
+    }
+  });
+  
+}
+export async function savePrivateMessege(messege: PrivateMessege){
+  console.log("From savePrivateMessege\n",messege)
+  return prisma.privateMessege.create({
+    data: messege,
+    include: {
+      sender: true
+    },
+  });
+  
 }
 export async function getMesseges(roomId: string, prisma: Prisma) {
   return await prisma.message.findMany({
@@ -104,8 +91,17 @@ export async function getPaginatedConversation(conversation: PaginatedConversati
   const limit = 8;
   const messegeHistory = await prisma.privateMessege.findMany({
     where: {
-      senderId: senderId,
-      receiverId:receiverId
+      OR:[
+        {
+
+          senderId: senderId,
+          receiverId:receiverId
+        },
+        {
+          senderId: receiverId,
+          receiverId:senderId
+        }
+      ],
     },
     include: {
       sender: true,

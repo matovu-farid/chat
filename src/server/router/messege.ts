@@ -2,13 +2,9 @@ import { createRouter } from "./context";
 import { z } from "zod";
 import {
   ZConversation,
-  ZMessege,
   ZPaginatedConversation,
-  ZPrivateMessage,
 } from "../../Interfaces/Messege";
 import {
-  createMessege,
-  createPrivateMessege,
   deleteMessege,
   deletePrivateMessege,
   getConversation,
@@ -19,12 +15,7 @@ import {
 import { ZRoompage } from "../../Interfaces/RoomPage";
 
 export const messageRouter = createRouter()
-  .query("createMessege", {
-    input: ZMessege,
-    async resolve({ input: messege, ctx: { prisma } }) {
-      return await createMessege(messege, prisma);
-    },
-  })
+
   .query("getMesseges", {
     input: z.string(),
     async resolve({ input: roomId, ctx: { prisma } }) {
@@ -47,12 +38,6 @@ export const messageRouter = createRouter()
     input: z.string(),
     async resolve({ input: messegeId, ctx: { prisma } }) {
       return await deleteMessege(messegeId, prisma);
-    },
-  })
-  .query("createPrivateMessege", {
-    input: ZPrivateMessage,
-    async resolve({ input: message, ctx: { prisma } }) {
-      return createPrivateMessege(message, prisma);
     },
   })
   .query("deletePrivateMessege", {

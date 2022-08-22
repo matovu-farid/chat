@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
-import {  saveMessege } from "../../prisma_fuctions/room";
 import { PrivateMessege } from "../../Interfaces/Messege";
+import { saveMessege, savePrivateMessege } from "../../prisma_fuctions/messege";
 import { joinRooms } from "../../utils/socket_functions";
 
 
@@ -41,15 +41,15 @@ export default function SocketHandler(_: any, res: any) {
     socket.on("sendMessege", (room, message) => {
       io.in(room.path).emit("chat", JSON.stringify(message));
       delete message.sender;
-
       saveMessege(message);
     });
-    socket.on("sendPrivateMessage", (message: PrivateMessege) => {
+    socket.on("sendPrivateMessage", (message) => {
       const messageString = JSON.stringify(message);
       const receiverSocketId = idMap.get(message.receiverId);
-      if (receiverSocketId)
-        socket.to(receiverSocketId).emit("privateChat", messageString);
+      if (receiverSocketId) socket.to(receiverSocketId).emit("privateChat", messageString);
       socket.emit("privateChat", messageString);
+      delete message.sender;
+      savePrivateMessege(message)
     });
   });
 
