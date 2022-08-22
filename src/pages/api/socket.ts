@@ -1,8 +1,8 @@
 import { Server } from "socket.io";
 import { saveMessege } from "../../prisma_fuctions/room";
-// import { saveMessege } from "../../prisma_fuctions/room";
 import { prisma } from "../../server/db/client";
 import { instrument } from "@socket.io/admin-ui";
+import { PrivateMessege } from "../../Interfaces/Messege";
 
 export default function SocketHandler(_: any, res: any) {
   if (res.socket.server.io) {
@@ -46,19 +46,25 @@ export default function SocketHandler(_: any, res: any) {
       socket.join(roomPath)
     })
 
+
     socket.on("leaveRooom", (room) => {
       if(typeof room === 'string')
       socket.leave(room)
       socket.leave(room.path);
     });
 
-    socket.on("sendMessege", (room, messege) => {
+    socket.on("sendMessege", (room, message) => {
       
-      io.in(room.path).emit("chat", JSON.stringify(messege));
-      delete messege.sender
+      io.in(room.path).emit("chat", JSON.stringify(message));
+      delete message.sender
 
-      saveMessege(messege);
+      saveMessege(message);
     });
+    socket.on("sendPrivateMessage",(message:PrivateMessege)=>{
+      const messageString = JSON.stringify(message)
+      io.in(message.receiverId).emit('privateMessage',messageString)
+      socket.emit('privateChat',messageString)
+    })
   });
 
   res.end("This is the sockets api");

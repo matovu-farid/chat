@@ -1,4 +1,4 @@
-import Messege, { PrivateMessege } from "../Interfaces/Messege";
+import Messege, { Conversation, PaginatedConversation, PrivateMessege } from "../Interfaces/Messege";
 import Roompage from "../Interfaces/RoomPage";
 import { Prisma } from "../server/db/client";
 export async function createMessege(message: Messege, prisma: Prisma) {
@@ -62,6 +62,15 @@ export async function getMesseges(roomId: string, prisma: Prisma) {
     },
   });
 }
+export async function getConversation(conversation:Conversation,prisma:Prisma){
+  const {senderId,receiverId} = conversation
+  return prisma.privateMessege.findMany({
+    where: {
+      senderId: senderId,
+      receiverId: receiverId
+    }
+  })
+}
 export async function getPaginatedMesseges(roomPage: Roompage, prisma: Prisma) {
   const { roomId, cursor } = roomPage;
   const limit = 8;
@@ -86,6 +95,34 @@ export async function getPaginatedMesseges(roomPage: Roompage, prisma: Prisma) {
   if (messegeHistory.length > limit) {
     nextCursor = messegeHistory.pop()?.id;
   }
-  const reversedMesseges = messegeHistory.reverse()
+  
+  return { messegeHistory, nextCursor };
+}
+export async function getPaginatedConversation(conversation: PaginatedConversation, prisma: Prisma) {
+  const { senderId,receiverId, cursor } = conversation;
+  const limit = 8;
+  const messegeHistory = await prisma.privateMessege.findMany({
+    where: {
+      senderId: senderId,
+      receiverId:receiverId
+    },
+    include: {
+      sender: true,
+    },
+    take: limit + 1,
+    orderBy: {
+      createdAt: "desc",
+    },
+    cursor: cursor
+      ? {
+          id: cursor,
+        }
+      : undefined,
+  });
+  let nextCursor: string | undefined;
+  if (messegeHistory.length > limit) {
+    nextCursor = messegeHistory.pop()?.id;
+  }
+  
   return { messegeHistory, nextCursor };
 }

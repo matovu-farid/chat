@@ -7,8 +7,10 @@ import {
   saveUser,
 } from "../../prisma_fuctions/user";
 import { ZUser, ZUserUpdater } from "../../Interfaces/User";
+import { UserCtx } from "../../contexts/user";
+import { createProtectedRouter } from "./protected-router";
 
-export const userRouter = createRouter()
+export const userRouter = createProtectedRouter()
   .query("getUser", {
     input: z.string(),
     async resolve({ input: userId, ctx: { prisma } }) {
@@ -17,8 +19,8 @@ export const userRouter = createRouter()
   })
   .query("searchUser", {
     input: z.string(),
-    async resolve({ input: term, ctx: { prisma } }) {
-      return await searchUsers(term, prisma);
+    async resolve({ input: term, ctx: { prisma,session:{user:{id:userId}} } }) {
+      return await searchUsers(term,userId, prisma);
     },
   })
   .mutation("deleteUser", {
@@ -29,7 +31,7 @@ export const userRouter = createRouter()
   })
   .mutation("saveUser", {
     input: ZUserUpdater,
-    async resolve({ input: userId, ctx: { prisma } }) {
-      return await saveUser(userId, prisma);
+    async resolve({ ctx: { prisma,session:{user} }}) {
+      return await saveUser(user, prisma);
     },
   })
