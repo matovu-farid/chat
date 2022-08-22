@@ -15,6 +15,9 @@ import "primeicons/primeicons.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; //icons
 import Innitializer from "../components/Innitializer";
+import "react-notifications-component/dist/theme.css";
+import { ReactNotifications } from "react-notifications-component";
+import PeerProvider from "../contexts/peer";
 
 const MyApp: AppType = ({
   Component,
@@ -27,7 +30,10 @@ const MyApp: AppType = ({
         <Navbar></Navbar>
         <Menu></Menu>
         <Innitializer>
-          <Component {...pageProps} />
+          <PeerProvider>
+            <ReactNotifications />
+            <Component {...pageProps} />
+          </PeerProvider>
         </Innitializer>
       </UserProvider>
     </SessionProvider>

@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 
+
 # testing
 /coverage
 
@@ -38,3 +39,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+*tag*
+

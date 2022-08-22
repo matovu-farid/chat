@@ -1,8 +1,8 @@
 import { Server } from "socket.io";
-import { PrivateMessege } from "../../Interfaces/Messege";
+import SignalData from "../../Interfaces/SignalData";
 import { saveMessege, savePrivateMessege } from "../../prisma_fuctions/messege";
 import { joinRooms } from "../../utils/socket_functions";
-
+import socket from "../../utils/socket_init";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function SocketHandler(_: any, res: any) {
@@ -25,9 +25,7 @@ export default function SocketHandler(_: any, res: any) {
       console.log(idMap);
     });
     socket.on("joinRooms", (userId) => {
-
-      joinRooms(userId,socket)
-      
+      joinRooms(userId, socket);
     });
     socket.on("joinRoom", (roomPath) => {
       socket.join(roomPath);
@@ -46,10 +44,28 @@ export default function SocketHandler(_: any, res: any) {
     socket.on("sendPrivateMessage", (message) => {
       const messageString = JSON.stringify(message);
       const receiverSocketId = idMap.get(message.receiverId);
-      if (receiverSocketId) socket.to(receiverSocketId).emit("privateChat", messageString);
+      if (receiverSocketId)
+        socket.to(receiverSocketId).emit("privateChat", messageString);
       socket.emit("privateChat", messageString);
       delete message.sender;
-      savePrivateMessege(message)
+      savePrivateMessege(message);
+    });
+    socket.on("callUser", (data: SignalData) => {
+      const called = idMap.get(data.to);
+      const caller = idMap.get(data.from);
+      console.log(data)
+      if (caller && called) {
+        io.to(called).emit("called", { signal: data.signal, from: caller });
+        console.log(`${data.from} calling ${data.to}`);
+      }
+    });
+    socket.on("callRejected", (callerId) => {
+      socket.to(callerId).emit("callRejected");
+    });
+    socket.on("answerCall", (data) => {
+      console.log(data);
+      console.log(`${data.to}'s call is answered by ${data.from}`);
+      io.to(data.to).emit("answered", data);
     });
   });
 
@@ -61,3 +77,4 @@ export const config = {
     bodyParser: false,
   },
 };
+//TODO: refactor to use the mapped socket ids instead
