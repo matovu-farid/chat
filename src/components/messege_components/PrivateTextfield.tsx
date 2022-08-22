@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { Socket } from "socket.io-client";
+import React, { useState } from "react";
 import useUser from "../../hooks/useUser";
-import Messege, { Conversation, PrivateMessege } from "../../Interfaces/Messege";
+import { PrivateMessege } from "../../Interfaces/Messege";
 import socket from "../../utils/socket_init";
-import { trpc } from "../../utils/trpc";
 import Button from "../Button";
 import TextField from "../TextField";
 interface Props {
-  conversation: Conversation,
+  receiverId:string,
+  senderId:string,
   className?: string;
 }
-const PrivateMessegeTextField = ({ conversation:{receiverId,senderId},className }: Props) => {
+const PrivateMessegeTextField = ({receiverId,senderId,className }: Props) => {
 
   const [messege, setMessege] = useState("");
   const user = useUser()

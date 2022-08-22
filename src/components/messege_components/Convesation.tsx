@@ -1,24 +1,23 @@
 import React, { useEffect, useRef, useState } from "react";
-import useUser from "../../hooks/useUser";
 import { PrivateMessegeWithUser } from "../../Interfaces/Messege";
 import { trpc } from "../../utils/trpc";
 import TextMessege from "./TextMessege";
 import { useInView } from "react-intersection-observer";
-import { io, Socket } from "socket.io-client";
 import socket from "../../utils/socket_init";
 
 interface Props {
-  roomId: string;
   className?: string;
+  senderId: string;
+  receiverId: string;
+
 }
-const PrivateConversation = ({ className, roomId }: Props) => {
+const Conversation = ({ className,senderId,receiverId }: Props) => {
   const [messeges, setMesseges] = useState<PrivateMessegeWithUser[]>([]);
   const { ref: scrollRef, inView } = useInView();
   const ref = useRef<HTMLDivElement>(null);
-  const user = useUser();
 
   const { fetchNextPage } = trpc.useInfiniteQuery(
-    ["message.getPaginatedMesseges", { roomId }],
+    ["message.getPaginatedConversation", { senderId,receiverId }],
     {
       getNextPageParam: (lastpage) => lastpage.nextCursor,
       onSuccess(data) {
@@ -32,10 +31,9 @@ const PrivateConversation = ({ className, roomId }: Props) => {
   );
 
   const scrollToBottom = () => {
-    setTimeout(()=>{
-
+    setTimeout(() => {
       ref.current?.scrollIntoView({ behavior: "smooth" });
-    },500)
+    }, 500);
   };
   useEffect(() => {
     setTimeout(() => {
@@ -47,19 +45,21 @@ const PrivateConversation = ({ className, roomId }: Props) => {
     if (inView) {
       fetchNextPage();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
   const attachSocketListeners = async () => {
     await fetch("/api/socket");
     socket.on("privateChat", (messegeString) => {
-       const fetchedMessege = JSON.parse(messegeString);
+      console.log(JSON.parse(messegeString))
+      const fetchedMessege = JSON.parse(messegeString);
       setMesseges((messeges) => [...messeges, fetchedMessege]);
-     scrollToBottom()
+      scrollToBottom();
     });
   };
 
   useEffect(() => {
     attachSocketListeners();
-  }, [roomId, user.id]);
+  }, [senderId, receiverId]);
 
   return (
     <div className={className + " bg-gray-300"}>
@@ -79,4 +79,4 @@ const PrivateConversation = ({ className, roomId }: Props) => {
   );
 };
 
-export default PrivateConversation;
+export default Conversation;

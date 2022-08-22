@@ -1,9 +1,11 @@
-import { useSession } from "next-auth/react";
 import React from "react";
 import useUser from "../../hooks/useUser";
-import { MessegeWithUser } from "../../Interfaces/Messege";
+import {
+  MessegeWithUser,
+  PrivateMessegeWithUser,
+} from "../../Interfaces/Messege";
 interface Props {
-  messege: MessegeWithUser;
+  messege: MessegeWithUser | PrivateMessegeWithUser;
 }
 const TextMessege = ({ messege }: Props) => {
   const user = useUser();
@@ -14,7 +16,6 @@ const TextMessege = ({ messege }: Props) => {
       date: date.toLocaleDateString(),
     };
   };
-  // const { time, date } = getTime(createdAt);
   const isNotMyMessege = messege.senderId && user.id != messege.senderId;
   const messegeColor = isNotMyMessege ? "bg-white" : "bg-gray-600 text-white";
   return (

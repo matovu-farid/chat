@@ -1,4 +1,3 @@
-import { GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import React from "react";
 import MessegeSection from "../../components/messege_components/MessageSection";

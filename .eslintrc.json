@@ -12,7 +12,8 @@
       "@typescript-eslint"
   ],
   "rules": {
-    "no-var":"off"
+    "no-var":"off",
+    "react-hooks/exhaustive-deps":"off"
 
   },
   "ignorePatterns": ["src/**/*.test.ts", "src/frontend/generated/*"]

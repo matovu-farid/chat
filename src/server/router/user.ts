@@ -1,4 +1,3 @@
-import { createRouter } from "./context";
 import { z } from "zod";
 import {
   deleteUser,
@@ -6,8 +5,7 @@ import {
   getUser,
   saveUser,
 } from "../../prisma_fuctions/user";
-import { ZUser, ZUserUpdater } from "../../Interfaces/User";
-import { UserCtx } from "../../contexts/user";
+import { ZUserUpdater } from "../../Interfaces/User";
 import { createProtectedRouter } from "./protected-router";
 
 export const userRouter = createProtectedRouter()

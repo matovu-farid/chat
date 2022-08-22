@@ -6,14 +6,15 @@ import superjson from "superjson";
 import { SessionProvider } from "next-auth/react";
 import Menu from "../components/Menu";
 
-import '../styles/globals.css'
+import "../styles/globals.css";
 import Navbar from "../components/Navbar";
 import UserProvider from "../contexts/user";
-import "primereact/resources/themes/lara-light-indigo/theme.css";  //theme
-import "primereact/resources/primereact.min.css";                  //core css
-import "primeicons/primeicons.css";    
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';                            //icons
+import "primereact/resources/themes/lara-light-indigo/theme.css"; //theme
+import "primereact/resources/primereact.min.css"; //core css
+import "primeicons/primeicons.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; //icons
+import Innitializer from "../components/Innitializer";
 
 const MyApp: AppType = ({
   Component,
@@ -21,15 +22,14 @@ const MyApp: AppType = ({
 }) => {
   return (
     <SessionProvider session={session}>
-   
-        <UserProvider>
-          <ToastContainer/>
-          <Navbar></Navbar>
-          <Menu></Menu>
+      <UserProvider>
+        <ToastContainer />
+        <Navbar></Navbar>
+        <Menu></Menu>
+        <Innitializer>
           <Component {...pageProps} />
-        </UserProvider>
-   
-
+        </Innitializer>
+      </UserProvider>
     </SessionProvider>
   );
 };
@@ -44,6 +44,7 @@ const getBaseUrl = () => {
 };
 
 export default withTRPC<AppRouter>({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   config({ ctx }) {
     /**
      * If you want to use SSR, you need to use the server's full URL

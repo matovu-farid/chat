@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { Socket } from "socket.io-client";
+import React, { useState } from "react";
 import useUser from "../../hooks/useUser";
 import Messege from "../../Interfaces/Messege";
 import socket from "../../utils/socket_init";

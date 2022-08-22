@@ -4,7 +4,6 @@ import { MessegeWithUser } from "../../Interfaces/Messege";
 import { trpc } from "../../utils/trpc";
 import TextMessege from "./TextMessege";
 import { useInView } from "react-intersection-observer";
-import { io, Socket } from "socket.io-client";
 import socket from "../../utils/socket_init";
 
 interface Props {

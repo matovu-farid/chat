@@ -1,6 +1,5 @@
-import { Message, User } from "@prisma/client";
-import { z, ZodMap } from "zod";
-import { ZUser } from "./User";
+import { Message, User, PrivateMessege as PrivateChat } from "@prisma/client";
+import { z } from "zod";
 
 export const ZMessege = z.object({
   id: z.optional(z.string()),
@@ -22,14 +21,14 @@ export const ZConversation = z.object({
 export const ZPaginatedConversation = z.object({
   senderId: z.string(),
   receiverId: z.string(),
-  cursor: z.string(),
+  cursor: z.optional(z.string()),
 });
 
 type Messege = z.infer<typeof ZMessege>;
 export type MessegeWithUser = Message & {
   sender: User;
 };
-export type PrivateMessegeWithUser = Message & {
+export type PrivateMessegeWithUser = PrivateChat & {
   sender: User;
 };
 export type PaginatedConversation = z.infer<typeof ZPaginatedConversation>;

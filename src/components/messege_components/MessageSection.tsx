@@ -3,8 +3,6 @@ import React from "react";
 import MessegeTextField from "./MessegeTextField";
 import MessegeList from "./MessegeList";
 import useUser from "../../hooks/useUser";
-import Modal from "../Modal";
-import { AiFillPlusCircle } from "react-icons/ai";
 import RoomAdder from "../RoomsAdder";
 
 interface Props {
