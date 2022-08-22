@@ -95,6 +95,7 @@ export async function getPaginatedMesseges(roomPage: Roompage, prisma: Prisma) {
   if (messegeHistory.length > limit) {
     nextCursor = messegeHistory.pop()?.id;
   }
+  messegeHistory.reverse()
   
   return { messegeHistory, nextCursor };
 }
@@ -123,6 +124,7 @@ export async function getPaginatedConversation(conversation: PaginatedConversati
   if (messegeHistory.length > limit) {
     nextCursor = messegeHistory.pop()?.id;
   }
+  messegeHistory.reverse()
   
   return { messegeHistory, nextCursor };
 }

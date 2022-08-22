@@ -1,7 +1,8 @@
 import { Server } from "socket.io";
-import { saveMessege } from "../../prisma_fuctions/room";
-import { prisma } from "../../server/db/client";
+import {  saveMessege } from "../../prisma_fuctions/room";
 import { PrivateMessege } from "../../Interfaces/Messege";
+import { joinRooms } from "../../utils/socket_functions";
+
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function SocketHandler(_: any, res: any) {
@@ -24,21 +25,9 @@ export default function SocketHandler(_: any, res: any) {
       console.log(idMap);
     });
     socket.on("joinRooms", (userId) => {
-      prisma.room
-        .findMany({
-          where: {
-            members: {
-              some: {
-                id: userId,
-              },
-            },
-          },
-        })
-        .then((rooms) => {
-          rooms.forEach((room) => {
-            socket.join(room.path);
-          });
-        });
+
+      joinRooms(userId,socket)
+      
     });
     socket.on("joinRoom", (roomPath) => {
       socket.join(roomPath);
