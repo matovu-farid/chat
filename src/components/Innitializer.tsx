@@ -1,6 +1,9 @@
 import React, { PropsWithChildren, useEffect } from "react";
+import { Store } from "react-notifications-component";
 import useUser from "../hooks/useUser";
+import SignalData from "../Interfaces/SignalData";
 import socket from "../utils/socket_init";
+import CallNotification from "./CallNotification";
 
 const Innitializer = ({ children }: PropsWithChildren) => {
   const user = useUser();
@@ -13,6 +16,15 @@ const Innitializer = ({ children }: PropsWithChildren) => {
   };
   useEffect(() => {
     innitialize();
+    socket.on("called", (data: SignalData) => {
+      Store.addNotification({
+        title: "Call coming in",
+        message: <CallNotification data={data} />,
+        container: "top-right",
+        type: "success",
+      });
+      return socket.removeListener();
+    });
   }, []);
   return <>{children}</>;
 };

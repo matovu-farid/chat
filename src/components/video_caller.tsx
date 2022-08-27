@@ -1,10 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import useUser from "../hooks/useUser";
-import socket from "../utils/socket_init";
-import Modal from "./Modal";
-import Peer from "simple-peer";
 import { GrClose } from "react-icons/gr";
-import { usePeer } from "../contexts/peer";
+import useAnswerCall from "../hooks/useAnswerCall";
+import useCall from "../hooks/useCall";
 
 interface Props {
   calledId: string;
@@ -16,18 +14,46 @@ const VideoCaller = ({ calledId, closePopup }: Props) => {
   const callerId = user.id;
 
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { leaveCall, call, setVideoToLocal, onStream } = usePeer();
+  const {
+    leaveCall,
+    call,
+    hasLocalStream,
+    hasRemoteStream,
+    localStream,
+    remoteStream,
+    peer,
+    setLocalStream,
+    setRemoteStream,
+  } = useCall();
+  useEffect(() => {
+    const stream = localStream;
+    if (stream) {
+      peer.addStream(stream);
+    }
+    setLocalStream((state) => ({ ...state, new: false }));
+  }, [hasLocalStream]);
+  useEffect(() => {
+    const stream = remoteStream;
+    if (stream) {
+      peer.addStream(stream);
+    }
+    setRemoteStream((state) => ({ ...state, new: false }));
+  }, [hasRemoteStream]);
+  useEffect(() => {
+    const videoElm = videoRef.current;
+   // if (videoElm && localStream) videoElm.srcObject = localStream;
+  }, [hasLocalStream]);
+  useEffect(() => {
+    const videoElm = videoRef.current;
+    if (videoElm && remoteStream) videoElm.srcObject = remoteStream;
+  }, [hasRemoteStream]);
 
   useEffect(() => {
-    (async () => {
-      await call(callerId, calledId);
-      const videoElm = videoRef.current;
-      if (videoElm) setVideoToLocal(videoElm);
-      onStream((stream) => {
-        if (videoElm) videoElm.srcObject = stream;
-      });
-    })();
+    call(callerId, calledId);
   }, []);
+  const handleLeave = () => {
+    ("");
+  };
 
   return (
     <>

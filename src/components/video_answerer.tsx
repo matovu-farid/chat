@@ -2,25 +2,32 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { GrClose } from "react-icons/gr";
 import Paper from "./Paper";
-import { usePeer } from "../contexts/peer";
 import { useRouter } from "next/router";
+import useAnswerCall from "../hooks/useAnswerCall";
 
 const VideoAnswerer = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { setVideoToLocal, leaveCall, onStream } = usePeer();
-  const router = useRouter();
+  const {
+    leaveCall,
+    hasLocalStream,
+    hasRemoteStream,
+    localStream,
+    remoteStream,
+  } = useAnswerCall();
 
-  useEffect(() => {
-    const videoElm = videoRef.current;
-    videoElm && setVideoToLocal(videoElm);
-    onStream((stream) => {
-      if (videoElm) videoElm.srcObject = stream;
-    });
-  }, []);
   const handleLeaveCall = () => {
     leaveCall();
-    router.back();
+    //router.back();
   };
+  useEffect(() => {
+    const videoElm = videoRef.current;
+    // if (videoElm && localStream) videoElm.srcObject = localStream;
+  }, [hasLocalStream]);
+  useEffect(() => {
+    const videoElm = videoRef.current;
+    console.log("remote stream", remoteStream);
+    if (videoElm && remoteStream) videoElm.srcObject = remoteStream;
+  }, [hasRemoteStream]);
 
   return (
     <div className="text-lg fixed left-[40%] top-[20%]">

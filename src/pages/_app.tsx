@@ -30,10 +30,10 @@ const MyApp: AppType = ({
         <Navbar></Navbar>
         <Menu></Menu>
         <Innitializer>
-          <PeerProvider>
+         
             <ReactNotifications />
             <Component {...pageProps} />
-          </PeerProvider>
+        
         </Innitializer>
       </UserProvider>
     </SessionProvider>

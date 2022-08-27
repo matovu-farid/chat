@@ -5,3 +5,11 @@ interface SignalData {
   to: string;
 }
 export default SignalData;
+export interface PeerObject {
+  peer: Peer.Instance;
+  new: boolean;
+}
+export interface StreamObject {
+  stream?: MediaStream;
+  hasStream: boolean;
+}

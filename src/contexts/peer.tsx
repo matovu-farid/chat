@@ -41,29 +41,29 @@ export const usePeer = () => {
   return useContext(PeerContext);
 };
 const PeerProvider = ({ children }: PropsWithChildren) => {
-  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
-  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
-  const [peer, setPeer] = useState<Peer.Instance | null>(null);
   const router = useRouter();
-  let signalData: SignalData;
+  let signalData: SignalData | null = null;
+  let peer: Peer.Instance | null = null;
+  let remoteStream: MediaStream | null = null;
+  let localStream: MediaStream | null = null;
 
   useEffect(() => {
     socket.on("called", (data: SignalData) => {
+      signalData = data;
       Store.addNotification({
         title: "Call coming in",
         message: <CallNotification />,
         container: "top-right",
         type: "success",
       });
-
-      signalData = data;
     });
     socket.on("callRejected", () => {
       leaveCall();
     });
   }, []);
   const cancelCall = (cleanup?: () => void) => {
-    setPeer(null);
+    peer = null;
+
     if (signalData) socket.emit("callRejected", signalData.from);
     if (cleanup) cleanup();
   };
@@ -72,7 +72,7 @@ const PeerProvider = ({ children }: PropsWithChildren) => {
       video: true,
       audio: true,
     });
-    setLocalStream(stream);
+    localStream = stream;
     videoElm.srcObject = stream;
   };
 
@@ -82,12 +82,14 @@ const PeerProvider = ({ children }: PropsWithChildren) => {
     localStream?.getTracks().forEach((track) => {
       track.stop();
     });
+
     remoteStream?.getTracks().forEach((track) => {
       track.stop();
     });
+    localStream = null;
+    remoteStream = null;
+    if (signalData) signalData = null;
 
-    setLocalStream(null);
-    setRemoteStream(null);
     if (cleanup) cleanup();
   };
   const onStream = (callBack: (stream: MediaStream) => void) => {
@@ -100,31 +102,31 @@ const PeerProvider = ({ children }: PropsWithChildren) => {
         video: true,
         audio: true,
       }));
-    const peer = new Peer({
+    const newPeer = new Peer({
       stream: stream,
       initiator: true,
       trickle: false,
     });
-    peer.on("signal", (data) => {
+    newPeer.on("signal", (data) => {
       socket.emit("callUser", { signal: data, from: callerId, to: calledId });
     });
-    peer.on("stream", (stream) => {
-      setRemoteStream(stream);
+    newPeer.on("stream", (stream) => {
+      remoteStream = stream;
     });
-    peer.on("connect", () => {
+    newPeer.on("connect", () => {
       console.log("-----------------------------");
       console.log("Connected");
       console.log("-----------------------------");
     });
-    peer.on("close", () => {
+    newPeer.on("close", () => {
       console.log("closed");
       leaveCall();
     });
 
     socket.on("answered", (data) => {
-      peer.signal(data.signal);
+      newPeer.signal(data.signal);
     });
-    setPeer(peer);
+    peer = newPeer;
   };
   const addLocalStream = () => {
     if (localStream && peer) peer.addStream(localStream);
@@ -133,13 +135,13 @@ const PeerProvider = ({ children }: PropsWithChildren) => {
     console.log(stream);
     console.log("signal data", signalData);
 
-    const peer = new Peer({
+    const newPeer = new Peer({
       stream: stream,
       initiator: false,
       trickle: false,
     });
 
-    peer.on("signal", (data) => {
+    newPeer.on("signal", (data) => {
       console.log("signal hit.......................");
       console.log(data);
       if (signalData) {
@@ -150,22 +152,22 @@ const PeerProvider = ({ children }: PropsWithChildren) => {
         });
       }
     });
-    peer.on("connect", () => {
+    newPeer.on("connect", () => {
       console.log("-----------------------------");
       console.log("Connected");
       console.log("-----------------------------");
     });
-    peer.on("close", () => {
+    newPeer.on("close", () => {
       leaveCall();
     });
 
-    peer.on("stream", (stream) => {
-      setRemoteStream(stream);
+    newPeer.on("stream", (stream) => {
+      remoteStream = stream;
     });
-    if (signalData) peer.signal(signalData.signal);
-    setPeer(peer);
+    if (signalData) newPeer.signal(signalData.signal);
+    peer = newPeer;
     router.push("/chat/video");
-    setLocalStream(stream);
+    localStream = stream;
   };
 
   const [peerContext] = useState<IPeerContext>({
