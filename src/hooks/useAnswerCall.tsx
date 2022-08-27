@@ -95,6 +95,9 @@ const useAnswerCall = () => {
         });
       }
     });
+    peer.on("stream",(stream)=>{
+      setRemoteStream({stream:stream,hasStream:true})
+    })
 
     peer.on("connect", () => {
       console.log("-----------------------------");
@@ -112,10 +115,12 @@ const useAnswerCall = () => {
     });
     router.push("/chat/video");
   };
+  
 
 
   const hasLocalStream = localStreamObject.hasStream;
   const hasRemoteStream = remoteStreamObject.hasStream;
+  
 
 
   return {

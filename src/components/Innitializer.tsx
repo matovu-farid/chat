@@ -22,6 +22,7 @@ const Innitializer = ({ children }: PropsWithChildren) => {
         message: <CallNotification data={data} />,
         container: "top-right",
         type: "success",
+
       });
       return socket.removeListener();
     });
