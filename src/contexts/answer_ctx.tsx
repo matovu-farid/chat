@@ -28,7 +28,8 @@ interface IAnswerContext {
 }
 let stream: MediaStream;
 
- export let AnwerContext: React.Context<IAnswerContext>;
+ export let AnwerContext:React.Context<IAnswerContext>;
+
 
 
 const AnswerProvider = ({ children }: PropsWithChildren) => {
@@ -57,7 +58,9 @@ const AnswerProvider = ({ children }: PropsWithChildren) => {
     cancelCall,
     setLocalStream,
   });
+  
   const AnwerCtx: React.Context<IAnswerContext> = createContext(answerContext);
+  AnwerContext = AnwerCtx
 
   return (
     <>

@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AiFillPhone } from "react-icons/ai";
 import { GrClose } from "react-icons/gr";
+import { AnwerContext } from "../contexts/answer_ctx";
 import useAnswerCall from "../hooks/useAnswerCall";
 import SignalData from "../Interfaces/SignalData";
 import socket from "../utils/socket_init";
@@ -13,7 +14,6 @@ interface Props {
 }
 
 const CallNotification = ({ data }: Props) => {
-  const [showPopup, setShowPopup] = useState(false);
   const {
     localStream,
     cancelCall,
@@ -22,10 +22,7 @@ const CallNotification = ({ data }: Props) => {
     signalData,
     leaveCall,
     setLocalStream,
-    hasLocalStream,
-    hasRemoteStream,
-    remoteStream,
-  } = useAnswerCall();
+  } = useContext(AnwerContext);
   const addStream = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: true,
@@ -41,11 +38,11 @@ const CallNotification = ({ data }: Props) => {
     });
     addStream();
   }, []);
-  const handleAnswer=(localStream:MediaStream)=>{
-    
-    answer(localStream, data)
-    setShowPopup(true)
-  }
+  const handleAnswer = (localStream: MediaStream) => {
+    answer(localStream, data);
+  };
+  console.log('signaldata',data)
+  console.log('localstream',localStream)
 
   return signalData && localStream ? (
     <div className="flex justify-center">
@@ -53,12 +50,14 @@ const CallNotification = ({ data }: Props) => {
         <div className="rounded-[50%] p-3 bg-red-600">
           <GrClose onClick={() => cancelCall()} className=" cursor-pointer" />
         </div>
-        <button  onClick={() => handleAnswer(localStream)} className="text-green-500 rounded-[50%] p-3 bg-white ">
+        <button
+          onClick={() => handleAnswer(localStream)}
+          className="text-green-500 rounded-[50%] p-3 bg-white "
+        >
           <AiFillPhone
             onClick={() => handleAnswer(localStream)}
             className="cursor-pointer "
           />
-        
         </button>
       </div>
     </div>

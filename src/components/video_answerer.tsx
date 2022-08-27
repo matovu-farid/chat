@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
 import { GrClose } from "react-icons/gr";
 import Paper from "./Paper";
 import { useRouter } from "next/router";
 import useAnswerCall from "../hooks/useAnswerCall";
+import { AnwerContext } from "../contexts/answer_ctx";
 
 const VideoAnswerer = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -14,7 +15,7 @@ const VideoAnswerer = () => {
     hasRemoteStream,
     remoteStream,
     localStream,
-  } = useAnswerCall();
+  } = useContext(AnwerContext);
 
   const handleLeaveCall = () => {
     leaveCall();
