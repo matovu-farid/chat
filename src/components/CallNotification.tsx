@@ -13,8 +13,8 @@ const CallNotification = ({ data }: Props) => {
   const { localStream,cancelCall, answer, setSignalData, signalData, leaveCall,setLocalStream } =useAnswerCall();
     const addStream = async () => {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
         audio: true,
+        video: true
       });
       setLocalStream({ stream, hasStream: true });
     };

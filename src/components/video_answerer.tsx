@@ -7,21 +7,22 @@ import useAnswerCall from "../hooks/useAnswerCall";
 
 const VideoAnswerer = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const router = useRouter();
   const {
     leaveCall,
     hasLocalStream,
     hasRemoteStream,
-    localStream,
     remoteStream,
+    localStream,
   } = useAnswerCall();
 
   const handleLeaveCall = () => {
     leaveCall();
-    //router.back();
+    router.back();
   };
   useEffect(() => {
     const videoElm = videoRef.current;
-    // if (videoElm && localStream) videoElm.srcObject = localStream;
+    if (videoElm && localStream) videoElm.srcObject = localStream;
   }, [hasLocalStream]);
   useEffect(() => {
     const videoElm = videoRef.current;
@@ -29,7 +30,7 @@ const VideoAnswerer = () => {
     if (videoElm && remoteStream) videoElm.srcObject = remoteStream;
   }, [hasRemoteStream]);
 
-  return (
+  return localStream ? (
     <div className="text-lg fixed left-[40%] top-[20%]">
       <Paper className="mx-auto ">
         <video playsInline autoPlay ref={videoRef}></video>
@@ -41,7 +42,7 @@ const VideoAnswerer = () => {
         </div>
       </Paper>
     </div>
-  );
+  ) : null;
 };
 
 export default VideoAnswerer;
