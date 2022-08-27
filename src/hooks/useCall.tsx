@@ -51,8 +51,42 @@ const useCall = () => {
     if (cleanup) cleanup();
   };
 
-  const attachListeners = () => {
-    const peer = peerObj.peer;
+  const call = (callerId: string, calledId: string, stream: MediaStream) => {
+    const peer = new Peer({
+      stream,
+      initiator: true,
+      trickle: false,
+      config: {
+        iceServers: [
+          {
+            urls: "stun:openrelay.metered.ca:80",
+          },
+          {
+            urls: "turn:openrelay.metered.ca:80",
+            username: "openrelayproject",
+            credential: "openrelayproject",
+          },
+          {
+            urls: "turn:openrelay.metered.ca:443",
+            username: "openrelayproject",
+            credential: "openrelayproject",
+          },
+          {
+            urls: "turn:openrelay.metered.ca:443?transport=tcp",
+            username: "openrelayproject",
+            credential: "openrelayproject",
+          },
+        ],
+      },
+    });
+    setPeerObj({
+      peer,
+      new: true,
+    });
+
+    peer.on("signal", (data) => {
+      socket.emit("callUser", { signal: data, from: callerId, to: calledId });
+    });
     peer.on("stream", (stream) => {
       console.log("stream got", stream);
       setRemoteStream({ stream, hasStream: true });
@@ -66,39 +100,25 @@ const useCall = () => {
       console.log("closed");
       leaveCall();
     });
-  };
-
-  const call = (callerId: string, calledId: string, stream: MediaStream) => {
-    const peer = new Peer({
-      initiator: true,
-      trickle: false,
-      stream,
-    });
-
-    console.log(peer);
-
-    peer.on("signal", (data) => {
-      socket.emit("callUser", { signal: data, from: callerId, to: calledId });
-      console.log("original signal", data);
-    });
-    attachListeners();
 
     socket.on("answered", (data) => {
-      console.log("anwser", data.signal);
-      const peer = peerObj.peer;
       peer.signal(data.signal);
-    });
-    setPeerObj({
-      peer,
-      new: true,
+      console.log(peer);
     });
   };
+  // const addNewStream = (stream: MediaStream) => {
+  //   const peer = peerObj.peer;
+  //   peer.addStream(stream);
+  //   console.log(peer);
+  //   setPeerObj((state) => ({ ...state, new: false }));
+  // };
 
   return {
     call,
     leaveCall,
     cancelCall,
     peer: peerObj.peer,
+    isNewPeer: peerObj.new,
     hasLocalStream: localStreamObject.hasStream,
     setLocalStream,
     hasRemoteStream: remoteStreamObject.hasStream,

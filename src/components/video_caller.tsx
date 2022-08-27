@@ -21,11 +21,17 @@ const VideoCaller = ({ calledId, closePopup }: Props) => {
     localStream,
     remoteStream,
     setLocalStream,
+    peer,
+
+    isNewPeer,
   } = useCall();
 
   useEffect(() => {
     const videoElm = videoRef.current;
-    if (videoElm && localStream) videoElm.srcObject = localStream;
+    if (videoElm && localStream) {
+      videoElm.srcObject = localStream;
+      call(callerId, calledId, localStream);
+    }
   }, [hasLocalStream]);
   useEffect(() => {
     const videoElm = videoRef.current;
@@ -42,11 +48,6 @@ const VideoCaller = ({ calledId, closePopup }: Props) => {
     addStream();
   }, []);
 
-  useEffect(() => {
-    if (hasLocalStream && localStream) {
-      call(callerId, calledId, localStream);
-    }
-  }, [hasLocalStream]);
   const handleLeave = () => {
     ("");
   };
