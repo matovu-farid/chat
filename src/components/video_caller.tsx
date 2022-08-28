@@ -21,9 +21,6 @@ const VideoCaller = ({ calledId, closePopup }: Props) => {
     localStream,
     remoteStream,
     setLocalStream,
-    peer,
-
-    isNewPeer,
   } = useCall();
 
   useEffect(() => {
@@ -52,8 +49,7 @@ const VideoCaller = ({ calledId, closePopup }: Props) => {
     <div>
       <div className="text-lg rounded-[50%] p-2 bg-red-600   absolute bottom-3 left-[48%]">
         <GrClose
-          //TODO:put it back
-          //onClick={() => leaveCall(closePopup)}
+          onClick={() => leaveCall(closePopup)}
           className="cursor-pointer text-yellow-200"
         />
       </div>

@@ -9,14 +9,8 @@ import { AnwerContext } from "../contexts/answer_ctx";
 const VideoAnswerer = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const router = useRouter();
-  const {
-    leaveCall,
-    hasLocalStream,
-    hasRemoteStream,
-    remoteStream,
-    localStream,
-    answer,
-  } = useContext(AnwerContext);
+  const { leaveCall, hasLocalStream, localStream, answer,peerRef } =
+    useContext(AnwerContext);
 
   const handleLeaveCall = () => {
     leaveCall();
@@ -24,18 +18,18 @@ const VideoAnswerer = () => {
   };
   useEffect(() => {
     answer();
-    
+    peerRef.current?.on("stream",(stream)=>{
+      const videoElm = videoRef.current;
+      if (videoElm) videoElm.srcObject = stream;
+      console.log('remoteStream',stream)
+    })
   }, []);
+  const hasLocal = hasLocalStream();
   useEffect(() => {
     const videoElm = videoRef.current;
-    if (videoElm && localStream) videoElm.srcObject = localStream();
-    if (localStream) console.log("video answerer", localStream());
-  }, [hasLocalStream()]);
-  useEffect(() => {
-    const videoElm = videoRef.current;
-    console.log("remote stream", remoteStream());
-    if (videoElm && remoteStream) videoElm.srcObject = remoteStream();
-  }, [hasRemoteStream()]);
+    if (videoElm) videoElm.srcObject = localStream();
+    if (hasLocalStream()) console.log("local stream", localStream());
+  }, [hasLocal]);
 
   return hasLocalStream() ? (
     <div className="text-lg fixed left-[40%] top-[20%]">
