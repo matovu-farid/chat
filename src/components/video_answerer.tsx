@@ -3,32 +3,50 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { GrClose } from "react-icons/gr";
 import Paper from "./Paper";
 import { useRouter } from "next/router";
-import useAnswerCall from "../hooks/useAnswerCall";
 import { AnwerContext } from "../contexts/answer_ctx";
 
 const VideoAnswerer = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const router = useRouter();
-  const { leaveCall, hasLocalStream, localStream, answer,peerRef } =
-    useContext(AnwerContext);
+  const {
+    leaveCall,
+    hasLocalStream,
+    localStream,
+    answer,
+    peerRef,
+    localStreamRef,
+  } = useContext(AnwerContext);
 
   const handleLeaveCall = () => {
     leaveCall();
     router.back();
   };
   useEffect(() => {
-    answer();
-    peerRef.current?.on("stream",(stream)=>{
-      const videoElm = videoRef.current;
-      if (videoElm) videoElm.srcObject = stream;
-      console.log('remoteStream',stream)
-    })
+    if (hasLocalStream()) {
+      answer();
+      peerRef.current?.on("stream", (stream) => {
+        const videoElm = videoRef.current;
+        if (videoElm) videoElm.srcObject = stream;
+        console.log("remoteStream", stream);
+      });
+    }
+  }, [hasLocalStream()]);
+  useEffect(() => {
+    addStream();
   }, []);
   const hasLocal = hasLocalStream();
+  const [_, setLocal] = useState<MediaStream | null>();
+  const addStream = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: true,
+    });
+    localStreamRef.current = stream;
+    setLocal(stream);
+  };
   useEffect(() => {
     const videoElm = videoRef.current;
     if (videoElm) videoElm.srcObject = localStream();
-    if (hasLocalStream()) console.log("local stream", localStream());
   }, [hasLocal]);
 
   return hasLocalStream() ? (

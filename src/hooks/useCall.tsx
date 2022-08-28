@@ -106,12 +106,6 @@ const useCall = () => {
      
     });
   };
-  // const addNewStream = (stream: MediaStream) => {
-  //   const peer = peerObj.peer;
-  //   peer.addStream(stream);
-  //   console.log(peer);
-  //   setPeerObj((state) => ({ ...state, new: false }));
-  // };
 
   return {
     call,

@@ -26,8 +26,8 @@ interface IAnswerContext {
   setSignalData: (data: SignalData) => void;
   cancelCall: (cleanup?: () => void) => void;
   peerRef: React.MutableRefObject<Peer.Instance | null>;
-  remoteStreamRef:React.MutableRefObject<MediaStream | null>;
-  localStreamRef:React.MutableRefObject<MediaStream | null>;
+  remoteStreamRef: React.MutableRefObject<MediaStream | null>;
+  localStreamRef: React.MutableRefObject<MediaStream | null>;
 }
 
 export let AnwerContext: React.Context<IAnswerContext>;
@@ -48,9 +48,6 @@ const AnswerProvider = ({ children }: PropsWithChildren) => {
   } = useAnswerCall();
   const router = useRouter();
 
-  useEffect(() => {
-    addStream();
-  }, []);
   const innitialAnswerContext = {
     localStreamRef,
     remoteStreamRef,
@@ -79,36 +76,38 @@ const AnswerProvider = ({ children }: PropsWithChildren) => {
       AnswerCancelCall(answerContext.signalDataRef.current, cleanup);
     },
     answer: () => {
-      const stream = localStreamRef.current;
-      console.log("answering...........");
-      const signalData = signalDataRef.current;
-      if (stream && signalData) {
-        const peer = createPeer(stream);
-        peer.on("signal", (data) => {
-          socket.emit("answerCall", {
-            signal: data,
-            to: signalData.from,
-            from: signalData.to,
-          });
-        });
-        peer.on("stream", (stream) => {
-          remoteStreamRef.current = stream;
-          
-        });
-        peer.on("connect", () => {
-          console.log("-----------------------------");
-          console.log("Connected");
-          console.log("-----------------------------");
-        });
-        peer.on("close", () => {
-          answerContext.leaveCall();
-        });
-
-        peer.signal(signalData.signal);
-        peerRef.current = peer
-
+      
         
-      }
+        const stream = localStreamRef.current;
+        console.log('local-stream',stream)
+        console.log("answering...........");
+        const signalData = signalDataRef.current;
+        if (stream && signalData) {
+          const peer = createPeer(stream);
+          peer.on("signal", (data) => {
+            socket.emit("answerCall", {
+              signal: data,
+              to: signalData.from,
+              from: signalData.to,
+            });
+          });
+          
+          peer.on("stream", (stream) => {
+            remoteStreamRef.current = stream;
+          });
+          peer.on("connect", () => {
+            console.log("-----------------------------");
+            console.log("Connected");
+            console.log("-----------------------------");
+          });
+          peer.on("close", () => {
+            answerContext.leaveCall();
+          });
+
+          peer.signal(signalData.signal);
+          peerRef.current = peer;
+        }
+     
     },
   };
 
