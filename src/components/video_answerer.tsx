@@ -24,11 +24,17 @@ const VideoAnswerer = () => {
   useEffect(() => {
     if (hasLocalStream()) {
       answer();
-      peerRef.current?.on("stream", (stream) => {
-        const videoElm = videoRef.current;
-        if (videoElm) videoElm.srcObject = stream;
-        console.log("remoteStream", stream);
-      });
+      const peer = peerRef.current;
+      if (peer) {
+        peer.on("stream", (stream) => {
+          const videoElm = videoRef.current;
+          if (videoElm) videoElm.srcObject = stream;
+          console.log("remoteStream", stream);
+        });
+        peer.on("close", () => {
+          handleLeaveCall();
+        });
+      }
     }
   }, [hasLocalStream()]);
   useEffect(() => {

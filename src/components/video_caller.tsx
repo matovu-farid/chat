@@ -22,6 +22,7 @@ const VideoCaller = ({ calledId, closePopup }: Props) => {
     remoteStream,
     setLocalStream,
   } = useCall();
+  
 
   useEffect(() => {
     const videoElm = videoRef.current;

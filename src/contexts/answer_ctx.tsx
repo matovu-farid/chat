@@ -97,9 +97,6 @@ const AnswerProvider = ({ children }: PropsWithChildren) => {
           console.log("Connected");
           console.log("-----------------------------");
         });
-        peer.on("close", () => {
-          answerContext.leaveCall();
-        });
 
         peer.signal(signalData.signal);
         peerRef.current = peer;
