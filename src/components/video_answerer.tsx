@@ -15,6 +15,7 @@ const VideoAnswerer = () => {
     hasRemoteStream,
     remoteStream,
     localStream,
+    answer,
   } = useContext(AnwerContext);
 
   const handleLeaveCall = () => {
@@ -22,16 +23,21 @@ const VideoAnswerer = () => {
     router.back();
   };
   useEffect(() => {
-    const videoElm = videoRef.current;
-    if (videoElm && localStream) videoElm.srcObject = localStream;
-  }, [hasLocalStream]);
+    answer();
+    
+  }, []);
   useEffect(() => {
     const videoElm = videoRef.current;
-    console.log("remote stream", remoteStream);
-    if (videoElm && remoteStream) videoElm.srcObject = remoteStream;
-  }, [hasRemoteStream]);
+    if (videoElm && localStream) videoElm.srcObject = localStream();
+    if (localStream) console.log("video answerer", localStream());
+  }, [hasLocalStream()]);
+  useEffect(() => {
+    const videoElm = videoRef.current;
+    console.log("remote stream", remoteStream());
+    if (videoElm && remoteStream) videoElm.srcObject = remoteStream();
+  }, [hasRemoteStream()]);
 
-  return localStream ? (
+  return hasLocalStream() ? (
     <div className="text-lg fixed left-[40%] top-[20%]">
       <Paper className="mx-auto ">
         <video playsInline autoPlay ref={videoRef}></video>

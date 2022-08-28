@@ -48,15 +48,12 @@ const VideoCaller = ({ calledId, closePopup }: Props) => {
     addStream();
   }, []);
 
-  const handleLeave = () => {
-    ("");
-  };
-
   return localStream ? (
     <div>
       <div className="text-lg rounded-[50%] p-2 bg-red-600   absolute bottom-3 left-[48%]">
         <GrClose
-          onClick={() => leaveCall(closePopup)}
+          //TODO:put it back
+          //onClick={() => leaveCall(closePopup)}
           className="cursor-pointer text-yellow-200"
         />
       </div>

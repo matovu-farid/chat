@@ -103,7 +103,7 @@ const useCall = () => {
 
     socket.on("answered", (data) => {
       peer.signal(data.signal);
-      console.log(peer);
+     
     });
   };
   // const addNewStream = (stream: MediaStream) => {

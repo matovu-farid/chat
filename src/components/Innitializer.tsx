@@ -19,13 +19,18 @@ const Innitializer = ({ children }: PropsWithChildren) => {
     socket.on("called", (data: SignalData) => {
       Store.addNotification({
         title: "Call coming in",
-        message: <CallNotification data={data} />,
+        message: (
+          <div>
+            <CallNotification data={data} />
+          </div>
+        ),
         container: "top-right",
         type: "success",
-
       });
-      return socket.removeListener();
     });
+    // return () => {
+    //   socket.removeListener();
+    // };
   }, []);
   return <>{children}</>;
 };

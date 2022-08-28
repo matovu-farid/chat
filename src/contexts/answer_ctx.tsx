@@ -4,6 +4,7 @@ import React, {
   PropsWithChildren,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import socket from "../utils/socket_init";
@@ -16,51 +17,134 @@ import useAnswerCall from "../hooks/useAnswerCall";
 
 interface IAnswerContext {
   leaveCall: (cleanup?: () => void) => void;
-  answer: (stream: MediaStream, signalData: SignalData) => void;
-  localStream: MediaStream | undefined;
-  remoteStream: MediaStream | undefined;
-  signalData: SignalData | null;
-  hasLocalStream: boolean;
-  hasRemoteStream: boolean;
-  setSignalData: React.Dispatch<React.SetStateAction<SignalData | null>>;
+  answer: () => void;
+  localStream: () => MediaStream | null;
+  remoteStream: () => MediaStream | null;
+  signalDataRef: React.MutableRefObject<SignalData | null>;
+  hasLocalStream: () => boolean;
+  hasRemoteStream: () => boolean;
+  setSignalData: (data: SignalData) => void;
   cancelCall: (cleanup?: () => void) => void;
-  setLocalStream: React.Dispatch<React.SetStateAction<StreamObject>>;
+  peerRef: React.MutableRefObject<Peer.Instance | null>;
 }
-let stream: MediaStream;
 
- export let AnwerContext:React.Context<IAnswerContext>;
-
-
+export let AnwerContext: React.Context<IAnswerContext>;
 
 const AnswerProvider = ({ children }: PropsWithChildren) => {
-  const {
-    localStream,
-    cancelCall,
-    answer,
-    setSignalData,
-    signalData,
-    leaveCall,
-    setLocalStream,
-    hasLocalStream,
-    hasRemoteStream,
-    remoteStream,
-  } = useAnswerCall();
+  const signalDataRef = useRef<SignalData | null>(null);
+  const peerRef = useRef<Peer.Instance | null>(null);
+  const localStreamRef = useRef<MediaStream | null>(null);
+  const remoteStreamRef = useRef<MediaStream | null>(null);
+  const hasLocalStream = () => localStreamRef.current !== null;
+  const hasRemoteStream = () => localStreamRef.current !== null;
 
-  const [answerContext] = useState<IAnswerContext>({
-    leaveCall,
-    answer,
-    localStream,
-    remoteStream,
-    signalData,
+  const {
+    cancelCall: AnswerCancelCall,
+
+    leaveCall: answerLeaveCall,
+    createPeer,
+  } = useAnswerCall();
+  const router = useRouter();
+
+  useEffect(() => {
+    addStream();
+  }, []);
+  const innitialAnswerContext = {
+    peerRef,
+    leaveCall(cleanup?: () => void) {
+      answerLeaveCall(
+        remoteStreamRef.current,
+        localStreamRef.current,
+        peerRef.current,
+        cleanup
+      );
+
+      localStreamRef.current = null;
+      remoteStreamRef.current = null;
+    },
+
+    localStream: () => localStreamRef.current,
+    setSignalData(data: SignalData) {
+      signalDataRef.current = data;
+    },
+    remoteStream: () => remoteStreamRef.current,
+    signalDataRef,
     hasLocalStream,
     hasRemoteStream,
-    setSignalData,
-    cancelCall,
-    setLocalStream,
-  });
-  
+    cancelCall(cleanup?: () => void) {
+      AnswerCancelCall(answerContext.signalDataRef.current, cleanup);
+    },
+    answer: () => {
+      const stream = localStreamRef.current;
+      console.log("answering...........");
+      const signalData = signalDataRef.current;
+      if (stream && signalData) {
+        const peer = createPeer(stream);
+        peer.on("signal", (data) => {
+          socket.emit("answerCall", {
+            signal: data,
+            to: signalData.from,
+            from: signalData.to,
+          });
+        });
+        peer.on("stream", (stream) => {
+          remoteStreamRef.current = stream;
+        });
+        peer.on("connect", () => {
+          console.log("-----------------------------");
+          console.log("Connected");
+          console.log("-----------------------------");
+        });
+        peer.on("close", () => {
+          answerContext.leaveCall();
+        });
+
+        peer.signal(signalData.signal);
+
+        
+      }
+    },
+  };
+
+  const [answerContext] = useState<IAnswerContext>(innitialAnswerContext);
+  const addStream = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: true,
+    });
+    localStreamRef.current = stream;
+  };
+  const attachListeners = () => {
+    const peer = peerRef.current;
+    const signalData = signalDataRef.current;
+    if (peer && signalData) {
+      peer.on("signal", (data) => {
+        console.log("onSignal", data);
+
+        socket.emit("answerCall", {
+          signal: data,
+          to: signalData.from,
+          from: signalData.to,
+        });
+      });
+      peer.on("stream", (stream) => {
+        remoteStreamRef.current = stream;
+      });
+      peer.on("connect", () => {
+        console.log("-----------------------------");
+        console.log("Connected");
+        console.log("-----------------------------");
+      });
+      peer.on("close", () => {
+        answerContext.leaveCall();
+      });
+
+      peer.signal(signalData.signal);
+    }
+  };
+
   const AnwerCtx: React.Context<IAnswerContext> = createContext(answerContext);
-  AnwerContext = AnwerCtx
+  AnwerContext = AnwerCtx;
 
   return (
     <>
