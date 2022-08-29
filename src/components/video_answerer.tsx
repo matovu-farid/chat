@@ -4,6 +4,7 @@ import { GrClose } from "react-icons/gr";
 import Paper from "./Paper";
 import { useRouter } from "next/router";
 import { AnwerContext } from "../contexts/answer_ctx";
+import { getLocalStream } from "../utils/stream";
 
 const VideoAnswerer = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -38,18 +39,14 @@ const VideoAnswerer = () => {
     }
   }, [hasLocalStream()]);
   useEffect(() => {
-    addStream();
+    getLocalStream((stream) => {
+      localStreamRef.current = stream;
+      setLocal(stream);
+    });
   }, []);
   const hasLocal = hasLocalStream();
   const [_, setLocal] = useState<MediaStream | null>();
-  const addStream = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: true,
-    });
-    localStreamRef.current = stream;
-    setLocal(stream);
-  };
+
   useEffect(() => {
     const videoElm = videoRef.current;
     if (videoElm) videoElm.srcObject = localStream();
