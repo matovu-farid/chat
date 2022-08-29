@@ -32,8 +32,8 @@ const useCall = () => {
     });
   }, []);
   const cancelCall = (cleanup?: () => void) => {
-    setLocalStream(state=>({...state, hasStream: false }));
-    setRemoteStream(state=>({...state, hasStream: false }));
+    setLocalStream({stream:null, hasStream: false });
+    setRemoteStream({stream:null, hasStream: false });
     peerObj.peer.destroy();
     setPeerObj((state) => ({ ...state, new: false }));
     if (cleanup) cleanup();
@@ -46,6 +46,7 @@ const useCall = () => {
     localStreamObject?.stream?.getTracks().forEach((track) => {
       track.stop();
     });
+    
 
     if (signalData) setSignalData(null);
     cancelCall();
