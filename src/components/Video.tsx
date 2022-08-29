@@ -37,7 +37,7 @@ const VideoStreamer = ({
   hasLocalStream,
   hasRemoteStream,
   localStream,
-  remoteStream
+  remoteStream,
 }: Props) => {
   const [hasAudioOn, setHasAudio] = useState(true);
   const [hasVideoOn, setHasVideo] = useState(true);
@@ -48,10 +48,10 @@ const VideoStreamer = ({
       remover(peer, () => {
         setter(false);
       });
-    }else{
-      stopLocalVideo(localStream,()=>{
-        setHasVideo(false)
-      })
+    } else {
+      stopLocalVideo(localStream, () => {
+        setHasVideo(false);
+      });
     }
   };
   const handleAdd = (adder: TrackEditor, setter: BooleanSetter) => {
@@ -59,16 +59,17 @@ const VideoStreamer = ({
       adder(peer, () => {
         setter(true);
       });
-    }else{
-      startLocalVideo(localStream,()=>{
-        setHasVideo(true)
-      })
+    } else {
+      startLocalVideo(localStream, () => {
+        setHasVideo(true);
+      });
     }
   };
   const handleScreenShare = () => {
-    screenShare(() => {
-      setIsScreenSharing(true);
-    });
+    if (peer)
+      screenShare(peer, () => {
+        setIsScreenSharing(true);
+      });
   };
   const handleStopScreenShare = () => {
     stopScreenShare(peer);
@@ -105,21 +106,22 @@ const VideoStreamer = ({
           </button>
 
           <>
-            {(hasRemoteStream)&&(hasAudioOn ? (
-              <button
-                onClick={() => handleRemove(removeAudio, setHasAudio)}
-                className="rounded-[50%] p-3  bg-green-500"
-              >
-                <AiFillAudio className="cursor-pointer " />
-              </button>
-            ) : (
-              <button
-                onClick={() => handleAdd(addAudio, setHasAudio)}
-                className="rounded-[50%] p-3 bg-red-600"
-              >
-                <BsFillMicMuteFill className="cursor-pointer " />
-              </button>
-            ))}
+            {hasRemoteStream &&
+              (hasAudioOn ? (
+                <button
+                  onClick={() => handleRemove(removeAudio, setHasAudio)}
+                  className="rounded-[50%] p-3  bg-green-500"
+                >
+                  <AiFillAudio className="cursor-pointer " />
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleAdd(addAudio, setHasAudio)}
+                  className="rounded-[50%] p-3 bg-red-600"
+                >
+                  <BsFillMicMuteFill className="cursor-pointer " />
+                </button>
+              ))}
             {hasVideoOn ? (
               <button
                 onClick={() => handleRemove(removeVideo, setHasVideo)}

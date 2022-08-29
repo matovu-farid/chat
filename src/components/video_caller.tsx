@@ -30,9 +30,7 @@ const VideoCaller = ({ calledId, closePopup }: Props) => {
   };
 
   useEffect(() => {
-    if (hasLocalStream && localStream) {
-      console.log(hasLocalStream,'localStream')
-      console.log('calling.......................')
+    if (hasLocalStream && localStream) {     
       call(callerId, calledId, localStream);
     }
   }, [hasLocalStream]);

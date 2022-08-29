@@ -96,12 +96,21 @@ export function removeVideo(
   return false;
 }
 /**Get the local video stream */
-export async function screenShare(callback?: StreamCallback) {
+export async function screenShare(
+  peer: Peer.Instance | null,
+  callback?: StreamCallback
+) {
+  if (peer === null) throw "There is no peer";
   const stream = await navigator.mediaDevices.getDisplayMedia({
-    video: {
-      noiseSuppression: true,
-    },
+    video: true,
   });
+  const localStream = peer.streams[0];
+  if (!localStream) return;
+  const screenSharetrack = stream.getVideoTracks()[0]
+  const videotrack = localStream.getVideoTracks()[0];
+  if (!videotrack || !screenSharetrack) return;
+  peer.replaceTrack(videotrack, screenSharetrack, localStream);
+
   if (callback) return callback(stream);
   else return stream;
 }
@@ -111,15 +120,17 @@ export async function stopScreenShare(
   callback?: StreamCallback
 ) {
   if (peer === null) throw "There is no peer";
-  const stream = peer.streams[1];
-  if (stream) {
-    stream.getTracks().forEach((track) => {
-      track.stop();
-    });
+  const stream = peer.streams[0];
+  if (!stream) throw "no stream";
 
-    if (callback) return callback(stream);
-    else return stream;
-  }
+  const localVideo = (await getLocalStream()).getVideoTracks()[0];
+  if (!localVideo) throw "No local video";
+  const screenShare = stream.getVideoTracks()[0];
+  if(!screenShare) throw "Screen is not shared"
+  peer.replaceTrack(screenShare, localVideo, stream);
+  if (callback) return callback(stream);
+  else return stream;
+
   return false;
 }
 
