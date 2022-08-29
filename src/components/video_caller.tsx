@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import useUser from "../hooks/useUser";
 import { GrClose } from "react-icons/gr";
 import useCall from "../hooks/useCall";
-import {getLocalStream} from '../utils/stream'
+import { getLocalStream } from "../utils/stream";
+import VideoStreamer from "./Video";
 
 interface Props {
   calledId: string;
@@ -22,7 +23,11 @@ const VideoCaller = ({ calledId, closePopup }: Props) => {
     localStream,
     remoteStream,
     setLocalStream,
+    peer,
   } = useCall();
+  const handleLeaveCall = () => {
+    leaveCall();
+  };
 
   useEffect(() => {
     const videoElm = videoRef.current;
@@ -37,24 +42,15 @@ const VideoCaller = ({ calledId, closePopup }: Props) => {
   }, [hasRemoteStream]);
 
   useEffect(() => {
-    getLocalStream((stream)=>setLocalStream({ stream, hasStream: true }));
+    getLocalStream((stream) => setLocalStream({ stream, hasStream: true }));
   }, []);
 
   return localStream ? (
-    <div>
-      <div className="text-lg rounded-[50%] p-2 bg-red-600   absolute bottom-3 left-[48%]">
-        <GrClose
-          onClick={() => leaveCall(closePopup)}
-          className="cursor-pointer text-yellow-200"
-        />
-      </div>
-      <video
-        className="pointer-events-none"
-        playsInline
-        autoPlay
-        ref={videoRef}
-      ></video>
-    </div>
+    <VideoStreamer
+      peer={peer}
+      handleLeaveCall={handleLeaveCall}
+      videoRef={videoRef}
+    />
   ) : null;
 };
 

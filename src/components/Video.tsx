@@ -20,10 +20,10 @@ import {
 } from "react-icons/bs";
 interface Props {
   handleLeaveCall: () => void;
-  peer: Peer.Instance;
+  peer: Peer.Instance|null;
   videoRef: React.LegacyRef<HTMLVideoElement> | undefined;
 }
-const Video = ({ handleLeaveCall, peer, videoRef }: Props) => {
+const VideoStreamer = ({ handleLeaveCall, peer, videoRef }: Props) => {
   const [hasAudioOn, setHasAudio] = useState(true);
   const [hasVideoOn, setHasVideo] = useState(true);
   const handleRemove = (remover: TrackRemover, setter: BooleanSetter) => {
@@ -96,4 +96,4 @@ const Video = ({ handleLeaveCall, peer, videoRef }: Props) => {
   );
 };
 
-export default Video;
+export default VideoStreamer;
