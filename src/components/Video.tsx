@@ -50,7 +50,7 @@ const VideoStreamer = ({ handleLeaveCall, peer, videoRef }: Props) => {
           autoPlay
           ref={videoRef}
         ></video>
-        <div className="w-full left-0  bottom-3 absolute  flex gap-2 justify-center">
+        <div className="w-full bg-transparent opacity-0 transition-opacity top-0 hover:opacity-100  h-full left-0  absolute  flex gap-2 items-end justify-center">
           <button
             onClick={() => handleLeaveCall()}
             className="rounded-[50%] p-3 bg-red-600 "
