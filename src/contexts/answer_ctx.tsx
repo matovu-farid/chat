@@ -47,6 +47,7 @@ const AnswerProvider = ({ children }: PropsWithChildren) => {
     createPeer,
   } = useAnswerCall();
   const leaveFunction=(cleanup?: () => void)=>{
+    peerRef.current?.destroy()
     answerLeaveCall(
       remoteStreamRef.current,
       localStreamRef.current,
@@ -105,11 +106,9 @@ const AnswerProvider = ({ children }: PropsWithChildren) => {
           console.log("-----------------------------");
           // answered.current = true
         });
-        peer.on("close", () => {
-          leaveFunction();
-        });
-
-        peer.signal(signalData.signal);
+        console.log('connected',peer.connected)
+       
+        if(!peer.connected) peer.signal(signalData.signal);
         peerRef.current = peer;
       }
     },

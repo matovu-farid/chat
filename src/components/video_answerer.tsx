@@ -5,6 +5,7 @@ import VideoStreamer from "./Video";
 import Peer from "simple-peer";
 
 const VideoAnswerer = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
   const {
     leaveCall,
     hasLocalStream,
@@ -13,19 +14,28 @@ const VideoAnswerer = () => {
     peerRef,
     localStreamRef,
     signalDataRef,
-    remoteStream,
-    hasRemoteStream
   } = useContext(AnwerContext);
 
   const handleLeaveCall = () => {
     leaveCall();
   };
+  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  const [hasRemoteStream, setHasRemoteStream] = useState(false);
   const [peer, setPeer] = useState<Peer.Instance | null>(null);
-
   useEffect(() => {
     if (hasLocalStream()) {
       answer();
       const peer = peerRef.current;
+
+      if (peer) {
+        peer.on("stream", (stream) => {
+          setRemoteStream(stream);
+          setHasRemoteStream(true);
+        });
+        peer.on("close", () => {
+          handleLeaveCall();
+        });
+      }
       setPeer(peer);
     }
   }, [hasLocalStream()]);
@@ -40,18 +50,18 @@ const VideoAnswerer = () => {
   const hasLocal = hasLocalStream();
   const [_, setLocal] = useState<MediaStream | null>();
 
-  // useEffect(() => {
-  //   const videoElm = videoRef.current;
-  //   if (videoElm) videoElm.srcObject = localStream();
-  // }, [hasLocal]);
+  useEffect(() => {
+    const videoElm = videoRef.current;
+    if (videoElm) videoElm.srcObject = localStream();
+  }, [hasLocal]);
 
   return hasLocalStream() ? (
     <VideoStreamer
       handleLeaveCall={handleLeaveCall}
       peer={peer}
       localStream={localStream()}
-      remoteStream={remoteStream()}
-      hasRemoteStream={hasRemoteStream()}
+      remoteStream={remoteStream}
+      hasRemoteStream={hasRemoteStream}
       hasLocalStream={hasLocalStream()}
     />
   ) : null;

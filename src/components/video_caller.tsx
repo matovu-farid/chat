@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from "react";
 import useUser from "../hooks/useUser";
 import useCall from "../hooks/useCall";
@@ -29,7 +30,9 @@ const VideoCaller = ({ calledId, closePopup }: Props) => {
   };
 
   useEffect(() => {
-    if (localStream) {
+    if (hasLocalStream && localStream) {
+      console.log(hasLocalStream,'localStream')
+      console.log('calling.......................')
       call(callerId, calledId, localStream);
     }
   }, [hasLocalStream]);

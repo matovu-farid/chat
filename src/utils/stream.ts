@@ -97,11 +97,11 @@ export function removeVideo(
 }
 /**Get the local video stream */
 export async function screenShare(callback?: StreamCallback) {
-  const stream = await navigator.mediaDevices.getDisplayMedia({    
-
+  const stream = await navigator.mediaDevices.getDisplayMedia({
     video: {
-    noiseSuppression: true
-}});
+      noiseSuppression: true,
+    },
+  });
   if (callback) return callback(stream);
   else return stream;
 }
@@ -153,5 +153,34 @@ export function removeAudioMedia(
     if (callback) callback(stream);
     return true;
   }
+  return false;
+}
+/**Stop the local video stream */
+export function stopLocalVideo(
+  stream: MediaStream | null,
+  callback?: StreamCallback
+) {
+  if (stream === null) throw "The stream is null";
+  stream.getVideoTracks().forEach((track) => {
+    track.enabled = false;
+
+    if (callback) callback(stream);
+    return true;
+  });
+  return false;
+}
+
+/**Start the local video stream */
+export function startLocalVideo(
+  stream: MediaStream | null,
+  callback?: StreamCallback
+) {
+  if (stream === null) throw "The stream is null";
+  stream.getVideoTracks().forEach((track) => {
+    track.enabled = true;
+
+    if (callback) callback(stream);
+    return true;
+  });
   return false;
 }

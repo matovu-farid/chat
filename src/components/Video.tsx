@@ -9,6 +9,8 @@ import {
   removeAudio,
   removeVideo,
   screenShare,
+  startLocalVideo,
+  stopLocalVideo,
   stopScreenShare,
   TrackEditor,
 } from "../utils/stream";
@@ -46,6 +48,10 @@ const VideoStreamer = ({
       remover(peer, () => {
         setter(false);
       });
+    }else{
+      stopLocalVideo(localStream,()=>{
+        setHasVideo(false)
+      })
     }
   };
   const handleAdd = (adder: TrackEditor, setter: BooleanSetter) => {
@@ -53,6 +59,10 @@ const VideoStreamer = ({
       adder(peer, () => {
         setter(true);
       });
+    }else{
+      startLocalVideo(localStream,()=>{
+        setHasVideo(true)
+      })
     }
   };
   const handleScreenShare = () => {
@@ -95,7 +105,7 @@ const VideoStreamer = ({
           </button>
 
           <>
-            {hasAudioOn ? (
+            {(hasRemoteStream)&&(hasAudioOn ? (
               <button
                 onClick={() => handleRemove(removeAudio, setHasAudio)}
                 className="rounded-[50%] p-3  bg-green-500"
@@ -109,7 +119,7 @@ const VideoStreamer = ({
               >
                 <BsFillMicMuteFill className="cursor-pointer " />
               </button>
-            )}
+            ))}
             {hasVideoOn ? (
               <button
                 onClick={() => handleRemove(removeVideo, setHasVideo)}
