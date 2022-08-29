@@ -10,6 +10,6 @@ export interface PeerObject {
   new: boolean;
 }
 export interface StreamObject {
-  stream?: MediaStream;
+  stream: MediaStream | null;
   hasStream: boolean;
 }

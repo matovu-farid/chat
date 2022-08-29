@@ -46,21 +46,24 @@ const AnswerProvider = ({ children }: PropsWithChildren) => {
     leaveCall: answerLeaveCall,
     createPeer,
   } = useAnswerCall();
+  const leaveFunction=(cleanup?: () => void)=>{
+    answerLeaveCall(
+      remoteStreamRef.current,
+      localStreamRef.current,
+      peerRef.current,
+      cleanup
+    );
+
+    localStreamRef.current = null;
+    remoteStreamRef.current = null;
+  }
 
   const innitialAnswerContext = {
     localStreamRef,
     remoteStreamRef,
     peerRef,
     leaveCall(cleanup?: () => void) {
-      answerLeaveCall(
-        remoteStreamRef.current,
-        localStreamRef.current,
-        peerRef.current,
-        cleanup
-      );
-
-      localStreamRef.current = null;
-      remoteStreamRef.current = null;
+      leaveFunction(cleanup)
     },
 
     localStream: () => localStreamRef.current,
@@ -101,6 +104,9 @@ const AnswerProvider = ({ children }: PropsWithChildren) => {
           console.log("Connected");
           console.log("-----------------------------");
           // answered.current = true
+        });
+        peer.on("close", () => {
+          leaveFunction();
         });
 
         peer.signal(signalData.signal);

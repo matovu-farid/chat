@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { GrClose } from "react-icons/gr";
 import Paper from "./Paper";
@@ -8,10 +8,12 @@ import {
   BooleanSetter,
   removeAudio,
   removeVideo,
-  TrackAdder,
-  TrackRemover,
+  screenShare,
+  stopScreenShare,
+  TrackEditor,
 } from "../utils/stream";
 import { AiFillAudio } from "react-icons/ai";
+import { MdScreenShare, MdStopScreenShare } from "react-icons/md";
 import Peer from "simple-peer";
 import {
   BsFillMicMuteFill,
@@ -20,26 +22,60 @@ import {
 } from "react-icons/bs";
 interface Props {
   handleLeaveCall: () => void;
-  peer: Peer.Instance|null;
-  videoRef: React.LegacyRef<HTMLVideoElement> | undefined;
+  peer: Peer.Instance | null;
+  hasRemoteStream: boolean;
+  hasLocalStream: boolean;
+  localStream: MediaStream | null;
+  remoteStream: MediaStream | null;
 }
-const VideoStreamer = ({ handleLeaveCall, peer, videoRef }: Props) => {
+
+const VideoStreamer = ({
+  handleLeaveCall,
+  peer,
+  hasLocalStream,
+  hasRemoteStream,
+  localStream,
+  remoteStream
+}: Props) => {
   const [hasAudioOn, setHasAudio] = useState(true);
   const [hasVideoOn, setHasVideo] = useState(true);
-  const handleRemove = (remover: TrackRemover, setter: BooleanSetter) => {
+  const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const handleRemove = (remover: TrackEditor, setter: BooleanSetter) => {
     if (peer) {
       remover(peer, () => {
         setter(false);
       });
     }
   };
-  const handleAdd = (adder: TrackAdder, setter: BooleanSetter) => {
+  const handleAdd = (adder: TrackEditor, setter: BooleanSetter) => {
     if (peer) {
       adder(peer, () => {
         setter(true);
       });
     }
   };
+  const handleScreenShare = () => {
+    screenShare(() => {
+      setIsScreenSharing(true);
+    });
+  };
+  const handleStopScreenShare = () => {
+    stopScreenShare(peer);
+    setIsScreenSharing(false);
+  };
+
+  useEffect(() => {
+    const videoElm = videoRef.current;
+    if (videoElm && localStream) {
+      videoElm.srcObject = localStream;
+    }
+  }, [hasLocalStream]);
+  useEffect(() => {
+    const videoElm = videoRef.current;
+    if (videoElm && remoteStream) videoElm.srcObject = remoteStream;
+  }, [hasRemoteStream]);
+
   return (
     <div className="text-lg fixed   top-[20%]">
       <Paper className="mx-auto ">
@@ -87,6 +123,21 @@ const VideoStreamer = ({ handleLeaveCall, peer, videoRef }: Props) => {
                 className="rounded-[50%] p-3 bg-red-600  "
               >
                 <BsFillCameraVideoOffFill className="cursor-pointer " />
+              </button>
+            )}
+            {isScreenSharing ? (
+              <button
+                onClick={() => handleStopScreenShare()}
+                className="rounded-[50%] p-3 bg-red-600  "
+              >
+                <MdStopScreenShare className="cursor-pointer " />
+              </button>
+            ) : (
+              <button
+                onClick={() => handleScreenShare()}
+                className="rounded-[50%] p-3 bg-green-500 "
+              >
+                <MdScreenShare className="cursor-pointer " />
               </button>
             )}
           </>

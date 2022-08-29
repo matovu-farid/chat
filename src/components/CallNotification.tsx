@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { AiFillPhone } from "react-icons/ai";
 import { GrClose } from "react-icons/gr";
 import { AnwerContext } from "../contexts/answer_ctx";

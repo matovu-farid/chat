@@ -16,9 +16,11 @@ const useCall = () => {
   });
   const [remoteStreamObject, setRemoteStream] = useState<StreamObject>({
     hasStream: false,
+    stream:null
   });
   const [localStreamObject, setLocalStream] = useState<StreamObject>({
     hasStream: false,
+    stream:null
   });
 
   useEffect(() => {
@@ -30,8 +32,8 @@ const useCall = () => {
     });
   }, []);
   const cancelCall = (cleanup?: () => void) => {
-    setLocalStream({ hasStream: false });
-    setRemoteStream({ hasStream: false });
+    setLocalStream(state=>({...state, hasStream: false }));
+    setRemoteStream(state=>({...state, hasStream: false }));
     peerObj.peer.destroy();
     setPeerObj((state) => ({ ...state, new: false }));
     if (cleanup) cleanup();
