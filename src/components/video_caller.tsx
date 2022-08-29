@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import useUser from "../hooks/useUser";
 import { GrClose } from "react-icons/gr";
 import useCall from "../hooks/useCall";
+import {getLocalStream} from '../utils/stream'
 
 interface Props {
   calledId: string;
@@ -22,7 +23,6 @@ const VideoCaller = ({ calledId, closePopup }: Props) => {
     remoteStream,
     setLocalStream,
   } = useCall();
-  
 
   useEffect(() => {
     const videoElm = videoRef.current;
@@ -35,15 +35,9 @@ const VideoCaller = ({ calledId, closePopup }: Props) => {
     const videoElm = videoRef.current;
     if (videoElm && remoteStream) videoElm.srcObject = remoteStream;
   }, [hasRemoteStream]);
-  const addStream = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: true,
-    });
-    setLocalStream({ stream, hasStream: true });
-  };
+
   useEffect(() => {
-    addStream();
+    getLocalStream((stream)=>setLocalStream({ stream, hasStream: true }));
   }, []);
 
   return localStream ? (

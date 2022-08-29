@@ -82,6 +82,8 @@ const AnswerProvider = ({ children }: PropsWithChildren) => {
       if (stream && signalData) {
         const peer = createPeer(stream);
         peer.on("signal", (data) => {
+          console.log('signalled again')
+          if(!peer.connected)
           socket.emit("answerCall", {
             signal: data,
             to: signalData.from,
@@ -92,10 +94,13 @@ const AnswerProvider = ({ children }: PropsWithChildren) => {
         peer.on("stream", (stream) => {
           remoteStreamRef.current = stream;
         });
+       
+        
         peer.on("connect", () => {
           console.log("-----------------------------");
           console.log("Connected");
           console.log("-----------------------------");
+          // answered.current = true
         });
 
         peer.signal(signalData.signal);

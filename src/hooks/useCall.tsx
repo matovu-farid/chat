@@ -83,6 +83,9 @@ const useCall = () => {
       peer,
       new: true,
     });
+    peer.on("track", (track) => {
+      console.log(track);
+    });
 
     peer.on("signal", (data) => {
       socket.emit("callUser", { signal: data, from: callerId, to: calledId });
@@ -98,12 +101,13 @@ const useCall = () => {
     });
     peer.on("close", () => {
       console.log("closed");
-      leaveCall();
+      leaveCall(peer.destroy());
+      socket.off("answered")
     });
 
     socket.on("answered", (data) => {
+      console.log("answered again");
       peer.signal(data.signal);
-     
     });
   };
 
