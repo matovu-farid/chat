@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import VideoStreamer from "./Video";
 import Peer from "simple-peer";
-import usePeer from "../hooks/useAnswer";
+import usePeer from "../hooks/usePeer";
 
 const VideoAnswerer = () => {
   const videoRef = useRef<HTMLVideoElement>(null);

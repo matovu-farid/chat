@@ -14,3 +14,7 @@ export interface StreamObject {
   hasStream: boolean;
 }
 export type Cleanup = () => void;
+export interface CallInfo {
+  calledId: string;
+  callerId: string;
+}

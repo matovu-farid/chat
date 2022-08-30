@@ -4,14 +4,14 @@ import useUser from "../hooks/useUser";
 import useCall from "../hooks/useCall";
 import { getLocalStream } from "../utils/stream";
 import VideoStreamer from "./Video";
-import usePeer from "../hooks/useAnswer";
+import usePeer from "../hooks/usePeer";
 
 interface Props {
   calledId: string;
-  closePopup: () => void;
+ 
 }
 
-const VideoCaller = ({ calledId, closePopup }: Props) => {
+const VideoCaller = ({ calledId}: Props) => {
   const user = useUser();
   const callerId = user.id;
 
@@ -30,12 +30,7 @@ const VideoCaller = ({ calledId, closePopup }: Props) => {
     leave();
   };
 
-  useEffect(() => {
-    if (localStream) {
-      call(callerId, calledId);
-    }
-  }, [hasLocalStream]);
-
+ 
 
 
 

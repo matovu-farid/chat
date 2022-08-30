@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import React, { useContext, useEffect } from "react";
 import { AiFillPhone } from "react-icons/ai";
 import { GrClose } from "react-icons/gr";
-import usePeer from "../hooks/useAnswer";
+import usePeer from "../hooks/usePeer";
 import SignalData from "../Interfaces/SignalData";
 import socket from "../utils/socket_init";
 
