@@ -13,3 +13,4 @@ export interface StreamObject {
   stream: MediaStream | null;
   hasStream: boolean;
 }
+export type Cleanup = () => void;

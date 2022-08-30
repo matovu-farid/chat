@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from "react";
 import { AiFillPhone } from "react-icons/ai";
 import { GrClose } from "react-icons/gr";
 import { AnwerContext } from "../contexts/answer_ctx";
+import useAnswer from "../hooks/useAnswer";
 import SignalData from "../Interfaces/SignalData";
 import socket from "../utils/socket_init";
 
@@ -12,21 +13,21 @@ interface Props {
 
 const CallNotification = ({ data }: Props) => {
   const {
-    cancelCall,
+    cancel,
 
-    setSignalData,
-    leaveCall,
-  } = useContext(AnwerContext);
+    addSignalData,
+    leave,
+  } = useAnswer();
 
   useEffect(() => {
     socket.on("callRejected", () => {
-      console.log('rejected.....................')
-      leaveCall();
+      console.log("rejected.....................");
+      leave();
     });
   }, []);
   const router = useRouter();
   const handleAnswer = () => {
-    setSignalData(data);
+    addSignalData(data);
     router.push("/chat/video");
   };
 
@@ -34,7 +35,7 @@ const CallNotification = ({ data }: Props) => {
     <div className="flex justify-center">
       <div className="flex gap-4 bg-gray-800  rounded-[30px] p-2">
         <div className="rounded-[50%] p-3 bg-red-600">
-          <GrClose onClick={() => cancelCall()} className=" cursor-pointer" />
+          <GrClose onClick={() => cancel()} className=" cursor-pointer" />
         </div>
         <button
           onClick={() => handleAnswer()}

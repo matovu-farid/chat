@@ -14,6 +14,7 @@ import CallNotification from "../components/CallNotification";
 import { Store } from "react-notifications-component";
 import { useRouter } from "next/router";
 import useAnswerCall from "../hooks/useAnswerCall";
+import { createPeer } from "../utils/peer";
 
 interface IAnswerContext {
   leaveCall: (cleanup?: () => void) => void;
@@ -44,7 +45,6 @@ const AnswerProvider = ({ children }: PropsWithChildren) => {
     cancelCall: AnswerCancelCall,
 
     leaveCall: answerLeaveCall,
-    createPeer,
   } = useAnswerCall();
   const leaveFunction=(cleanup?: () => void)=>{
     peerRef.current?.destroy()
@@ -84,7 +84,7 @@ const AnswerProvider = ({ children }: PropsWithChildren) => {
       console.log("answering...........");
       const signalData = signalDataRef.current;
       if (stream && signalData) {
-        const peer = createPeer(stream);
+        const peer = createPeer({stream});
         peer.on("signal", (data) => {
           console.log('signalled again')
           if(!peer.connected)

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import socket from "../utils/socket_init";
 import Peer from "simple-peer";
 import SignalData, { PeerObject, StreamObject } from "../Interfaces/SignalData";
+import { createPeer } from "../utils/peer";
 
 const useCall = () => {
   const [signalData, setSignalData] = useState<SignalData | null>(null);
@@ -55,40 +56,12 @@ const useCall = () => {
   };
 
   const call = (callerId: string, calledId: string, stream: MediaStream) => {
-    const peer = new Peer({
-      stream,
-      initiator: true,
-      trickle: false,
-      config: {
-        iceServers: [
-          {
-            urls: "stun:openrelay.metered.ca:80",
-          },
-          {
-            urls: "turn:openrelay.metered.ca:80",
-            username: "openrelayproject",
-            credential: "openrelayproject",
-          },
-          {
-            urls: "turn:openrelay.metered.ca:443",
-            username: "openrelayproject",
-            credential: "openrelayproject",
-          },
-          {
-            urls: "turn:openrelay.metered.ca:443?transport=tcp",
-            username: "openrelayproject",
-            credential: "openrelayproject",
-          },
-        ],
-      },
-    });
+    const peer = createPeer({stream,innititor:true})
     setPeerObj({
       peer,
       new: true,
     });
-    peer.on("track", (track) => {
-      console.log(track);
-    });
+ 
 
     peer.on("signal", (data) => {
       socket.emit("callUser", { signal: data, from: callerId, to: calledId });
