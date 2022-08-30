@@ -17,7 +17,6 @@ import "react-toastify/dist/ReactToastify.css"; //icons
 import Innitializer from "../components/Innitializer";
 import "react-notifications-component/dist/theme.css";
 import { ReactNotifications } from "react-notifications-component";
-import AnswerProvider from "../contexts/answer_ctx";
 
 const MyApp: AppType = ({
   Component,
@@ -30,10 +29,8 @@ const MyApp: AppType = ({
         <Navbar></Navbar>
         <Menu></Menu>
         <Innitializer>
-          <AnswerProvider>
-            <ReactNotifications />
-            <Component {...pageProps} />
-          </AnswerProvider>
+          <ReactNotifications />
+          <Component {...pageProps} />
         </Innitializer>
       </UserProvider>
     </SessionProvider>

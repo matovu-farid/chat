@@ -1,6 +1,4 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { AnwerContext } from "../contexts/answer_ctx";
-import { getLocalStream } from "../utils/stream";
 import VideoStreamer from "./Video";
 import Peer from "simple-peer";
 import useAnswer from "../hooks/useAnswer";
@@ -16,7 +14,6 @@ const VideoAnswerer = () => {
     remoteStream,
     addLocalStream,
     hasRemoteStream,
-    signalData
   } = useAnswer();
 
   const handleLeaveCall = () => {
@@ -24,7 +21,7 @@ const VideoAnswerer = () => {
   };
   useEffect(() => {
     if (hasLocalStream()) {
-      answer();
+      
       const videoElm = videoRef.current;
       if (videoElm) videoElm.srcObject = localStream;
     }

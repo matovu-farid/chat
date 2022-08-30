@@ -1,9 +1,9 @@
-import Peer from 'simple-peer'
+import Peer from "simple-peer";
 interface PeerOptions {
-stream: MediaStream,
-innititor?:boolean
+  stream?: MediaStream;
+  innititor?: boolean;
 }
-export const createPeer = ({stream,innititor=false}:PeerOptions) => {
+export const createPeer = ({ stream, innititor = false }: PeerOptions) => {
   const peer = new Peer({
     initiator: innititor,
     trickle: false,
