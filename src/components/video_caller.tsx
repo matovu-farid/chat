@@ -4,6 +4,7 @@ import useUser from "../hooks/useUser";
 import useCall from "../hooks/useCall";
 import { getLocalStream } from "../utils/stream";
 import VideoStreamer from "./Video";
+import usePeer from "../hooks/useAnswer";
 
 interface Props {
   calledId: string;
@@ -16,34 +17,32 @@ const VideoCaller = ({ calledId, closePopup }: Props) => {
 
   
   const {
-    leaveCall,
+    leave,
     call,
     hasLocalStream,
     hasRemoteStream,
     localStream,
     remoteStream,
-    setLocalStream,
+   
     peer,
-  } = useCall();
+  } = usePeer();
   const handleLeaveCall = () => {
-    leaveCall();
+    leave();
   };
 
   useEffect(() => {
     if (localStream) {
-      call(callerId, calledId, localStream);
+      call(callerId, calledId);
     }
   }, [hasLocalStream]);
 
 
-  useEffect(() => {
-    getLocalStream((stream) => setLocalStream({ stream, hasStream: true }));
-  }, []);
+
 
   return localStream ? (
     <VideoStreamer
-    hasLocalStream={hasLocalStream}
-    hasRemoteStream={hasRemoteStream}
+    hasLocalStream={hasLocalStream()}
+    hasRemoteStream={hasRemoteStream()}
       peer={peer}
       handleLeaveCall={handleLeaveCall}
       remoteStream={remoteStream}

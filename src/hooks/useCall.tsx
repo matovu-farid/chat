@@ -17,11 +17,11 @@ const useCall = () => {
   });
   const [remoteStreamObject, setRemoteStream] = useState<StreamObject>({
     hasStream: false,
-    stream:null
+    stream: null,
   });
   const [localStreamObject, setLocalStream] = useState<StreamObject>({
     hasStream: false,
-    stream:null
+    stream: null,
   });
 
   useEffect(() => {
@@ -33,8 +33,8 @@ const useCall = () => {
     });
   }, []);
   const cancelCall = (cleanup?: () => void) => {
-    setLocalStream({stream:null, hasStream: false });
-    setRemoteStream({stream:null, hasStream: false });
+    setLocalStream({ stream: null, hasStream: false });
+    setRemoteStream({ stream: null, hasStream: false });
     peerObj.peer.destroy();
     setPeerObj((state) => ({ ...state, new: false }));
     if (cleanup) cleanup();
@@ -47,7 +47,6 @@ const useCall = () => {
     localStreamObject?.stream?.getTracks().forEach((track) => {
       track.stop();
     });
-    
 
     if (signalData) setSignalData(null);
     cancelCall();
@@ -56,12 +55,11 @@ const useCall = () => {
   };
 
   const call = (callerId: string, calledId: string, stream: MediaStream) => {
-    const peer = createPeer({stream,innititor:true})
+    const peer = createPeer({ stream, innititor: true });
     setPeerObj({
       peer,
       new: true,
     });
- 
 
     peer.on("signal", (data) => {
       socket.emit("callUser", { signal: data, from: callerId, to: calledId });
@@ -78,7 +76,7 @@ const useCall = () => {
     peer.on("close", () => {
       console.log("closed");
       leaveCall(peer.destroy());
-      socket.off("answered")
+      socket.off("answered");
     });
 
     socket.on("answered", (data) => {

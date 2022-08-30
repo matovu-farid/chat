@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import VideoStreamer from "./Video";
 import Peer from "simple-peer";
-import useAnswer from "../hooks/useAnswer";
+import usePeer from "../hooks/useAnswer";
 
 const VideoAnswerer = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -14,14 +14,13 @@ const VideoAnswerer = () => {
     remoteStream,
     addLocalStream,
     hasRemoteStream,
-  } = useAnswer();
+  } = usePeer();
 
   const handleLeaveCall = () => {
     leave();
   };
   useEffect(() => {
     if (hasLocalStream()) {
-      
       const videoElm = videoRef.current;
       if (videoElm) videoElm.srcObject = localStream;
     }

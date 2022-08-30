@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import React, { useContext, useEffect } from "react";
 import { AiFillPhone } from "react-icons/ai";
 import { GrClose } from "react-icons/gr";
-import useAnswer from "../hooks/useAnswer";
+import usePeer from "../hooks/useAnswer";
 import SignalData from "../Interfaces/SignalData";
 import socket from "../utils/socket_init";
 
@@ -16,7 +16,7 @@ const CallNotification = ({ data }: Props) => {
 
     addSignalData,
     leave,
-  } = useAnswer();
+  } = usePeer();
 
   useEffect(() => {
     socket.on("callRejected", () => {
@@ -27,7 +27,7 @@ const CallNotification = ({ data }: Props) => {
   const router = useRouter();
   const handleAnswer = () => {
     addSignalData(data);
-    
+
     router.push("/chat/video");
   };
 

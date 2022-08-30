@@ -22,6 +22,7 @@ import {
   BsCameraVideoFill,
   BsFillCameraVideoOffFill,
 } from "react-icons/bs";
+import Modal from "./Modal";
 interface Props {
   handleLeaveCall: () => void;
   peer: Peer.Instance | null;
@@ -88,74 +89,79 @@ const VideoStreamer = ({
   }, [hasRemoteStream]);
 
   return (
-    <div className="text-lg fixed   top-[20%]">
-      <Paper className="mx-auto ">
-        <video
-          className="w-full"
-          height={800}
-          playsInline
-          autoPlay
-          ref={videoRef}
-        ></video>
-        <div className="w-full bg-transparent opacity-0 transition-opacity top-0 hover:opacity-100  h-full left-0  absolute  flex gap-2 items-end justify-center">
-          <button
-            onClick={() => handleLeaveCall()}
-            className="rounded-[50%] p-3 bg-red-600 "
-          >
-            <GrClose className="cusrsor-pointer " />
-          </button>
+    <Modal>
+      <div className="bg-gray-900 top-0  h-screen w-full">
 
-          <>
-            {hasRemoteStream &&
-              (hasAudioOn ? (
+      <div className="text-lg fixed  w-full">
+        <Paper className="mx-auto  z-10">
+          <video
+            className="w-full"
+            height={800}
+            playsInline
+            autoPlay
+            ref={videoRef}
+          ></video>
+          <div className="w-full bg-transparent opacity-0 transition-opacity top-0 hover:opacity-100  h-full left-0  absolute  flex gap-2 items-end justify-center">
+            <button
+              onClick={() => handleLeaveCall()}
+              className="rounded-[50%] p-3 bg-red-600 "
+            >
+              <GrClose className="cusrsor-pointer " />
+            </button>
+
+            <>
+              {hasRemoteStream &&
+                (hasAudioOn ? (
+                  <button
+                    onClick={() => handleRemove(removeAudio, setHasAudio)}
+                    className="rounded-[50%] p-3  bg-green-500"
+                  >
+                    <AiFillAudio className="cursor-pointer " />
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleAdd(addAudio, setHasAudio)}
+                    className="rounded-[50%] p-3 bg-red-600"
+                  >
+                    <BsFillMicMuteFill className="cursor-pointer " />
+                  </button>
+                ))}
+              {hasVideoOn ? (
                 <button
-                  onClick={() => handleRemove(removeAudio, setHasAudio)}
-                  className="rounded-[50%] p-3  bg-green-500"
+                  onClick={() => handleRemove(removeVideo, setHasVideo)}
+                  className="rounded-[50%] p-3 bg-green-500"
                 >
-                  <AiFillAudio className="cursor-pointer " />
+                  <BsCameraVideoFill className="cursor-pointer " />
                 </button>
               ) : (
                 <button
-                  onClick={() => handleAdd(addAudio, setHasAudio)}
-                  className="rounded-[50%] p-3 bg-red-600"
+                  onClick={() => handleAdd(addVideo, setHasVideo)}
+                  className="rounded-[50%] p-3 bg-red-600  "
                 >
-                  <BsFillMicMuteFill className="cursor-pointer " />
+                  <BsFillCameraVideoOffFill className="cursor-pointer " />
                 </button>
-              ))}
-            {hasVideoOn ? (
-              <button
-                onClick={() => handleRemove(removeVideo, setHasVideo)}
-                className="rounded-[50%] p-3 bg-green-500"
-              >
-                <BsCameraVideoFill className="cursor-pointer " />
-              </button>
-            ) : (
-              <button
-                onClick={() => handleAdd(addVideo, setHasVideo)}
-                className="rounded-[50%] p-3 bg-red-600  "
-              >
-                <BsFillCameraVideoOffFill className="cursor-pointer " />
-              </button>
-            )}
-            {isScreenSharing ? (
-              <button
-                onClick={() => handleStopScreenShare()}
-                className="rounded-[50%] p-3 bg-red-600  "
-              >
-                <MdStopScreenShare className="cursor-pointer " />
-              </button>
-            ) : (
-              <button
-                onClick={() => handleScreenShare()}
-                className="rounded-[50%] p-3 bg-green-500 "
-              >
-                <MdScreenShare className="cursor-pointer " />
-              </button>
-            )}
-          </>
-        </div>
-      </Paper>
-    </div>
+              )}
+              {isScreenSharing ? (
+                <button
+                  onClick={() => handleStopScreenShare()}
+                  className="rounded-[50%] p-3 bg-red-600  "
+                >
+                  <MdStopScreenShare className="cursor-pointer " />
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleScreenShare()}
+                  className="rounded-[50%] p-3 bg-green-500 "
+                >
+                  <MdScreenShare className="cursor-pointer " />
+                </button>
+              )}
+            </>
+          </div>
+        </Paper>
+      </div>
+      </div>
+    </Modal>
   );
 };
 

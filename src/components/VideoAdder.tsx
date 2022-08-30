@@ -20,10 +20,9 @@ const VideoAdder = ({ calledId }: Props) => {
         ></AiFillPlusCircle>
       )}
       {showPopup && (
-        <div className=" fixed left-[40%] top-[20%]">
-          <Paper className="rouded-lg overflow-x-hidden">
+        <div>
             <VideoCaller closePopup={()=>setShowPopup(false)} calledId={calledId} />
-          </Paper>
+         
         </div>
       )}
     </Modal>
