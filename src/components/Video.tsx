@@ -53,7 +53,7 @@ const VideoStreamer = () => {
       const videoElm = bigVideoRef.current;
       if (videoElm && localStream) videoElm.srcObject = localStream;
     } else addLocalStream();
-  }, [hasRemoteStream, hasLocalStream]);
+  }, [hasRemoteStream, hasLocalStream,hasVideo,hasAudio]);
 
   return hasLocalStream ? (
     <Modal>
