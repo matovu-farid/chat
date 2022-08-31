@@ -57,7 +57,8 @@ const VideoStreamer = () => {
   };
   useEffect(() => {
     updateVideo();
-  }, [hasRemoteStream, hasLocalStream, hasVideo, hasAudio]);
+  });
+
   useEffect(() => {
     if(!localStream) addLocalStream()
     const localVideo = localVideoRef.current;

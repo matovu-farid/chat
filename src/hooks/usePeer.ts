@@ -60,8 +60,6 @@ const usePeer = create<PeerState>()(
     addSignalData: async (signalData: SignalData) => {
       set({ signalData });
       const stream = await get().addLocalStream();
-      console.log("stream", stream);
-
       stream && get().answer(signalData, stream);
     },
     answer: (signalData: SignalData, stream: MediaStream) => {
@@ -87,7 +85,7 @@ const usePeer = create<PeerState>()(
         peer.on("connect", () => {
           set({ connected: true });
         });
-      }   
+      }
     },
     call: async ({ callerId, calledId }: CallInfo) => {
       set({ isCalling: true });
