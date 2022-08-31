@@ -5,6 +5,7 @@ import Peer from "simple-peer";
 import {
   addAudio,
   addVideo,
+  removeAudio,
   removeVideo,
   screenShare,
   startLocalAudio,
@@ -84,7 +85,7 @@ const useVideo = create<VideoState>()(
       peer: Peer.Instance | null,
       localStream: MediaStream | null
     ) => {
-      if (peer) removeVideo(peer);
+      if (peer) removeAudio(peer);
       else stopLocalAudio(localStream);
       set({ hasAudio: false });
     },
