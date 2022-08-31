@@ -44,6 +44,7 @@ const VideoStreamer = () => {
     handleAddAudio,
     handleStopScreenShare,
   } = useVideo();
+
   const updateVideo = () => {
     const localVideo = localVideoRef.current;
     if (localVideo && localStream) localVideo.srcObject = localStream;
@@ -69,7 +70,7 @@ const VideoStreamer = () => {
         <div className="text-lg   w-full max-w-3xl mx-auto my-auto">
           <Paper className="mx-auto my-auto z-10">
             <div className="relative">
-              {hasRemoteStream ? (
+              {remoteStream ? (
                 <>
                   <video
                     className="w-full"
