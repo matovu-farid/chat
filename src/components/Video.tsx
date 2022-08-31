@@ -75,6 +75,7 @@ const VideoStreamer = () => {
                     width={200}
                     playsInline
                     autoPlay
+                    muted={true}
                     ref={smallVideoRef}
                   ></video>
                 </Paper>
