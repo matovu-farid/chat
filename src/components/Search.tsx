@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { trpc } from "../utils/trpc";
-import { AiFillPlusCircle } from "react-icons/ai";
-
 import User from "../Interfaces/User";
 import { useRouter } from "next/router";
 import useUser from "../hooks/useUser";

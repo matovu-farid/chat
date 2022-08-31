@@ -50,7 +50,6 @@ const Conversation = ({ className,senderId,receiverId }: Props) => {
   const attachSocketListeners = async () => {
     await fetch("/api/socket");
     socket.on("privateChat", (messegeString) => {
-      console.log(JSON.parse(messegeString))
       const fetchedMessege = JSON.parse(messegeString);
       setMesseges((messeges) => [...messeges, fetchedMessege]);
       scrollToBottom();

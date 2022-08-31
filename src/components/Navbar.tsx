@@ -13,16 +13,7 @@ const Navbar = () => {
   const handleSignout = () => {
     signOut();
   };
-  // const joinRooms = async ()=>{
-  //   await fetch('/api/socket')
   
-  //   socket.emit("joinRooms", user.id);
-  // }
-  //const user = useUser();
-  // useEffect(() => {
-  //   joinRooms()
-  // }, []);
-
   const listClasses = "my-auto p-0 list-none";
   const buttonClasses =
     "my-auto bg-blue-600 text-white hover:bg-slate-600 transition-colors py-2 px-3 rounded-lg";
@@ -42,11 +33,7 @@ const Navbar = () => {
                 <a className="h-full hover:text-pink-300">Home</a>
               </Link>
             </li>
-            <li className={listClasses}>
-              <Link href="/room">
-                <a className="h-full hover:text-pink-300">Rooms</a>
-              </Link>
-            </li>
+
           </ul>
         </nav>
         <div className="flex  ">

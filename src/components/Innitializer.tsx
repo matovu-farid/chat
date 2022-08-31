@@ -12,7 +12,6 @@ const Innitializer = ({ children }: PropsWithChildren) => {
 
     socket.emit("joinRooms", user.id);
     socket.emit("clientInfo", user.id);
-    console.log("Innitializing");
   };
   useEffect(() => {
     innitialize();

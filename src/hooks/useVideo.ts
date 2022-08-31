@@ -1,4 +1,3 @@
-import React from "react";
 import { devtools } from "zustand/middleware";
 import create from "zustand";
 import Peer from "simple-peer";

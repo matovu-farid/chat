@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { GrClose } from "react-icons/gr";
 import Paper from "./Paper";
 import { AiFillAudio } from "react-icons/ai";
 import { MdScreenShare, MdStopScreenShare } from "react-icons/md";
-import Peer from "simple-peer";
 import {
   BsFillMicMuteFill,
   BsCameraVideoFill,
@@ -31,7 +30,6 @@ const VideoStreamer = () => {
   } = usePeer();
   const handleLeave = () => {
     leave(router);
-
   };
   const {
     hasAudio,

@@ -1,4 +1,3 @@
-import React from "react";
 import create from "zustand";
 import { getLocalStream } from "../utils/stream";
 import SignalData, { CallInfo, Cleanup } from "../Interfaces/SignalData";
@@ -45,15 +44,10 @@ const usePeer = create<PeerState>()(
       await get().call(callInfo);
     },
     addLocalStream: async () => {
-      try {
-        if (get().hasLocalStream) return get().localStream;
-        const stream = await getLocalStream();
-        set({ localStream: stream, hasLocalStream: true });
-        return stream;
-      } catch (e) {
-        console.log("Farid errors: ", e);
-        return null;
-      }
+      if (get().hasLocalStream) return get().localStream;
+      const stream = await getLocalStream();
+      set({ localStream: stream, hasLocalStream: true });
+      return stream;
     },
     addRemoteStream: (stream: MediaStream) => {
       set({ remoteStream: stream, hasRemoteStream: true });
