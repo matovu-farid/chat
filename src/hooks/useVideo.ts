@@ -13,7 +13,6 @@ import {
   stopLocalAudio,
   stopLocalVideo,
   stopScreenShare,
-  TrackEditor,
 } from "../utils/stream";
 
 interface VideoState {

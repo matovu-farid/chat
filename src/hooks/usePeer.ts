@@ -6,6 +6,7 @@ import { createPeer } from "../utils/peer";
 import socket from "../utils/socket_init";
 import Peer from "simple-peer";
 import { devtools } from "zustand/middleware";
+import { NextRouter } from "next/router";
 
 interface PeerState {
   localStream: MediaStream | null;
@@ -21,7 +22,7 @@ interface PeerState {
   hasLocalStream: boolean;
   connected: boolean;
   hasRemoteStream: boolean;
-  leave: (cleanup?: Cleanup) => void;
+  leave: (router?: NextRouter, cleanup?: Cleanup) => void;
   cancel: (cleanup?: Cleanup) => void;
   call: (callInfo: CallInfo) => Promise<void>;
   addCallInfo: (callinfo: CallInfo) => Promise<void>;
@@ -131,7 +132,7 @@ const usePeer = create<PeerState>()(
         isCalling: false,
       });
     },
-    leave: (cleanup?: Cleanup) => {
+    leave: (router?: NextRouter, cleanup?: Cleanup) => {
       const { peer, remoteStream, localStream } = get();
       if (peer) peer.destroy();
 
@@ -149,10 +150,11 @@ const usePeer = create<PeerState>()(
         hasRemoteStream: false,
         hasLocalStream: false,
         isCalling: false,
-        connected:false
+        connected: false,
       });
 
       if (cleanup) cleanup();
+      if (router) router.push("/");
     },
   }))
 );
