@@ -1,6 +1,6 @@
 import React from "react";
 import { devtools } from "zustand/middleware";
-import create from "zustand/react";
+import create from "zustand";
 import Peer from "simple-peer";
 import {
   addAudio,
@@ -22,9 +22,13 @@ interface VideoState {
   init: (hasAudio: true, hasVideo: true) => void;
   handleAddVideo: (
     peer: Peer.Instance | null,
-    localStream: MediaStream
+    localStream: MediaStream | null
   ) => void;
   handleRemoveVideo: (
+    peer: Peer.Instance | null,
+    localStream: MediaStream | null
+  ) => void;
+  handleAddAudio: (
     peer: Peer.Instance | null,
     localStream: MediaStream | null
   ) => void;
@@ -32,15 +36,15 @@ interface VideoState {
     peer: Peer.Instance | null,
     localStream: MediaStream | null
   ) => void;
-  handleScreenShare:(peer:Peer.Instance|null)=>void;
-  
+  handleScreenShare: (peer: Peer.Instance | null) => void;
+  handleStopScreenShare: (peer: Peer.Instance | null) => void;
 }
 
 const useVideo = create<VideoState>()(
   devtools((set) => ({
     hasVideo: true,
     hasAudio: true,
-    isScreenSharing:false,
+    isScreenSharing: false,
     init: (hasAudio: true, hasVideo: true) => {
       set({ hasAudio, hasVideo });
     },
@@ -76,16 +80,13 @@ const useVideo = create<VideoState>()(
       else stopLocalAudio(localStream);
       set({ hasAudio: false });
     },
-    handleScreenShare:(peer:Peer.Instance|null)=>{
-      if(peer) screenShare(peer)
-      
+    handleScreenShare: (peer: Peer.Instance | null) => {
+      if (peer) screenShare(peer);
     },
-    handleStopScreenShare:(peer:Peer.Instance|null)=>{
-      if(peer) stopScreenShare(peer);
-      set({isScreenSharing:false})
-      
-    }
-
+    handleStopScreenShare: (peer: Peer.Instance | null) => {
+      if (peer) stopScreenShare(peer);
+      set({ isScreenSharing: false });
+    },
   }))
 );
 export default useVideo;

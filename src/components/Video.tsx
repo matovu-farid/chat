@@ -2,18 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { GrClose } from "react-icons/gr";
 import Paper from "./Paper";
-import {
-  addAudio,
-  addVideo,
-  BooleanSetter,
-  removeAudio,
-  removeVideo,
-  screenShare,
-  startLocalVideo,
-  stopLocalVideo,
-  stopScreenShare,
-  TrackEditor,
-} from "../utils/stream";
 import { AiFillAudio } from "react-icons/ai";
 import { MdScreenShare, MdStopScreenShare } from "react-icons/md";
 import Peer from "simple-peer";
@@ -23,90 +11,78 @@ import {
   BsFillCameraVideoOffFill,
 } from "react-icons/bs";
 import Modal from "./Modal";
-interface Props {
-  handleLeaveCall: () => void;
-  peer: Peer.Instance | null;
-  hasRemoteStream: boolean;
-  hasLocalStream: boolean;
-  localStream: MediaStream | null;
-  remoteStream: MediaStream | null;
-}
+import useVideo from "../hooks/useVideo";
+import { useRouter } from "next/router";
+import usePeer from "../hooks/usePeer";
 
-const VideoStreamer = ({
-  handleLeaveCall,
-  peer,
-  hasLocalStream,
-  hasRemoteStream,
-  localStream,
-  remoteStream,
-}: Props) => {
-  const [hasAudioOn, setHasAudio] = useState(true);
-  const [hasVideoOn, setHasVideo] = useState(true);
-  const [isScreenSharing, setIsScreenSharing] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const handleRemove = (remover: TrackEditor, setter: BooleanSetter) => {
-    if (peer) {
-      remover(peer, () => {
-        setter(false);
-      });
-    } else {
-      stopLocalVideo(localStream, () => {
-        setHasVideo(false);
-      });
-    }
+const VideoStreamer = () => {
+  const bigVideoRef = useRef<HTMLVideoElement>(null);
+  const smallVideoRef = useRef<HTMLVideoElement>(null);
+  const router = useRouter();
+  const {
+    leave,
+    hasLocalStream,
+    localStream,
+    peer,
+    remoteStream,
+    hasRemoteStream,
+    addLocalStream,
+  } = usePeer();
+  const handleLeave = () => {
+    leave();
+    router.push("/");
   };
-  const handleAdd = (adder: TrackEditor, setter: BooleanSetter) => {
-    if (peer) {
-      adder(peer, () => {
-        setter(true);
-      });
-    } else {
-      startLocalVideo(localStream, () => {
-        setHasVideo(true);
-      });
-    }
-  };
-  const handleScreenShare = () => {
-    if (peer)
-      screenShare(peer, () => {
-        setIsScreenSharing(true);
-      });
-  };
-  const handleStopScreenShare = () => {
-    stopScreenShare(peer);
-    setIsScreenSharing(false);
-  };
-
-
+  const {
+    hasAudio,
+    hasVideo,
+    isScreenSharing,
+    handleAddVideo,
+    handleRemoveAudio,
+    handleScreenShare,
+    handleRemoveVideo,
+    handleAddAudio,
+    handleStopScreenShare,
+  } = useVideo();
   useEffect(() => {
-    const videoElm = videoRef.current;
-    
-    if (videoElm && remoteStream) {
-        videoElm.srcObject = remoteStream;
-        setHasVideo(true)
-        return
-    }
-    if (videoElm && localStream) {
-      videoElm.srcObject = localStream;
-      setHasVideo(true)
-    }
-  }, [hasVideoOn,hasLocalStream,hasRemoteStream]);
+    if (remoteStream) {
+      const bigVideo = bigVideoRef.current;
+      if (bigVideo && remoteStream) bigVideo.srcObject = remoteStream;
+      const smallVideo = smallVideoRef.current;
+      if (smallVideo && localStream) smallVideo.srcObject = localStream;
+    } else if (hasLocalStream) {
+      const videoElm = bigVideoRef.current;
+      if (videoElm && localStream) videoElm.srcObject = localStream;
+    } else addLocalStream();
+  }, [hasRemoteStream, hasLocalStream]);
 
-  return (
+  return hasLocalStream ? (
     <Modal>
       <div className="fixed bg-gray-900 top-0  h-screen w-full">
         <div className="text-lg   w-full max-w-3xl mx-auto my-auto">
           <Paper className="mx-auto  z-10">
-            <video
-              className="w-full"
-              height={800}
-              playsInline
-              autoPlay
-              ref={videoRef}
-            ></video>
+            <div className="relative">
+              <video
+                className="w-full"
+                height={800}
+                playsInline
+                autoPlay
+                ref={bigVideoRef}
+              ></video>
+              {hasRemoteStream && (
+                <Paper className="absolute right-0 top-0 z-20 rounded-lg overflow-hidden">
+                  <video
+                    height={200}
+                    width={200}
+                    playsInline
+                    autoPlay
+                    ref={smallVideoRef}
+                  ></video>
+                </Paper>
+              )}
+            </div>
             <div className="w-full bg-transparent opacity-0 transition-opacity top-0 hover:opacity-100  h-full left-0  absolute  flex gap-2 items-end justify-center">
               <button
-                onClick={() => handleLeaveCall()}
+                onClick={() => handleLeave()}
                 className="rounded-[50%] p-3 bg-red-600 "
               >
                 <GrClose className="cusrsor-pointer " />
@@ -114,31 +90,31 @@ const VideoStreamer = ({
 
               <>
                 {hasRemoteStream &&
-                  (hasAudioOn ? (
+                  (hasAudio ? (
                     <button
-                      onClick={() => handleRemove(removeAudio, setHasAudio)}
+                      onClick={() => handleRemoveAudio(peer, localStream)}
                       className="rounded-[50%] p-3  bg-green-500"
                     >
                       <AiFillAudio className="cursor-pointer " />
                     </button>
                   ) : (
                     <button
-                      onClick={() => handleAdd(addAudio, setHasAudio)}
+                      onClick={() => handleAddAudio(peer, localStream)}
                       className="rounded-[50%] p-3 bg-red-600"
                     >
                       <BsFillMicMuteFill className="cursor-pointer " />
                     </button>
                   ))}
-                {hasVideoOn ? (
+                {hasVideo ? (
                   <button
-                    onClick={() => handleRemove(removeVideo, setHasVideo)}
+                    onClick={() => handleRemoveVideo(peer, localStream)}
                     className="rounded-[50%] p-3 bg-green-500"
                   >
                     <BsCameraVideoFill className="cursor-pointer " />
                   </button>
                 ) : (
                   <button
-                    onClick={() => handleAdd(addVideo, setHasVideo)}
+                    onClick={() => handleAddVideo(peer, localStream)}
                     className="rounded-[50%] p-3 bg-red-600  "
                   >
                     <BsFillCameraVideoOffFill className="cursor-pointer " />
@@ -146,14 +122,14 @@ const VideoStreamer = ({
                 )}
                 {isScreenSharing ? (
                   <button
-                    onClick={() => handleStopScreenShare()}
+                    onClick={() => handleStopScreenShare(peer)}
                     className="rounded-[50%] p-3 bg-red-600  "
                   >
                     <MdStopScreenShare className="cursor-pointer " />
                   </button>
                 ) : (
                   <button
-                    onClick={() => handleScreenShare()}
+                    onClick={() => handleScreenShare(peer)}
                     className="rounded-[50%] p-3 bg-green-500 "
                   >
                     <MdScreenShare className="cursor-pointer " />
@@ -165,7 +141,7 @@ const VideoStreamer = ({
         </div>
       </div>
     </Modal>
-  );
+  ) : null;
 };
 
 export default VideoStreamer;

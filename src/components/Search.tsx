@@ -35,7 +35,7 @@ const Search = () => {
             <ul className="bg-white text-gray-900 flex flex-col rounded-lg p-2 shadow-md">
               {users?.map((searchedUser) => (
                 <UserTile
-                  key={user.id}
+                  key={searchedUser.id}
                   handleUserClicked={handleUserClicked}
                   searchedUser={searchedUser}
                 ></UserTile>
