@@ -1,22 +1,11 @@
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React from "react";
 import { slide as MenuComponent } from "react-burger-menu";
 import useUser from "../hooks/useUser";
 import useRooms from "../hooks/useRooms";
 
 const Menu = () => {
-  const user = useUser();
-
-  return <>{user ? <MenuInternal userId={user.id}></MenuInternal> : null}</>;
-};
-interface Props {
-  userId: string;
-}
-const MenuInternal = ({ userId }: Props) => {
   const { data: rooms } = useRooms();
-
-
-
   return (
     <MenuComponent>
       <li className="menu-item">

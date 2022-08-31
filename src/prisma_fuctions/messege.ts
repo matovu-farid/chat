@@ -27,7 +27,6 @@ export async function saveMessege(messege: Messege){
       sender: true
     }
   });
-  
 }
 export async function savePrivateMessege(messege: PrivateMessege){
   console.log("From savePrivateMessege\n",messege)
