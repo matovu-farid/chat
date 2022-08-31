@@ -5,6 +5,8 @@ import { AiFillPlusCircle } from "react-icons/ai";
 import User from "../Interfaces/User";
 import { useRouter } from "next/router";
 import useUser from "../hooks/useUser";
+import UserTile from "./UserTile";
+
 
 const Search = () => {
   const [search, setSearch] = useState("");
@@ -33,18 +35,10 @@ const Search = () => {
           {users && users.length > 0 && (
             <ul className="bg-white text-gray-900 flex flex-col rounded-lg p-2 shadow-md">
               {users?.map((user) => (
-                <button
-                  onClick={() => handleUserClicked(user)}
-                  className="transition-colors my-0 px-2 rounded-lg cursor-pointer hover:bg-gray-900 hover:text-white active:text-white"
+                <UserTile
                   key={user.id}
-                >
-                  <div className="flex py-1 justify-start">
-                    <div className="w-[90%]">{user.name}</div>
-                    <div className="w-[10%] hover:bg-green-600 rounded-sm flex flex-col justify-center items-center">
-                      <AiFillPlusCircle className=""></AiFillPlusCircle>
-                    </div>
-                  </div>
-                </button>
+                  handleUserClicked={handleUserClicked}
+                ></UserTile>
               ))}
             </ul>
           )}

@@ -88,11 +88,12 @@ const VideoStreamer = ({
     if (videoElm && remoteStream) videoElm.srcObject = remoteStream;
   }, [hasRemoteStream]);
 
+
   return (
     <Modal>
-      <div className="bg-gray-900 top-0  h-screen w-full">
+      <div className="fixed bg-gray-900 top-0  h-screen w-full">
 
-      <div className="text-lg fixed  w-full">
+      <div className="text-lg   w-full max-w-3xl mx-auto my-auto">
         <Paper className="mx-auto  z-10">
           <video
             className="w-full"

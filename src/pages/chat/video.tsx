@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import VideoAnswerer from "../../components/video_answerer";
+import VideoComponent from "../../components/video_innitializer";
 
 function VideoPage() {
-  
   return (
     <div>
-      <VideoAnswerer />
+      <VideoComponent />
     </div>
   );
 }
