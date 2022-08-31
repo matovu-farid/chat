@@ -5,7 +5,7 @@ import SignalData, { CallInfo, Cleanup } from "../Interfaces/SignalData";
 import { createPeer } from "../utils/peer";
 import socket from "../utils/socket_init";
 import Peer from "simple-peer";
-import { devtools, redux } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
 
 interface PeerState {
   localStream: MediaStream | null;
@@ -19,15 +19,17 @@ interface PeerState {
   answer: (signalData: SignalData, localStream: MediaStream) => void;
   peer: Peer.Instance | null;
   hasLocalStream: boolean;
+  connected: boolean;
   hasRemoteStream: boolean;
   leave: (cleanup?: Cleanup) => void;
   cancel: (cleanup?: Cleanup) => void;
   call: (callInfo: CallInfo) => Promise<void>;
-  addCallInfo: (callinfo: CallInfo) => void;
+  addCallInfo: (callinfo: CallInfo) => Promise<void>;
 }
 
 const usePeer = create<PeerState>()(
   devtools((set, get) => ({
+    connected: false,
     isCalling: false,
     localStream: null,
     remoteStream: null,
@@ -37,15 +39,20 @@ const usePeer = create<PeerState>()(
     hasLocalStream: false,
     hasRemoteStream: false,
 
-    addCallInfo: (callInfo: CallInfo) => {
+    addCallInfo: async (callInfo: CallInfo) => {
       set({ callInfo });
-      get().call(callInfo);
+      await get().call(callInfo);
     },
     addLocalStream: async () => {
-      if (get().hasLocalStream) return get().localStream;
-      const stream = await getLocalStream();
-      set({ localStream: stream, hasLocalStream: true });
-      return stream;
+      try {
+        if (get().hasLocalStream) return get().localStream;
+        const stream = await getLocalStream();
+        set({ localStream: stream, hasLocalStream: true });
+        return stream;
+      } catch (e) {
+        console.log("Farid errors: ", e);
+        return null;
+      }
     },
     addRemoteStream: (stream: MediaStream) => {
       set({ remoteStream: stream, hasRemoteStream: true });
@@ -53,6 +60,7 @@ const usePeer = create<PeerState>()(
     addSignalData: async (signalData: SignalData) => {
       set({ signalData });
       const stream = await get().addLocalStream();
+      console.log("stream", stream);
 
       stream && get().answer(signalData, stream);
     },
@@ -68,9 +76,6 @@ const usePeer = create<PeerState>()(
             from: signalData.to,
           });
         });
-        peer.on("connect", () => {
-          console.log(".....connected");
-        });
         peer.on("stream", (stream) => {
           set({ remoteStream: stream, hasRemoteStream: true });
         });
@@ -79,7 +84,10 @@ const usePeer = create<PeerState>()(
         });
         peer.signal(signalData.signal);
         set({ peer });
-      }
+        peer.on("connect", () => {
+          set({ connected: true });
+        });
+      }   
     },
     call: async ({ callerId, calledId }: CallInfo) => {
       set({ isCalling: true });
@@ -94,16 +102,14 @@ const usePeer = create<PeerState>()(
       peer.on("stream", (stream) => {
         set({ remoteStream: stream, hasRemoteStream: true });
       });
-      peer.on("connect", () => {
-        console.log("-----------------------------");
-        console.log("Connected");
-        console.log("-----------------------------");
-      });
       peer.on("close", () => {
         get().leave();
         set({ callInfo: null });
 
         socket.off("answered");
+      });
+      peer.on("connect", () => {
+        set({ connected: true });
       });
 
       socket.on("answered", (data) => {
@@ -145,6 +151,7 @@ const usePeer = create<PeerState>()(
         hasRemoteStream: false,
         hasLocalStream: false,
         isCalling: false,
+        connected:false
       });
 
       if (cleanup) cleanup();

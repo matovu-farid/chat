@@ -25,9 +25,8 @@ const CallNotification = ({ data }: Props) => {
     });
   }, []);
   const router = useRouter();
-  const handleAnswer = () => {
-    addSignalData(data);
-
+  const handleAnswer = async () => {
+    await addSignalData(data);
     router.push("/chat/video");
   };
 

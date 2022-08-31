@@ -18,6 +18,7 @@ import usePeer from "../hooks/usePeer";
 const VideoStreamer = () => {
   const bigVideoRef = useRef<HTMLVideoElement>(null);
   const smallVideoRef = useRef<HTMLVideoElement>(null);
+  const localVideoRef = useRef<HTMLVideoElement>(null);
   const router = useRouter();
   const {
     leave,
@@ -42,32 +43,25 @@ const VideoStreamer = () => {
     handleRemoveVideo,
     handleAddAudio,
     handleStopScreenShare,
-    setHasAudio,
-    setHasVideo,
   } = useVideo();
+  const updateVideo = () => {
+    const localVideo = localVideoRef.current;
+    if (localVideo && localStream) localVideo.srcObject = localStream;
+
+    const bigVideo = bigVideoRef.current;
+    if (bigVideo&& remoteStream) bigVideo.srcObject = remoteStream;
+
+    const smallVideo = smallVideoRef.current;
+    if (smallVideo&& localStream) smallVideo.srcObject = localStream;
+  };
   useEffect(() => {
-    if (remoteStream) {
-      const smallVideo = smallVideoRef.current;
-      const bigVideo = bigVideoRef.current;
-      if (bigVideo && remoteStream) {
-        bigVideo.srcObject = remoteStream;
-        bigVideo.muted = false;
-      }
-      if (smallVideo && localStream) smallVideo.srcObject = localStream;
-      setHasVideo(true);
-      setHasAudio(true);
-    } else if (hasLocalStream) {
-      const videoElm = bigVideoRef.current;
-      if (videoElm && localStream) {
-        videoElm.srcObject = localStream;
-        videoElm.muted = true;
-      }
-      setHasVideo(true);
-    } else {
-      setHasVideo(false);
-      addLocalStream();
-    }
+    updateVideo();
   }, [hasRemoteStream, hasLocalStream, hasVideo, hasAudio]);
+  useEffect(() => {
+    if(!localStream) addLocalStream()
+    const localVideo = localVideoRef.current;
+    if (localVideo && localStream) localVideo.srcObject = localStream;
+  }, []);
 
   return hasLocalStream ? (
     <Modal>
@@ -75,25 +69,38 @@ const VideoStreamer = () => {
         <div className="text-lg   w-full max-w-3xl mx-auto my-auto">
           <Paper className="mx-auto my-auto z-10">
             <div className="relative">
-              <video
-                className="w-full"
-                height={800}
-                playsInline
-                autoPlay
-                ref={bigVideoRef}
-              ></video>
-              {hasRemoteStream && (
-                <Paper className="absolute right-0 top-0 z-20 rounded-lg overflow-hidden">
+              {hasRemoteStream ? (
+                <>
                   <video
-                    height={200}
-                    width={200}
+                    className="w-full"
+                    height={800}
                     playsInline
                     autoPlay
-                    muted={true}
-                    ref={smallVideoRef}
+                    ref={bigVideoRef}
                   ></video>
-                </Paper>
+
+                  <Paper className="absolute right-0 top-0 z-20 rounded-lg overflow-hidden">
+                    <video
+                      height={200}
+                      width={200}
+                      playsInline
+                      autoPlay
+                      muted={true}
+                      ref={smallVideoRef}
+                    ></video>
+                  </Paper>
+                </>
+              ) : (
+                <video
+                  className="w-full"
+                  height={800}
+                  playsInline
+                  autoPlay
+                  ref={localVideoRef}
+                  muted={true}
+                ></video>
               )}
+
               <div className="w-full bg-transparent opacity-0 transition-opacity top-0 hover:opacity-100  h-full left-0  absolute  flex gap-2 items-end justify-center">
                 <button
                   onClick={() => handleLeave()}

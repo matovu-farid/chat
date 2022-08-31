@@ -16,10 +16,10 @@ function UserTile(props: Props) {
   const router = useRouter()
   const user = useUser()
   const {addCallInfo} = usePeer()
-  const handleCall = () => {
+  const handleCall = async () => {
     const callerId = user.id;
     const calledId = props.searchedUser.id
-    addCallInfo({ callerId, calledId });
+    await addCallInfo({ callerId, calledId });
     router.push("/chat/video");
   };
   
