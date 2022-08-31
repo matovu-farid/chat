@@ -195,3 +195,30 @@ export function startLocalVideo(
   });
   return false;
 }
+export function startLocalAudio(
+  stream: MediaStream | null,
+  callback?: StreamCallback
+) {
+  if (stream === null) throw "The stream is null";
+  stream.getAudioTracks().forEach((track) => {
+    track.enabled = true;
+
+    if (callback) callback(stream);
+    return true;
+  });
+  return false;
+}
+
+export function stopLocalAudio(
+  stream: MediaStream | null,
+  callback?: StreamCallback
+) {
+  if (stream === null) throw "The stream is null";
+  stream.getAudioTracks().forEach((track) => {
+    track.enabled = false;
+
+    if (callback) callback(stream);
+    return true;
+  });
+  return false;
+}
