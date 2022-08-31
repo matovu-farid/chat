@@ -10,9 +10,7 @@ export const createPeer = ({ stream, innititor = false }: PeerOptions) => {
     stream,
     config: {
       iceServers: [
-        {
-          urls:"stun.l.google.com:19302"
-        },
+       
         {
           urls: "stun:openrelay.metered.ca:80",
         },
