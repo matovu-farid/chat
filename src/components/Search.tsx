@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 import useUser from "../hooks/useUser";
 import UserTile from "./UserTile";
 
-
 const Search = () => {
   const [search, setSearch] = useState("");
   const { data: users } = trpc.useQuery(["user.searchUser", search]);
@@ -34,10 +33,11 @@ const Search = () => {
         <div>
           {users && users.length > 0 && (
             <ul className="bg-white text-gray-900 flex flex-col rounded-lg p-2 shadow-md">
-              {users?.map((user) => (
+              {users?.map((searchedUser) => (
                 <UserTile
                   key={user.id}
                   handleUserClicked={handleUserClicked}
+                  searchedUser={searchedUser}
                 ></UserTile>
               ))}
             </ul>
