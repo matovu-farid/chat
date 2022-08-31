@@ -13,7 +13,15 @@ export async function getLocalStream(callback: StreamCallback): Promise<void>;
 
 export async function getLocalStream(callback?: StreamCallback) {
   const stream = await navigator.mediaDevices.getUserMedia({
-    audio: true,
+    audio: {
+      autoGainControl: false,
+      channelCount: 2,
+      echoCancellation: false,
+      latency: 0,
+      noiseSuppression: false,
+      sampleRate: 48000,
+      sampleSize: 16,
+    },
     video: {
       width: {
         min: 640,

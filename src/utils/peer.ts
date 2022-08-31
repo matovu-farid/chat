@@ -11,6 +11,9 @@ export const createPeer = ({ stream, innititor = false }: PeerOptions) => {
     config: {
       iceServers: [
         {
+          urls:"stun.l.google.com:19302"
+        },
+        {
           urls: "stun:openrelay.metered.ca:80",
         },
         {
@@ -28,7 +31,18 @@ export const createPeer = ({ stream, innititor = false }: PeerOptions) => {
           username: "openrelayproject",
           credential: "openrelayproject",
         },
+        {
+          "urls": [
+          "turn:13.250.13.83:3478?transport=udp"
+          ],
+          "username": "YzYNCouZM1mhqhmseWk6",
+          "credential": "YzYNCouZM1mhqhmseWk6"
+          }
       ],
+    },
+    sdpTransform(sdp) {
+      sdp.replace('useinbandfec=1', 'useinbandfec=1; stereo=1; maxaveragebitrate=510000');
+      return sdp
     },
   });
   return peer;

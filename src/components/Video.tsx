@@ -59,7 +59,7 @@ const VideoStreamer = () => {
     <Modal>
       <div className="fixed bg-gray-900 top-0  h-screen w-full">
         <div className="text-lg   w-full max-w-3xl mx-auto my-auto">
-          <Paper className="mx-auto  z-10">
+          <Paper className="mx-auto my-auto z-10">
             <div className="relative">
               <video
                 className="w-full"
@@ -79,7 +79,6 @@ const VideoStreamer = () => {
                   ></video>
                 </Paper>
               )}
-            </div>
             <div className="w-full bg-transparent opacity-0 transition-opacity top-0 hover:opacity-100  h-full left-0  absolute  flex gap-2 items-end justify-center">
               <button
                 onClick={() => handleLeave()}
@@ -136,6 +135,7 @@ const VideoStreamer = () => {
                   </button>
                 )}
               </>
+            </div>
             </div>
           </Paper>
         </div>
