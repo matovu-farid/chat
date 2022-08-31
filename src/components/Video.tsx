@@ -50,17 +50,17 @@ const VideoStreamer = () => {
     if (localVideo && localStream) localVideo.srcObject = localStream;
 
     const bigVideo = bigVideoRef.current;
-    if (bigVideo&& remoteStream) bigVideo.srcObject = remoteStream;
+    if (bigVideo && remoteStream) bigVideo.srcObject = remoteStream;
 
     const smallVideo = smallVideoRef.current;
-    if (smallVideo&& localStream) smallVideo.srcObject = localStream;
+    if (smallVideo && localStream) smallVideo.srcObject = localStream;
   };
   useEffect(() => {
     updateVideo();
   });
 
   useEffect(() => {
-    if(!localStream) addLocalStream()
+    if (!localStream) addLocalStream();
     const localVideo = localVideoRef.current;
     if (localVideo && localStream) localVideo.srcObject = localStream;
   }, []);
@@ -143,21 +143,25 @@ const VideoStreamer = () => {
                       <BsFillCameraVideoOffFill className="cursor-pointer " />
                     </button>
                   )}
-                  {isScreenSharing ? (
-                    <button
-                      onClick={() => handleStopScreenShare(peer)}
-                      className="rounded-[50%] p-3 bg-red-600  "
-                    >
-                      <MdStopScreenShare className="cursor-pointer " />
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleScreenShare(peer)}
-                      className="rounded-[50%] p-3 bg-green-500 "
-                    >
-                      <MdScreenShare className="cursor-pointer " />
-                    </button>
-                  )}
+                  {hasRemoteStream ? (
+                    <>
+                      {isScreenSharing ? (
+                        <button
+                          onClick={() => handleStopScreenShare(peer)}
+                          className="rounded-[50%] p-3 bg-red-600  "
+                        >
+                          <MdStopScreenShare className="cursor-pointer " />
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleScreenShare(peer)}
+                          className="rounded-[50%] p-3 bg-green-500 "
+                        >
+                          <MdScreenShare className="cursor-pointer " />
+                        </button>
+                      )}
+                    </>
+                  ) : null}
                 </>
               </div>
             </div>

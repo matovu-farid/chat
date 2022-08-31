@@ -39,20 +39,20 @@ interface VideoState {
   ) => void;
   handleScreenShare: (peer: Peer.Instance | null) => void;
   handleStopScreenShare: (peer: Peer.Instance | null) => void;
-  setHasVideo:(hasVideo:boolean)=>void;
-  setHasAudio:(hasAudio:boolean)=>void;
+  setHasVideo: (hasVideo: boolean) => void;
+  setHasAudio: (hasAudio: boolean) => void;
 }
 
 const useVideo = create<VideoState>()(
-  devtools((set) => ({
+  devtools((set, get) => ({
     hasVideo: true,
     hasAudio: true,
     isScreenSharing: false,
-    setHasVideo:(hasVideo:boolean)=>{
-      set({hasVideo})
+    setHasVideo: (hasVideo: boolean) => {
+      set({ hasVideo });
     },
-    setHasAudio:(hasAudio:boolean)=>{
-      set({hasAudio})
+    setHasAudio: (hasAudio: boolean) => {
+      set({ hasAudio });
     },
     init: (hasAudio: true, hasVideo: true) => {
       set({ hasAudio, hasVideo });
@@ -90,7 +90,13 @@ const useVideo = create<VideoState>()(
       set({ hasAudio: false });
     },
     handleScreenShare: (peer: Peer.Instance | null) => {
-      if (peer) screenShare(peer);
+      if (peer)
+        screenShare(peer, (track) => {
+          track.onended = () => {
+            get().handleStopScreenShare(peer);
+          };
+        });
+      set({ isScreenSharing: true });
     },
     handleStopScreenShare: (peer: Peer.Instance | null) => {
       if (peer) stopScreenShare(peer);

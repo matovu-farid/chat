@@ -1,5 +1,6 @@
 import Peer from "simple-peer";
 export type StreamCallback = (stream: MediaStream) => void;
+export type TrackCallback = (stream: MediaStreamTrack) => void;
 export type TrackChecker = (peer: Peer.Instance) => boolean;
 export type BooleanSetter = React.Dispatch<React.SetStateAction<boolean>>;
 export type TrackEditor = (
@@ -106,7 +107,7 @@ export function removeVideo(
 /**Get the local video stream */
 export async function screenShare(
   peer: Peer.Instance | null,
-  callback?: StreamCallback
+  callback?: TrackCallback
 ) {
   if (peer === null) throw "There is no peer";
   const stream = await navigator.mediaDevices.getDisplayMedia({
@@ -119,7 +120,7 @@ export async function screenShare(
   if (!videotrack || !screenSharetrack) return;
   peer.replaceTrack(videotrack, screenSharetrack, localStream);
 
-  if (callback) return callback(stream);
+  if (callback) return callback(screenSharetrack);
   else return stream;
 }
 /**Stops the screen sharing by stoping all tracks associated with the stream and returns whether it has done the job */
