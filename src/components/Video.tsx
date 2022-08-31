@@ -42,18 +42,32 @@ const VideoStreamer = () => {
     handleRemoveVideo,
     handleAddAudio,
     handleStopScreenShare,
+    setHasAudio,
+    setHasVideo,
   } = useVideo();
   useEffect(() => {
     if (remoteStream) {
-      const bigVideo = bigVideoRef.current;
-      if (bigVideo && remoteStream) bigVideo.srcObject = remoteStream;
       const smallVideo = smallVideoRef.current;
+      const bigVideo = bigVideoRef.current;
+      if (bigVideo && remoteStream) {
+        bigVideo.srcObject = remoteStream;
+        bigVideo.muted = false;
+      }
       if (smallVideo && localStream) smallVideo.srcObject = localStream;
+      setHasVideo(true);
+      setHasAudio(true);
     } else if (hasLocalStream) {
       const videoElm = bigVideoRef.current;
-      if (videoElm && localStream) videoElm.srcObject = localStream;
-    } else addLocalStream();
-  }, [hasRemoteStream, hasLocalStream,hasVideo,hasAudio]);
+      if (videoElm && localStream) {
+        videoElm.srcObject = localStream;
+        videoElm.muted = true;
+      }
+      setHasVideo(true);
+    } else {
+      setHasVideo(false);
+      addLocalStream();
+    }
+  }, [hasRemoteStream, hasLocalStream, hasVideo, hasAudio]);
 
   return hasLocalStream ? (
     <Modal>
@@ -80,63 +94,63 @@ const VideoStreamer = () => {
                   ></video>
                 </Paper>
               )}
-            <div className="w-full bg-transparent opacity-0 transition-opacity top-0 hover:opacity-100  h-full left-0  absolute  flex gap-2 items-end justify-center">
-              <button
-                onClick={() => handleLeave()}
-                className="rounded-[50%] p-3 bg-red-600 "
-              >
-                <GrClose className="cusrsor-pointer " />
-              </button>
+              <div className="w-full bg-transparent opacity-0 transition-opacity top-0 hover:opacity-100  h-full left-0  absolute  flex gap-2 items-end justify-center">
+                <button
+                  onClick={() => handleLeave()}
+                  className="rounded-[50%] p-3 bg-red-600 "
+                >
+                  <GrClose className="cusrsor-pointer " />
+                </button>
 
-              <>
-                {hasRemoteStream &&
-                  (hasAudio ? (
+                <>
+                  {hasRemoteStream &&
+                    (hasAudio ? (
+                      <button
+                        onClick={() => handleRemoveAudio(peer, localStream)}
+                        className="rounded-[50%] p-3  bg-green-500"
+                      >
+                        <AiFillAudio className="cursor-pointer " />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleAddAudio(peer, localStream)}
+                        className="rounded-[50%] p-3 bg-red-600"
+                      >
+                        <BsFillMicMuteFill className="cursor-pointer " />
+                      </button>
+                    ))}
+                  {hasVideo ? (
                     <button
-                      onClick={() => handleRemoveAudio(peer, localStream)}
-                      className="rounded-[50%] p-3  bg-green-500"
+                      onClick={() => handleRemoveVideo(peer, localStream)}
+                      className="rounded-[50%] p-3 bg-green-500"
                     >
-                      <AiFillAudio className="cursor-pointer " />
+                      <BsCameraVideoFill className="cursor-pointer " />
                     </button>
                   ) : (
                     <button
-                      onClick={() => handleAddAudio(peer, localStream)}
-                      className="rounded-[50%] p-3 bg-red-600"
+                      onClick={() => handleAddVideo(peer, localStream)}
+                      className="rounded-[50%] p-3 bg-red-600  "
                     >
-                      <BsFillMicMuteFill className="cursor-pointer " />
+                      <BsFillCameraVideoOffFill className="cursor-pointer " />
                     </button>
-                  ))}
-                {hasVideo ? (
-                  <button
-                    onClick={() => handleRemoveVideo(peer, localStream)}
-                    className="rounded-[50%] p-3 bg-green-500"
-                  >
-                    <BsCameraVideoFill className="cursor-pointer " />
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleAddVideo(peer, localStream)}
-                    className="rounded-[50%] p-3 bg-red-600  "
-                  >
-                    <BsFillCameraVideoOffFill className="cursor-pointer " />
-                  </button>
-                )}
-                {isScreenSharing ? (
-                  <button
-                    onClick={() => handleStopScreenShare(peer)}
-                    className="rounded-[50%] p-3 bg-red-600  "
-                  >
-                    <MdStopScreenShare className="cursor-pointer " />
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => handleScreenShare(peer)}
-                    className="rounded-[50%] p-3 bg-green-500 "
-                  >
-                    <MdScreenShare className="cursor-pointer " />
-                  </button>
-                )}
-              </>
-            </div>
+                  )}
+                  {isScreenSharing ? (
+                    <button
+                      onClick={() => handleStopScreenShare(peer)}
+                      className="rounded-[50%] p-3 bg-red-600  "
+                    >
+                      <MdStopScreenShare className="cursor-pointer " />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleScreenShare(peer)}
+                      className="rounded-[50%] p-3 bg-green-500 "
+                    >
+                      <MdScreenShare className="cursor-pointer " />
+                    </button>
+                  )}
+                </>
+              </div>
             </div>
           </Paper>
         </div>

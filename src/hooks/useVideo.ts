@@ -38,6 +38,8 @@ interface VideoState {
   ) => void;
   handleScreenShare: (peer: Peer.Instance | null) => void;
   handleStopScreenShare: (peer: Peer.Instance | null) => void;
+  setHasVideo:(hasVideo:boolean)=>void;
+  setHasAudio:(hasAudio:boolean)=>void;
 }
 
 const useVideo = create<VideoState>()(
@@ -45,6 +47,12 @@ const useVideo = create<VideoState>()(
     hasVideo: true,
     hasAudio: true,
     isScreenSharing: false,
+    setHasVideo:(hasVideo:boolean)=>{
+      set({hasVideo})
+    },
+    setHasAudio:(hasAudio:boolean)=>{
+      set({hasAudio})
+    },
     init: (hasAudio: true, hasVideo: true) => {
       set({ hasAudio, hasVideo });
     },

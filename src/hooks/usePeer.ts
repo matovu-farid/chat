@@ -51,7 +51,6 @@ const usePeer = create<PeerState>()(
       set({ remoteStream: stream, hasRemoteStream: true });
     },
     addSignalData: async (signalData: SignalData) => {
-    
       set({ signalData });
       const stream = await get().addLocalStream();
 
