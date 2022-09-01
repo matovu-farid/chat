@@ -1,10 +1,14 @@
-import React, { PropsWithChildren, useEffect } from "react";
+import React, { PropsWithChildren, ReactNode, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { AiFillPlusCircle } from "react-icons/ai";
-
-const Modal = ({ children }: PropsWithChildren) => {
+interface Props {
+  children:ReactNode,
+  className?:string
+}
+const Modal = ({ children,className}: Props) => {
   const container = document.createElement("div");
-  container.className = "";
+  if(className)
+  container.className = className;
 
   const parentElem = document.querySelector("#__next");
   if (parentElem) parentElem.appendChild(container);

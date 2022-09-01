@@ -36,7 +36,7 @@ const RoomAdder = () => {
       {showPopup || (
         <AiFillPlusCircle
           onClick={() => setShowPopup(true)}
-          className="fixed left-6 top-[15%] text-4xl z-50 text-gray-900 hover:cursor-pointer hover:scale-125 hover:text-purple-600 active:text-purple-600 transition-all "
+          className="fixed left-64 top-[15%] text-4xl z-50 text-gray-900 hover:cursor-pointer hover:scale-125 hover:text-purple-600 active:text-purple-600 transition-all "
         ></AiFillPlusCircle>
       )}
       {showPopup && (

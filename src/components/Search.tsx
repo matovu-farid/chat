@@ -18,7 +18,7 @@ const Search = () => {
   };
 
   return (
-    <div className=" flex gap-2 fixed top-10 right-[250px]">
+    <div className=" flex gap-2 ">
       <div>
         <input
           type="text"
