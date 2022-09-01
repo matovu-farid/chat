@@ -14,12 +14,12 @@ module.exports = {
           "75%": { transform: "translateX(-63px)" },
           "100%": { transform: "translateX(0)" },
         },
-        sidebarClose: {
-          "100%": { transform: "translateX(-250px)" },
-          "75%": { transform: "translateX(-188px)" },
-          "50%": { transform: "translateX(-125px)" },
-          "25%": { transform: "translateX(-63px)" },
-          "0%": { transform: "translateX(0)" },
+        overlay: {
+          "0%": { opacity: "0" },
+          
+          "50%": { opacity: "0.2" },
+          
+          "100%": { opacity: "0" },
         },
       },
     },
