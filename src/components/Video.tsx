@@ -45,13 +45,19 @@ const VideoStreamer = () => {
 
   const updateVideo = () => {
     const localVideo = localVideoRef.current;
-    if (localVideo && localStream) localVideo.srcObject = localStream;
+    if (localVideo && localStream) {
+      localVideo.srcObject = localStream;
+      localVideo.volume = 0;
+    }
 
     const bigVideo = bigVideoRef.current;
     if (bigVideo && remoteStream) bigVideo.srcObject = remoteStream;
 
     const smallVideo = smallVideoRef.current;
-    if (smallVideo && localStream) smallVideo.srcObject = localStream;
+    if (smallVideo && localStream) {
+      smallVideo.srcObject = localStream;
+      smallVideo.volume = 0;
+    }
   };
   useEffect(() => {
     updateVideo();
