@@ -47,7 +47,9 @@ const Navbar = () => {
             </li>
           </ul>
         </nav>
-        <div className="flex  ">
+        <div>
+          <div className="hidden md:flex h-full w-full flex-col justify-center">
+
           {status === "authenticated" ? (
             <button onClick={handleSignout} className={buttonClasses + " "}>
               signout
@@ -57,6 +59,7 @@ const Navbar = () => {
               SignIn
             </button>
           )}
+          </div>
         </div>
       </div>
     </div>

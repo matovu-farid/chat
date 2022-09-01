@@ -40,7 +40,7 @@ const CreateRoom = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full -z-10">
       <h2 className="text-gray-900 text-4xl text-center">Add a room</h2>
       <div className="flex flex-col gap-2 mx-auto max-w-sm">
         <span className="p-float-label">
@@ -49,6 +49,8 @@ const CreateRoom = () => {
             id="name"
             onChange={(e) => handleNameChange(e.target.value)}
             placeholder="Name"
+            className="-z-10"
+
           />
           <label htmlFor="in">name</label>
         </span>
@@ -58,6 +60,7 @@ const CreateRoom = () => {
             id="image"
             onChange={(e) => setImage(e.target.value)}
             placeholder="image"
+            className="-z-10"
 
           />
           <label htmlFor="in">image</label>

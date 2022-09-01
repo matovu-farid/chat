@@ -28,7 +28,7 @@ export const UserPageInternal = ({ userId }: Props) => {
   return user ? <div className="flex gap-2 ">
     {
 
-    (user.image)&&<Image src={user.image} alt="profile" width={150} height={150}></Image>
+    (user.image)&&<Image className="-z-10" src={user.image} alt="profile" width={150} height={150}></Image>
     }
     <div className="flex flex-col gap-1">
       <h2 className="text-2xl">{user.name}</h2>
