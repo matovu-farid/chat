@@ -51,7 +51,10 @@ const VideoStreamer = () => {
     }
 
     const bigVideo = bigVideoRef.current;
-    if (bigVideo && remoteStream) bigVideo.srcObject = remoteStream;
+    if (bigVideo && remoteStream) {
+      bigVideo.srcObject = remoteStream;
+      bigVideo.volume = 0;
+    }
 
     const smallVideo = smallVideoRef.current;
     if (smallVideo && localStream) {
@@ -83,6 +86,7 @@ const VideoStreamer = () => {
                     playsInline
                     autoPlay
                     ref={bigVideoRef}
+                    muted={true}
                   ></video>
 
                   <Paper className="absolute right-0 top-0 z-20 rounded-lg overflow-hidden">
