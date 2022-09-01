@@ -62,8 +62,8 @@ const Sidebar = () => {
         </div>
         <div
           className="
-           bg-gray-900 opacity-0 cursor-pointer pointer-events-auto top-0 w-full h-full 
-           animate-[overlay_0.5s_ease-in-out_forwards_0.5s]"
+            cursor-pointer pointer-events-auto top-0 w-full h-full 
+           "
           onClick={() => closeSidebar()}
         ></div>
       </div>

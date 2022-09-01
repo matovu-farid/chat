@@ -1,5 +1,6 @@
 import { useSession } from "next-auth/react";
-import React, {  useState } from "react";
+import { InputText } from "primereact/inputtext";
+import React, { useEffect, useState } from "react";
 import Button from "../../components/Button";
 import useCreateRoom from "../../prisma_fuctions/useCreateRoom";
 import { trpc } from "../../utils/trpc";
@@ -16,51 +17,55 @@ const CreateRoom = () => {
   };
 
   const mutation = trpc.useMutation("room.createRoom");
-  const {mutate: createRoom} = useCreateRoom()
-  const resetInputs=()=>{
-    setName(""); setPath(""),setImage("")
-  }
+  const { mutate: createRoom } = useCreateRoom();
+  const resetInputs = () => {
+    setName("");
+    setPath(""), setImage("");
+  };
+
 
   const handleSend = () => {
-    if(name===""|| path==="") return
+    if (name === "" || path === "") return;
     const userId = session.data?.user?.id;
-    if (userId ) {
+    if (userId) {
       const room = {
         name,
         path,
         image,
         userId,
       };
-       createRoom(room);
+      createRoom(room);
     }
-    resetInputs()
+    resetInputs();
   };
-  const inputStyles = "py-2 px-3 rounded-md border-gray-900 border";
-  const labelStyles = "text-gray-900";
+
   return (
     <div className="w-full">
       <h2 className="text-gray-900 text-4xl text-center">Add a room</h2>
       <div className="flex flex-col gap-2 mx-auto max-w-sm">
-        <input
-          className={inputStyles}
-          placeholder="Name"
-          onChange={(e) => handleNameChange(e.target.value)}
-          type="text"
-          value={name}
-          id={name}
-        />
-        <input
-          className={inputStyles}
-          placeholder="image"
-          onChange={(e) => setImage(e.target.value)}
-          type="text"
-          value={image}
-          id={image}
-        />
+        <span className="p-float-label">
+          <InputText
+            value={name}
+            id="name"
+            onChange={(e) => handleNameChange(e.target.value)}
+            placeholder="Name"
+          />
+          <label htmlFor="in">name</label>
+        </span>
+        <span className="p-float-label">
+          <InputText
+            value={image}
+            id="image"
+            onChange={(e) => setImage(e.target.value)}
+            placeholder="image"
+
+          />
+          <label htmlFor="in">image</label>
+        </span>
+     
+     
         <div className="flex gap-2 mx-auto">
           <Button onClick={handleSend}>Send</Button>
-          <Button href="/">Home</Button>
-          <Button href="/room">Rooms</Button>
         </div>
 
         {mutation.status === "success" && (

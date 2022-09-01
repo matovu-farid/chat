@@ -16,9 +16,9 @@ module.exports = {
         },
         overlay: {
           "0%": { opacity: "0" },
-          
+
           "50%": { opacity: "0.2" },
-          
+
           "100%": { opacity: "0" },
         },
       },
