@@ -13,7 +13,7 @@ const ProfilePage: NextPage = () => {
   const user = useUser()
 
   return  (
-    <div className="flex flex-col gap-5 items-start">
+    <div className="flex flex-col gap-5 items-start mx-auto max-w-[1200px]">
 
       <UserPageInternal userId={user.id}></UserPageInternal>
       <Button href="/user/edit">Edit</Button>
@@ -25,7 +25,7 @@ interface Props {
 }
 export const UserPageInternal = ({ userId }: Props) => {
   const { data: user } = trpc.useQuery(["user.getUser", userId], {});
-  return user ? <div className="flex gap-2">
+  return user ? <div className="flex gap-2 ">
     {
 
     (user.image)&&<Image src={user.image} alt="profile" width={150} height={150}></Image>
