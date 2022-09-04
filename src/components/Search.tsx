@@ -28,7 +28,7 @@ const Search = () => {
           className=" border-none p-2 text-gray-900 rounded-lg outline-none"
         />
 
-        <div>
+        <div className="absolute w-[266px]">
           {users && users.length > 0 && (
             <ul className="bg-white text-gray-900 flex flex-col rounded-lg p-2 shadow-md">
               {users?.map((searchedUser) => (
