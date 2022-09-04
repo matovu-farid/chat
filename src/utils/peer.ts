@@ -39,7 +39,7 @@ export const createPeer = ({ stream, innititor = false }: PeerOptions) => {
       ],
     },
     sdpTransform(sdp) {
-      sdp.replace('useinbandfec=1', 'useinbandfec=1; stereo=1; maxaveragebitrate=510000');
+      sdp.replace('useinbandfec=1', 'useinbandfec=1; maxaveragebitrate=510000');
       return sdp
     },
   });

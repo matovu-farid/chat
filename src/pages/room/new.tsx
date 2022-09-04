@@ -50,6 +50,7 @@ const CreateRoom = () => {
             onChange={(e) => handleNameChange(e.target.value)}
             placeholder="Name"
             className="-z-10"
+          
 
           />
           <label htmlFor="in">name</label>

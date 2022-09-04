@@ -5,13 +5,18 @@ import { Prisma } from "../server/db/client";
 export async function searchUsers(term: string,userId:string, prisma: Prisma) {
   if (term === "") return [];
   const users = await prisma.user.findMany({
+  
     where: {
+      
       name: {
-        contains: term,
+         contains: term,
+         mode: 'insensitive'
+        
       },
       NOT: {
         id: userId
-      }
+      },
+      
     },
   });
   return users as User[];
