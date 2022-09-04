@@ -73,15 +73,15 @@ const VideoStreamer = () => {
 
   return hasLocalStream ? (
     <Modal>
-      <div id="video_page" className="fixed bg-gray-900 top-0  h-screen w-full flex flex-col justify-center items-center">
-        <div id="video" className="text-lg   w-full max-w-3xl">
-          <Paper className="mx-auto my-auto z-10">
+      <div className="fixed bg-gray-900 top-0  h-screen w-full flex flex-col justify-center items-center">
+        <div className="text-lg   w-full max-w-[900px]  flex flex-col justify-center items-center">
+          <Paper className=" z-10">
             <div className="relative">
               {remoteStream ? (
                 <>
                   <video
-                    className="w-full"
-                    height={800}
+                    className="w-[800px]"
+                   
                     playsInline
                     autoPlay
                     ref={bigVideoRef}
@@ -101,8 +101,8 @@ const VideoStreamer = () => {
                 </>
               ) : (
                 <video
-                  className="w-full"
-                  height={800}
+                  className="w-[800px]"
+                
                   playsInline
                   autoPlay
                   ref={localVideoRef}
