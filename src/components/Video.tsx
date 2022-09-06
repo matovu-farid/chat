@@ -88,7 +88,7 @@ const VideoStreamer = () => {
                     
                   ></video>
 
-                  {/* <Paper className="absolute right-0 top-0 z-20 rounded-lg overflow-hidden">
+                  <Paper className="absolute right-0 top-0 z-20 rounded-lg overflow-hidden">
                     <video
                       height={200}
                       width={200}
@@ -97,7 +97,7 @@ const VideoStreamer = () => {
                       muted={true}
                       ref={smallVideoRef}
                     ></video>
-                  </Paper> */}
+                  </Paper>
                 </>
               ) : (
                 <video
