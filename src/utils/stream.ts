@@ -17,9 +17,9 @@ export async function getLocalStream(callback?: StreamCallback) {
     audio: {
       autoGainControl: false,
       channelCount: 2,
-      echoCancellation: false,
+      echoCancellation: true,
       latency: 0,
-      noiseSuppression: false,
+      noiseSuppression: true,
       sampleRate: 48000,
       sampleSize: 16,
     },
