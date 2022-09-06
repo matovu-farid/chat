@@ -5,7 +5,6 @@ import React from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import useSidebar from "../hooks/useSidebar";
 
-import Modal from "./Modal";
 import Search from "./Search";
 const Navbar = () => {
   const { openSidebar, isOpen, closeSidebar } = useSidebar();

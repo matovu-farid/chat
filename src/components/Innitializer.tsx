@@ -16,6 +16,7 @@ const Innitializer = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     innitialize();
     socket.on("called", (data: SignalData) => {
+      console.log(data)
       Store.addNotification({
         title: "Call coming in",
         message: (

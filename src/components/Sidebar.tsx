@@ -39,7 +39,11 @@ const Sidebar = () => {
                   <a className="w-full  p-2 hover:bg-white rounded-[20px]  hover:text-gray-900 text-white">Create Room</a>
                 </Link>
               </li>
-
+              <li className="flex w-full  cursor-pointer">
+                <Link className="w-full" href="/chat/video">
+                  <a className="w-full  p-2 hover:bg-white rounded-[20px]  hover:text-gray-900 text-white">Video</a>
+                </Link>
+              </li>
               {rooms ? (
                 <TileCategory name="Rooms" type="room" subcategories={rooms} />
               ) : (

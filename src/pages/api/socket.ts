@@ -55,7 +55,7 @@ export default function SocketHandler(_: any, res: any) {
       const caller = idMap.get(data.from);
       console.log(data)
       if (caller && called) {
-        io.to(called).emit("called", { signal: data.signal, from: caller });
+        io.to(called).emit("called", { signal: data.signal, from: caller,to:called });
         console.log(`${data.from} calling ${data.to}`);
       }
     });
@@ -77,4 +77,3 @@ export const config = {
     bodyParser: false,
   },
 };
-//TODO: refactor to use the mapped socket ids instead
