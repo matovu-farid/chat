@@ -6,7 +6,12 @@ interface Props {
   className?:string
 }
 const Modal = ({ children,className}: Props) => {
+  const existingContainer = document.querySelector("#__container")
+  if(existingContainer){
+    return createPortal(children, existingContainer);
+  }
   const container = document.createElement("div");
+  container.id = '__container'
   if(className)
   container.className = className;
 
