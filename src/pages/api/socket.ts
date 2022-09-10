@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
-import SignalData from "../../Interfaces/SignalData";
+import SignalData, { CallInfo } from "../../Interfaces/SignalData";
 import { saveMessege, savePrivateMessege } from "../../prisma_fuctions/messege";
-import { joinRooms } from "../../utils/socket_functions";
+import { joinRooms, updateOnline } from "../../utils/socket_functions";
 import socket from "../../utils/socket_init";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -12,17 +12,30 @@ export default function SocketHandler(_: any, res: any) {
     return;
   }
   const io = new Server(res.socket.server);
-  const idMap: Map<string, string> = new Map();
+  const userIdToSocketId: Map<string, string> = new Map();
+
   res.socket.server.io = io;
   io.on("connection", (socket) => {
+    socket.on("iam_online", (userId: string) => {
+      updateOnline(userId, true);
+
+      setTimeout(() => {
+        updateOnline(userId, false);
+        socket.emit("are_you_online");
+      }, 180000);
+    });
+
     socket.emit(
       "serverMessege",
       `Welcome ${socket.id}, you are now connected to the Server`
     );
     socket.on("clientInfo", (userId: string) => {
-      idMap.set(userId, socket.id);
+      userIdToSocketId.set(userId, socket.id);
       console.log("ClientInfo");
-      console.log(idMap);
+    });
+    socket.on("ringing", (data: CallInfo) => {
+      const { callerId } = data;
+      socket.to(callerId).emit("ringing");
     });
     socket.on("joinRooms", (userId) => {
       joinRooms(userId, socket);
@@ -43,7 +56,7 @@ export default function SocketHandler(_: any, res: any) {
     });
     socket.on("sendPrivateMessage", (message) => {
       const messageString = JSON.stringify(message);
-      const receiverSocketId = idMap.get(message.receiverId);
+      const receiverSocketId = userIdToSocketId.get(message.receiverId);
       if (receiverSocketId)
         socket.to(receiverSocketId).emit("privateChat", messageString);
       socket.emit("privateChat", messageString);
@@ -51,19 +64,25 @@ export default function SocketHandler(_: any, res: any) {
       savePrivateMessege(message);
     });
     socket.on("callUser", (data: SignalData) => {
-      const called = idMap.get(data.to);
-      const caller = idMap.get(data.from);
-      console.log(data)
-      if (caller && called) {
-        io.to(called).emit("called", { signal: data.signal, from: caller,to:called });
+      const calledSocketId = userIdToSocketId.get(data.to);
+      const callerSocketId = userIdToSocketId.get(data.from);
+      
+      if (callerSocketId && calledSocketId) {
+        io.to(calledSocketId).emit("called", {
+          ...data,
+          from: callerSocketId,
+          to: calledSocketId,
+          
+        });
         console.log(`${data.from} calling ${data.to}`);
       }
     });
     socket.on("callRejected", (callerId) => {
+      console.log('call rejected',callerId)
       socket.to(callerId).emit("callRejected");
     });
     socket.on("answerCall", (data) => {
-      console.log(data);
+      
       console.log(`${data.to}'s call is answered by ${data.from}`);
       io.to(data.to).emit("answered", data);
     });

@@ -4,6 +4,7 @@ export const ZUser = z.object({
   id: z.string(),
   email: z.optional(z.string()).nullable(),
   image: z.optional(z.string()).nullable(),
+  online:z.optional(z.boolean()).nullable(),
 });
 export const ZUserUpdater = z.object({
   id: z.string(),

@@ -29,7 +29,8 @@ const VideoStreamer = () => {
     addLocalStream,
   } = usePeer();
   const handleLeave = () => {
-    leave(router);
+    leave(()=> router.push('/'));
+   
   };
   const {
     hasAudio,

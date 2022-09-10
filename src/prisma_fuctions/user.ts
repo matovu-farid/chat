@@ -2,24 +2,50 @@ import { ImageUpdater } from "../Interfaces/Image";
 import User, { UserUpdater } from "../Interfaces/User";
 import { Prisma } from "../server/db/client";
 
-export async function searchUsers(term: string,userId:string, prisma: Prisma) {
+export async function searchUsers(
+  term: string,
+  userId: string,
+  prisma: Prisma
+) {
   if (term === "") return [];
   const users = await prisma.user.findMany({
-  
     where: {
-      
       name: {
-         contains: term,
-         mode: 'insensitive'
-        
+        contains: term,
+        mode: "insensitive",
       },
       NOT: {
-        id: userId
+        id: userId,
       },
-      
     },
   });
   return users as User[];
+}
+export async function is_online(userId: string, prisma: Prisma) {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      online: true,
+    },
+  });
+  return user ? user.online : false;
+}
+export async function updateOnlineUser(
+  userId: string,
+  isOnline: boolean,
+  prisma: Prisma
+) {
+  const user = await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      online: isOnline,
+    },
+  });
+  return user;
 }
 export function deleteUser(userId: string, prisma: Prisma) {
   return prisma.user.delete({
@@ -46,8 +72,8 @@ export function saveUser(user: UserUpdater, prisma: Prisma) {
     },
   });
 }
-export function saveImage({image, userId}:ImageUpdater, prisma: Prisma) {
-  console.log('image',image,'userId',userId)
+export function saveImage({ image, userId }: ImageUpdater, prisma: Prisma) {
+  console.log("image", image, "userId", userId);
   return prisma.user.update({
     where: {
       id: userId,
@@ -57,14 +83,13 @@ export function saveImage({image, userId}:ImageUpdater, prisma: Prisma) {
     },
   });
 }
-export function getImage(userId:string, prisma: Prisma) {
+export function getImage(userId: string, prisma: Prisma) {
   return prisma.user.findUnique({
     where: {
       id: userId,
     },
     select: {
-      image:true
-    }
-   
+      image: true,
+    },
   });
 }

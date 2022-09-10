@@ -6,11 +6,21 @@ interface PeerOptions {
 export const createPeer = ({ stream, innititor = false }: PeerOptions) => {
   const peer = new Peer({
     initiator: innititor,
-    trickle: false,
+    trickle: !innititor,
     stream,
     config: {
       iceServers: [
-       
+ 
+        {
+          urls: "stun:3clogic.com:3478",
+        },
+        {
+          urls: "stun:l.google.com:19302",
+        },
+        {
+          urls: "stun:12connect.com:3478",
+        },
+
         {
           urls: "stun:openrelay.metered.ca:80",
         },
@@ -30,18 +40,18 @@ export const createPeer = ({ stream, innititor = false }: PeerOptions) => {
           credential: "openrelayproject",
         },
         {
-          "urls": [
-          "turn:13.250.13.83:3478?transport=udp"
-          ],
-          "username": "YzYNCouZM1mhqhmseWk6",
-          "credential": "YzYNCouZM1mhqhmseWk6"
-          }
+          urls: ["turn:13.250.13.83:3478?transport=udp"],
+          username: "YzYNCouZM1mhqhmseWk6",
+          credential: "YzYNCouZM1mhqhmseWk6",
+        },
       ],
+      
     },
-    sdpTransform(sdp) {
-      sdp.replace('useinbandfec=1', 'useinbandfec=1; maxaveragebitrate=510000');
-      return sdp
-    },
+    // sdpTransform(sdp) {
+    //   sdp.replace("useinbandfec=1", "useinbandfec=1; maxaveragebitrate=510000");
+    //   return sdp;
+    // },
   });
+  
   return peer;
 };

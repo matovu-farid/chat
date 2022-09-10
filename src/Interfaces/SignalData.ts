@@ -3,6 +3,7 @@ interface SignalData {
   signal: Peer.SignalData;
   from: string;
   to: string;
+  callerName?: string;
 }
 export default SignalData;
 export interface PeerObject {
@@ -17,4 +18,5 @@ export type Cleanup = () => void;
 export interface CallInfo {
   calledId: string;
   callerId: string;
+  callerName?: string | null;
 }

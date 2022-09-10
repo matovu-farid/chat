@@ -52,6 +52,7 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
+    online     Boolean   @default(false)
     accounts      Account[]
     sessions      Session[]
     rooms         Room[]    @relation("member")
@@ -87,14 +88,14 @@ model Room {
 }
 
 model PrivateMessege {
-    id            String  @id @default(uuid())
-    text          String
-    sender        User    @relation("sender", fields: [senderId], references: [id])
-    receiver      User    @relation("receiver", fields: [receiverId], references: [id])
-    senderId      String
-    receiverId    String
-        createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    id         String   @id @default(uuid())
+    text       String
+    sender     User     @relation("sender", fields: [senderId], references: [id])
+    receiver   User     @relation("receiver", fields: [receiverId], references: [id])
+    senderId   String
+    receiverId String
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
 }
 
 model VerificationToken {

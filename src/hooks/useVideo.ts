@@ -55,6 +55,7 @@ const useVideo = create<VideoState>()(
     init: (hasAudio: true, hasVideo: true) => {
       set({ hasAudio, hasVideo });
     },
+
     handleAddVideo: (
       peer: Peer.Instance | null,
       localStream: MediaStream | null
