@@ -1,4 +1,3 @@
-import create from "zustand";
 import { getLocalStream } from "../utils/stream";
 import SignalData, { CallInfo, Cleanup } from "../Interfaces/SignalData";
 import { createPeer } from "../utils/peer";
@@ -8,6 +7,7 @@ import { devtools } from "zustand/middleware";
 import { NextRouter, useRouter } from "next/router";
 import { Store } from "react-notifications-component";
 import { router } from "@trpc/server";
+import create from "zustand";
 
 interface PeerState {
   localStream: MediaStream | null;
