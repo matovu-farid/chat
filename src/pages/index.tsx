@@ -1,25 +1,20 @@
 import type { NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { BsFillTelephonePlusFill } from "react-icons/bs";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 import Link from "next/link";
 import useUser from "../hooks/useUser";
 
 const Home: NextPage = () => {
-  const buttonClasses = "bg-blue-500 text-white py-2 px-4 rounded-md";
-
-  const handleSignout = () => {
-    signOut();
-  };
-
   const user = useUser();
   const { status } = useSession();
 
   return (
-    <div className="grid place-items-center ">
+    <div className="grid place-items-center  h-[60vh]">
       <main className="grid justify-center max-w-[60em] text-center gap-2 ">
-        <h1 className="text-6xl">Welcome to Mafa </h1>
-        <h2 className="text-xl">
+        <h1 className="text-6xl p-3">Welcome to Mafa </h1>
+        <h2 className="text-xl p-2">
           We're here to help you connect, communicate, and express your ideas so
           you can get more done together. We offer organized spaces for everyone
           and everything you need for work.
@@ -33,15 +28,23 @@ const Home: NextPage = () => {
               </p>
               <p>We are happy to have you ❤️ </p>
             </div>
-            <ol className="text-start list-decimal">
-              <li>
-                You can now search and call any user by clicking on the{"  "}
-                <BsFillTelephonePlusFill className="inline text-green-500 " />
-              </li>
-              <li>You can create rooms</li>
-              <li>You can chat with any user you have searched for</li>
-              <li>You can</li>
-            </ol>
+            <div className="text-start ">
+              <h3 className="font-bold p-1">Capabilities</h3>
+              <ol className=" list-decimal">
+                <li>
+                  You can now search and call any user by clicking on the{"  "}
+                  <BsFillTelephonePlusFill className="inline text-green-500 " />
+                </li>
+                <li>You can create rooms</li>
+                <li>You can chat with any user you have searched for</li>
+                <li>You can</li>
+              </ol>
+              <span>Try the </span>{" "}
+              <span>
+                <GiHamburgerMenu className="inline" />
+              </span>{" "}
+              <span>in the top right corner</span>
+            </div>
           </div>
         ) : (
           <p className="text-lg">
