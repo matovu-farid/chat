@@ -4,9 +4,7 @@ import { createPeer } from "../utils/peer";
 import socket from "../utils/socket_init";
 import Peer from "simple-peer";
 import { devtools } from "zustand/middleware";
-import { NextRouter, useRouter } from "next/router";
 import { Store } from "react-notifications-component";
-import { router } from "@trpc/server";
 import create from "zustand";
 
 interface PeerState {
@@ -23,7 +21,7 @@ interface PeerState {
   hasLocalStream: boolean;
   connected: boolean;
   hasRemoteStream: boolean;
-  leave: ( cleanup?: Cleanup) => void;
+  leave: (cleanup?: Cleanup) => void;
   cancelCall: (signalData: SignalData) => void;
   call: (callInfo: CallInfo) => void;
   addCallInfo: (callinfo: CallInfo) => Promise<void>;
@@ -31,8 +29,7 @@ interface PeerState {
 
 const usePeer = create<PeerState>()(
   devtools((set, get) => {
-   
-    const peer =  (<PeerState>{
+    const peer = <PeerState>{
       connected: false,
       isCalling: false,
       localStream: null,
@@ -48,8 +45,7 @@ const usePeer = create<PeerState>()(
         get().call(callInfo);
       },
       addLocalStream: async () => {
-        if (get().hasLocalStream)
-          return get().localStream;
+        if (get().hasLocalStream) return get().localStream;
         const stream = await getLocalStream();
         set({ localStream: stream, hasLocalStream: true });
         return stream;
@@ -67,8 +63,7 @@ const usePeer = create<PeerState>()(
         if (signalData) {
           const peer = stream ? createPeer({ stream }) : createPeer({});
           peer.on("signal", (data) => {
-            if (peer.connected)
-              return;
+            if (peer.connected) return;
             socket.emit("answerCall", {
               signal: data,
               to: signalData.from,
@@ -137,10 +132,8 @@ const usePeer = create<PeerState>()(
         set({ peer });
       },
       cancelCall: (signalData: SignalData, cleanup?: Cleanup) => {
-        
         socket.emit("callRejected", signalData.from);
-        if (cleanup)
-          cleanup();
+        if (cleanup) cleanup();
         set({
           localStream: null,
           remoteStream: null,
@@ -153,8 +146,7 @@ const usePeer = create<PeerState>()(
       },
       leave: (cleanup?: Cleanup) => {
         const { peer, remoteStream, localStream } = get();
-        if (peer)
-          peer.destroy();
+        if (peer) peer.destroy();
 
         remoteStream?.getTracks().forEach((track) => {
           track.stop();
@@ -174,11 +166,10 @@ const usePeer = create<PeerState>()(
           connected: false,
         });
 
-        if (cleanup)
-          cleanup();
+        if (cleanup) cleanup();
       },
-    });
-    return peer
+    };
+    return peer;
   })
 );
 

@@ -113,6 +113,19 @@ export function countRoomMembers(roomId: string, prisma: Prisma) {
     },
   });
 }
+
+export function getRoomMembers(roomId: string, prisma: Prisma) {
+  return prisma.user.findMany({
+    where: {
+      rooms: {
+        some: {
+          id: roomId,
+        },
+      },
+    },
+  });
+}
+
 export function countRoomAdmins(roomId: string, prisma: Prisma) {
   return prisma.user.count({
     where: {

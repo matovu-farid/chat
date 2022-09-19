@@ -4,6 +4,7 @@ interface SignalData {
   from: string;
   to: string;
   callerName?: string;
+  silent?: false;
 }
 export default SignalData;
 export interface PeerObject {

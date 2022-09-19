@@ -1,7 +1,11 @@
 import { Server } from "socket.io";
 import SignalData, { CallInfo } from "../../Interfaces/SignalData";
 import { saveMessege, savePrivateMessege } from "../../prisma_fuctions/messege";
-import { joinRooms, updateOnline } from "../../utils/socket_functions";
+import {
+  createSocketData,
+  joinRooms,
+  updateOnline,
+} from "../../utils/socket_functions";
 import socket from "../../utils/socket_init";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -48,6 +52,9 @@ export default function SocketHandler(_: any, res: any) {
       if (typeof room === "string") socket.leave(room);
       socket.leave(room.path);
     });
+    socket.on("startRoomCall", (room: string, newMember: string) => {
+      io.to(room).emit("sendOffer", newMember);
+    });
 
     socket.on("sendMessege", (room, message) => {
       io.in(room.path).emit("chat", JSON.stringify(message));
@@ -64,25 +71,16 @@ export default function SocketHandler(_: any, res: any) {
       savePrivateMessege(message);
     });
     socket.on("callUser", (data: SignalData) => {
-      const calledSocketId = userIdToSocketId.get(data.to);
-      const callerSocketId = userIdToSocketId.get(data.from);
-      
-      if (callerSocketId && calledSocketId) {
-        io.to(calledSocketId).emit("called", {
-          ...data,
-          from: callerSocketId,
-          to: calledSocketId,
-          
-        });
-        console.log(`${data.from} calling ${data.to}`);
-      }
+      const socketData = createSocketData(data, userIdToSocketId);
+      const { to, from } = socketData;
+
+      if (to && from) io.to(to).emit("called", socketData);
     });
     socket.on("callRejected", (callerId) => {
-      console.log('call rejected',callerId)
+      console.log("call rejected", callerId);
       socket.to(callerId).emit("callRejected");
     });
     socket.on("answerCall", (data) => {
-      
       console.log(`${data.to}'s call is answered by ${data.from}`);
       io.to(data.to).emit("answered", data);
     });
