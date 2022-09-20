@@ -37,7 +37,7 @@ interface VideoState {
     localStream: MediaStream | null
   ) => void;
   handleScreenShare: (peer: Peer.Instance[]) => void;
-  handleStopScreenShare: (peer: Peer.Instance | null) => void;
+  handleStopScreenShare: (peer: Peer.Instance | Peer.Instance[]) => void;
   setHasVideo: (hasVideo: boolean) => void;
   setHasAudio: (hasAudio: boolean) => void;
 }
@@ -101,8 +101,9 @@ const useVideo = create<VideoState>()(
 
         set({ isScreenSharing: true });
       },
-      handleStopScreenShare: (peer: Peer.Instance | null) => {
-        if (peer) stopScreenShare(peer);
+      handleStopScreenShare: (peer: Peer.Instance | Peer.Instance[]) => {
+        if (Array.isArray(peer)) peer.forEach((p) => stopScreenShare(p));
+        else stopScreenShare(peer);
         set({ isScreenSharing: false });
       },
     }))
