@@ -24,7 +24,7 @@ const VideoStreamer = () => {
     hasLocalStream,
     localStream,
     peers: peer,
-    remoteStreams: remoteStream,
+    remoteStreams,
     hasRemoteStream,
     addLocalStream,
   } = usePeer();
@@ -51,6 +51,7 @@ const VideoStreamer = () => {
     }
 
     const bigVideo = bigVideoRef.current;
+    const remoteStream = remoteStreams[0];
     if (bigVideo && remoteStream) {
       bigVideo.srcObject = remoteStream;
     }
@@ -77,7 +78,7 @@ const VideoStreamer = () => {
         <div className="text-lg   w-full max-w-[900px]  flex flex-col justify-center items-center">
           <Paper className=" z-10">
             <div className="relative">
-              {remoteStream ? (
+              {remoteStreams.length === 1 ? (
                 <>
                   <video
                     className="w-[800px]"
