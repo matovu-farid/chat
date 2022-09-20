@@ -13,6 +13,7 @@ import Modal from "./Modal";
 import useVideo from "../hooks/useVideo";
 import { useRouter } from "next/router";
 import usePeer from "../hooks/usePeer";
+import MultipleVideo from "./MultipleVideo";
 
 const VideoStreamer = () => {
   const bigVideoRef = useRef<HTMLVideoElement>(null);
@@ -78,7 +79,7 @@ const VideoStreamer = () => {
         <div className="text-lg   w-full max-w-[900px]  flex flex-col justify-center items-center">
           <Paper className=" z-10">
             <div className="relative">
-              {remoteStreams.length === 1 ? (
+              {remoteStreams.length === 1 && (
                 <>
                   <video
                     className="w-[800px]"
@@ -98,7 +99,8 @@ const VideoStreamer = () => {
                     ></video>
                   </Paper>
                 </>
-              ) : (
+              )}
+              {remoteStreams.length === 0 && (
                 <video
                   className="w-[800px]"
                   playsInline
@@ -107,6 +109,7 @@ const VideoStreamer = () => {
                   muted={true}
                 ></video>
               )}
+              {remoteStreams.length > 1 && <MultipleVideo />}
 
               <div className="w-full bg-transparent opacity-0 transition-opacity top-0 hover:opacity-100  h-full left-0  absolute  flex gap-2 items-end justify-center">
                 <button
