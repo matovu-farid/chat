@@ -23,14 +23,13 @@ const VideoStreamer = () => {
     leave,
     hasLocalStream,
     localStream,
-    peer,
-    remoteStream,
+    peers: peer,
+    remoteStreams: remoteStream,
     hasRemoteStream,
     addLocalStream,
   } = usePeer();
   const handleLeave = () => {
-    leave(()=> router.push('/'));
-   
+    leave(() => router.push("/"));
   };
   const {
     hasAudio,
@@ -82,11 +81,9 @@ const VideoStreamer = () => {
                 <>
                   <video
                     className="w-[800px]"
-                   
                     playsInline
                     autoPlay
                     ref={bigVideoRef}
-                    
                   ></video>
 
                   <Paper className="absolute right-0 top-0 z-20 rounded-lg overflow-hidden">
@@ -103,7 +100,6 @@ const VideoStreamer = () => {
               ) : (
                 <video
                   className="w-[800px]"
-                
                   playsInline
                   autoPlay
                   ref={localVideoRef}
