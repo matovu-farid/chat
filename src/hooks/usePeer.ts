@@ -7,6 +7,7 @@ import { devtools } from "zustand/middleware";
 import { Store } from "react-notifications-component";
 import create from "zustand";
 import { immer } from "zustand/middleware/immer";
+import { CallEvent, PeerEvent } from "../utils/events";
 
 interface PeerState {
   localStream: MediaStream | null;
@@ -50,6 +51,7 @@ const usePeer = create<PeerState>()(
           if (get().hasLocalStream) return get().localStream;
           const stream = await getLocalStream();
           set({ localStream: stream, hasLocalStream: true });
+
           return stream;
         },
         addRemoteStream: (stream: MediaStream) => {
@@ -67,29 +69,29 @@ const usePeer = create<PeerState>()(
           set({ isCalling: false });
           if (signalData) {
             const peer = stream ? createPeer({ stream }) : createPeer({});
-            peer.on("signal", (data) => {
+            peer.on(PeerEvent.signal, (data) => {
               if (peer.connected) return;
-              socket.emit("answerCall", {
+              socket.emit(CallEvent.answerCall, {
                 signal: data,
                 to: signalData.from,
                 from: signalData.to,
               });
             });
-            peer.on("stream", (stream) => {
+            peer.on(PeerEvent.stream, (stream) => {
               set((state) => {
                 state.remoteStreams.push(stream);
                 state.hasRemoteStream = true;
               });
             });
 
-            peer.on("close", () => {
+            peer.on(PeerEvent.close, () => {
               get().leave();
             });
             peer.signal(signalData.signal);
             set((state) => {
               state.peers.push(peer);
             });
-            peer.on("connect", () => {
+            peer.on(PeerEvent.connect, () => {
               set({ connected: true });
             });
           }
@@ -101,35 +103,35 @@ const usePeer = create<PeerState>()(
             ? createPeer({ stream, innititor: true })
             : createPeer({ innititor: true });
 
-          peer.on("signal", (data) => {
-            socket.emit("callUser", {
+          peer.on(PeerEvent.signal, (data) => {
+            socket.emit(CallEvent.callUser, {
               signal: data,
               from: callerId,
               to: calledId,
               callerName,
             });
           });
-          peer.on("stream", (stream) => {
+          peer.on(PeerEvent.stream, (stream) => {
             set((state) => {
               state.remoteStreams.push(stream);
               state.hasRemoteStream = true;
             });
           });
-          peer.on("close", () => {
+          peer.on(PeerEvent.close, () => {
             get().leave();
             set({ callInfo: null });
 
-            socket.off("answered");
+            socket.off(CallEvent.answered);
           });
-          peer.on("connect", () => {
+          peer.on(PeerEvent.connect, () => {
             set({ connected: true });
           });
 
-          socket.on("answered", (data) => {
+          socket.on(CallEvent.answered, (data) => {
             peer.signal(data.signal);
             set({ signalData: data });
           });
-          socket.on("callRejected", () => {
+          socket.on(CallEvent.callRejected, () => {
             console.log("Rejected.......");
 
             set({ isCalling: false });
@@ -147,7 +149,7 @@ const usePeer = create<PeerState>()(
           });
         },
         cancelCall: (signalData: SignalData, cleanup?: Cleanup) => {
-          socket.emit("callRejected", signalData.from);
+          socket.emit(CallEvent.callRejected, signalData.from);
           if (cleanup) cleanup();
           set({
             localStream: null,

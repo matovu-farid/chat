@@ -4,20 +4,20 @@ import { trpc } from "../../utils/trpc";
 import TextMessege from "./TextMessege";
 import { useInView } from "react-intersection-observer";
 import socket from "../../utils/socket_init";
+import { MessageEvent } from "../../utils/events";
 
 interface Props {
   className?: string;
   senderId: string;
   receiverId: string;
-
 }
-const Conversation = ({ className,senderId,receiverId }: Props) => {
+const Conversation = ({ className, senderId, receiverId }: Props) => {
   const [messeges, setMesseges] = useState<PrivateMessegeWithUser[]>([]);
   const { ref: scrollRef, inView } = useInView();
   const ref = useRef<HTMLDivElement>(null);
 
   const { fetchNextPage } = trpc.useInfiniteQuery(
-    ["message.getPaginatedConversation", { senderId,receiverId }],
+    ["message.getPaginatedConversation", { senderId, receiverId }],
     {
       getNextPageParam: (lastpage) => lastpage.nextCursor,
       onSuccess(data) {
@@ -45,11 +45,11 @@ const Conversation = ({ className,senderId,receiverId }: Props) => {
     if (inView) {
       fetchNextPage();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
   const attachSocketListeners = async () => {
     await fetch("/api/socket");
-    socket.on("privateChat", (messegeString) => {
+    socket.on(MessageEvent.privateChat, (messegeString) => {
       const fetchedMessege = JSON.parse(messegeString);
       setMesseges((messeges) => [...messeges, fetchedMessege]);
       scrollToBottom();

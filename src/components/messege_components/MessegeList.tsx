@@ -5,6 +5,7 @@ import { trpc } from "../../utils/trpc";
 import TextMessege from "./TextMessege";
 import { useInView } from "react-intersection-observer";
 import socket from "../../utils/socket_init";
+import { MessageEvent, SocketEvent } from "../../utils/events";
 
 interface Props {
   roomId: string;
@@ -31,10 +32,9 @@ const MessegeList = ({ className, roomId }: Props) => {
   );
 
   const scrollToBottom = () => {
-    setTimeout(()=>{
-
+    setTimeout(() => {
       ref.current?.scrollIntoView({ behavior: "smooth" });
-    },500)
+    }, 500);
   };
   useEffect(() => {
     setTimeout(() => {
@@ -50,14 +50,14 @@ const MessegeList = ({ className, roomId }: Props) => {
   const attachSocketListeners = async () => {
     await fetch("/api/socket");
 
-    socket.on("serverMessege", (msg) => {
+    socket.on(SocketEvent.serverMessege, (msg) => {
       console.log(msg);
     });
 
-    socket.on("chat", (messegeString) => {
-       const fetchedMessege = JSON.parse(messegeString);
+    socket.on(MessageEvent.chat, (messegeString) => {
+      const fetchedMessege = JSON.parse(messegeString);
       setMesseges((messeges) => [...messeges, fetchedMessege]);
-     scrollToBottom()
+      scrollToBottom();
     });
   };
 

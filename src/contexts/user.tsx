@@ -32,7 +32,7 @@ const UserProvider = ({ children }: PropsWithChildren) => {
   return user ? (
     <UserCtx.Provider value={user}>{children}</UserCtx.Provider>
   ) : (
-    children
+    <>{children}</>
   );
 };
 export default UserProvider;

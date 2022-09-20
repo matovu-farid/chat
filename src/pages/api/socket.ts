@@ -6,7 +6,12 @@ import {
   joinRooms,
   updateOnline,
 } from "../../utils/socket_functions";
-import socket from "../../utils/socket_init";
+import {
+  SocketEvent,
+  MessageEvent,
+  RoomEvent,
+  CallEvent,
+} from "../../utils/events";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function SocketHandler(_: any, res: any) {
@@ -20,69 +25,65 @@ export default function SocketHandler(_: any, res: any) {
 
   res.socket.server.io = io;
   io.on("connection", (socket) => {
-    socket.on("iam_online", (userId: string) => {
+    socket.on(SocketEvent.iam_online, (userId: string) => {
       updateOnline(userId, true);
 
       setTimeout(() => {
         updateOnline(userId, false);
-        socket.emit("are_you_online");
+        socket.emit(SocketEvent.are_you_online);
       }, 180000);
     });
 
-    socket.emit(
-      "serverMessege",
-      `Welcome ${socket.id}, you are now connected to the Server`
-    );
-    socket.on("clientInfo", (userId: string) => {
+    socket.on(SocketEvent.clientInfo, (userId: string) => {
       userIdToSocketId.set(userId, socket.id);
-      console.log("ClientInfo");
     });
-    socket.on("ringing", (data: CallInfo) => {
+    socket.on(SocketEvent.ringing, (data: CallInfo) => {
       const { callerId } = data;
-      socket.to(callerId).emit("ringing");
+      socket.to(callerId).emit(SocketEvent.ringing);
     });
-    socket.on("joinRooms", (userId) => {
+    socket.on(RoomEvent.joinRooms, (userId) => {
       joinRooms(userId, socket);
     });
-    socket.on("joinRoom", (roomPath) => {
+    socket.on(RoomEvent.joinRoom, (roomPath) => {
       socket.join(roomPath);
     });
 
-    socket.on("leaveRooom", (room) => {
+    socket.on(RoomEvent.leaveRoom, (room) => {
       if (typeof room === "string") socket.leave(room);
       socket.leave(room.path);
     });
-    socket.on("startRoomCall", (room: string, newMember: string) => {
-      io.to(room).emit("sendOffer", newMember);
+    socket.on(CallEvent.startRoomCall, (room: string, newMember: string) => {
+      io.to(room).emit(CallEvent.sendOffer, newMember);
     });
 
-    socket.on("sendMessege", (room, message) => {
-      io.in(room.path).emit("chat", JSON.stringify(message));
+    socket.on(MessageEvent.sendMessege, (room, message) => {
+      io.in(room.path).emit(MessageEvent.chat, JSON.stringify(message));
       delete message.sender;
       saveMessege(message);
     });
-    socket.on("sendPrivateMessage", (message) => {
+    socket.on(MessageEvent.sendPrivateMessage, (message) => {
       const messageString = JSON.stringify(message);
       const receiverSocketId = userIdToSocketId.get(message.receiverId);
       if (receiverSocketId)
-        socket.to(receiverSocketId).emit("privateChat", messageString);
-      socket.emit("privateChat", messageString);
+        socket
+          .to(receiverSocketId)
+          .emit(MessageEvent.privateChat, messageString);
+      socket.emit(MessageEvent.privateChat, messageString);
       delete message.sender;
       savePrivateMessege(message);
     });
-    socket.on("callUser", (data: SignalData) => {
+    socket.on(CallEvent.callUser, (data: SignalData) => {
       const socketData = createSocketData(data, userIdToSocketId);
       const { to, from } = socketData;
 
-      if (to && from) io.to(to).emit("called", socketData);
+      if (to && from) io.to(to).emit(CallEvent.called, socketData);
     });
-    socket.on("callRejected", (callerId) => {
-      console.log("call rejected", callerId);
-      socket.to(callerId).emit("callRejected");
+    socket.on(CallEvent.callRejected, (callerId) => {
+      socket.to(callerId).emit(CallEvent.callRejected);
     });
-    socket.on("answerCall", (data) => {
+    socket.on(CallEvent.answerCall, (data) => {
       console.log(`${data.to}'s call is answered by ${data.from}`);
-      io.to(data.to).emit("answered", data);
+      io.to(data.to).emit(CallEvent.answered, data);
     });
   });
 

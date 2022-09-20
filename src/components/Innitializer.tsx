@@ -6,22 +6,28 @@ import { createPeer } from "../utils/peer";
 import socket from "../utils/socket_init";
 import CallNotification from "./CallNotification";
 import { getLocalStream } from "../utils/stream";
+import usePeer from "../hooks/usePeer";
+import { CallEvent, RoomEvent, SocketEvent } from "../utils/events";
 
 const Innitializer = ({ children }: PropsWithChildren) => {
   const user = useUser();
+  const { call } = usePeer();
   const innitialize = async () => {
     await fetch("/api/socket");
 
-    socket.emit("joinRooms", user.id);
-    socket.emit("clientInfo", user.id);
+    socket.emit(RoomEvent.joinRooms, user.id);
+    socket.emit(SocketEvent.clientInfo, user.id);
 
-    socket.emit("iam_online", user.id);
+    socket.emit(SocketEvent.iam_online, user.id);
   };
   useEffect(() => {
     innitialize();
-    socket.on("called", (data: SignalData) => {
+    socket.on(CallEvent.called, (data: SignalData) => {
       console.log(data);
-      socket.emit("ringing", { calledId: data.to, callerId: data.from });
+      socket.emit(SocketEvent.ringing, {
+        calledId: data.to,
+        callerId: data.from,
+      });
       Store.addNotification({
         title: `${data.callerName} is calling`,
         message: (
@@ -32,7 +38,7 @@ const Innitializer = ({ children }: PropsWithChildren) => {
         container: "top-right",
         type: "success",
       });
-      socket.on("ringing", () => {
+      socket.on(SocketEvent.ringing, () => {
         Store.addNotification({
           title: `Ringing`,
           container: "top-right",
@@ -40,8 +46,8 @@ const Innitializer = ({ children }: PropsWithChildren) => {
         });
       });
     });
-    socket.on("are_you_online", () => {
-      socket.emit("iam_online", user.id);
+    socket.on(SocketEvent.are_you_online, () => {
+      socket.emit(SocketEvent.iam_online, user.id);
     });
 
     return () => {
