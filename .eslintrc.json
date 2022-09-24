@@ -16,7 +16,5 @@
     "react-hooks/exhaustive-deps":"off"
 
   },
-  "ignorePatterns": ["src/**/*.test.ts", "src/frontend/generated/*"],
-  "files": ["*.ts", "*.tsx"]
-
+  "ignorePatterns": ["src/**/*.test.ts", "src/frontend/generated/*"]
 }
