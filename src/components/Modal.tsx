@@ -1,11 +1,14 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { createPortal } from "react-dom";
 interface Props {
   children: ReactNode;
   className?: string;
 }
 const Modal = ({ children, className }: Props) => {
-  const existingContainer = document.querySelector("#__container");
+  let existingContainer: Element | null = null;
+  useEffect(() => {
+    existingContainer = document.querySelector("#__container");
+  }, []);
   if (existingContainer) {
     return createPortal(children, existingContainer);
   }
