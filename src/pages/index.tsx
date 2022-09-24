@@ -15,9 +15,9 @@ const Home: NextPage = () => {
       <main className="grid justify-center max-w-[60em] text-center gap-2 ">
         <h1 className="text-6xl p-3">Welcome to Mafa </h1>
         <h2 className="text-xl p-2">
-          We're here to help you connect, communicate, and express your ideas so
-          you can get more done together. We offer organized spaces for everyone
-          and everything you need for work.
+          We are here to help you connect, communicate, and express your ideas
+          so you can get more done together. We offer organized spaces for
+          everyone and everything you need for work.
         </h2>
         {status == "authenticated" ? (
           <div className="grid gap-4 justify-center">
